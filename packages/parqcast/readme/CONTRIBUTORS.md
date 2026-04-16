@@ -1,0 +1,1 @@
+- DataStruct s.r.o. <info@datastruct.tech>

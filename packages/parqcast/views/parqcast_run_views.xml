@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="parqcast_run_view_tree" model="ir.ui.view">
+        <field name="name">parqcast.run.tree</field>
+        <field name="model">parqcast.run</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="run_uuid" string="UUID"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'collecting'"
+                       decoration-warning="state == 'uploading'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'error'"/>
+                <field name="company_name"/>
+                <field name="collector_count"/>
+                <field name="started_at"/>
+                <field name="duration_seconds" widget="float_time"/>
+                <field name="error_message"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Chunk inline Tree -->
+    <record id="parqcast_chunk_view_tree" model="ir.ui.view">
+        <field name="name">parqcast.chunk.tree</field>
+        <field name="model">parqcast.chunk</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="sequence"/>
+                <field name="collector"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-success="state in ('created', 'uploaded')"
+                       decoration-danger="state == 'error'"/>
+                <field name="row_count"/>
+                <field name="byte_count"/>
+                <field name="duration_seconds" digits="[10,1]"/>
+                <field name="key_from"/>
+                <field name="key_to"/>
+                <field name="error_message"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="parqcast_run_view_form" model="ir.ui.view">
+        <field name="name">parqcast.run.form</field>
+        <field name="model">parqcast.run</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_cancel" type="object" string="Cancel Run"
+                            class="btn-danger"
+                            invisible="state not in ('pending', 'collecting', 'uploading')"
+                            confirm="This will cancel the export run and delete pending chunks. Continue?"/>
+                    <button name="action_purge_blobs" type="object" string="Purge Blob Data"
+                            class="btn-secondary"
+                            invisible="state != 'done'"
+                            confirm="This will delete chunk data from the database to free space. The exported files are unaffected. Continue?"/>
+                    <button name="action_download_zip" type="object" string="Download ZIP"
+                            class="btn-primary" icon="fa-download"
+                            invisible="state != 'done' or attachment_count == 0"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,collecting,uploading,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="run_uuid"/>
+                            <field name="company_name"/>
+                            <field name="export_mode"/>
+                        </group>
+                        <group>
+                            <field name="odoo_version"/>
+                            <field name="collector_count"/>
+                            <field name="attachment_count"/>
+                            <field name="started_at"/>
+                            <field name="finished_at"/>
+                            <field name="duration_seconds"/>
+                        </group>
+                    </group>
+                    <group invisible="not error_message">
+                        <field name="error_message"/>
+                    </group>
+                    <notebook>
+                        <page string="Chunks" name="chunks">
+                            <field name="chunk_ids"/>
+                        </page>
+                        <page string="Manifest" name="manifest">
+                            <field name="manifest_json" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_parqcast_run" model="ir.actions.act_window">
+        <field name="name">Export Runs</field>
+        <field name="res_model">parqcast.run</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu under Settings → Technical -->
+    <menuitem id="menu_parqcast_root"
+              name="Parqcast"
+              parent="base.menu_custom"
+              groups="base.group_system"
+              sequence="99"/>
+    <menuitem id="menu_parqcast_runs"
+              name="Export Runs"
+              parent="menu_parqcast_root"
+              action="action_parqcast_run"
+              groups="base.group_system"
+              sequence="10"/>
+
+</odoo>

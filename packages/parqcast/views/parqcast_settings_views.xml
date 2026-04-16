@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.parqcast</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="95"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Parqcast" string="Parqcast" name="parqcast" groups="base.group_system">
+
+                    <block title="Export Schedule" name="schedule_settings">
+                        <setting id="parqcast_cron_active"
+                                 help="Run the export pipeline automatically on a schedule.">
+                            <field name="parqcast_cron_active"/>
+                            <div invisible="not parqcast_cron_active" class="content-group mt8">
+                                <field name="parqcast_schedule_mode" widget="radio"/>
+                            </div>
+                        </setting>
+                        <setting string="Manual Export"
+                                 help="Run one export tick immediately with the current settings.">
+                            <button name="action_run_export_now" type="object"
+                                    string="Run Export Now" class="btn-primary"
+                                    icon="fa-play"/>
+                        </setting>
+                    </block>
+
+                    <block title="General" name="general_settings">
+                        <setting id="parqcast_company" string="Export Company"
+                                 help="Company whose data will be exported. Defaults to your current company.">
+                            <field name="parqcast_company_id"/>
+                        </setting>
+                        <setting id="parqcast_time_budget" string="Time Budget"
+                                 help="Maximum seconds per cron tick. The orchestrator pauses and resumes on the next tick.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="parqcast_time_budget" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_time_budget" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="parqcast_cleanup_days" string="Cleanup After"
+                                 help="Automatically delete completed export runs older than this many days.">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="parqcast_cleanup_days" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_cleanup_days" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <block title="Transport" name="transport_settings">
+                        <setting id="parqcast_transport_type" string="Transport Type"
+                                 help="Where to send the exported Parquet files">
+                            <field name="parqcast_transport_type" widget="radio"/>
+                        </setting>
+
+                        <!-- Odoo Attachments -->
+                        <setting id="parqcast_attachment_info" string="Odoo Attachments"
+                                 help="Exported files are stored as Odoo attachments on the export run record. Foreqcast reads them directly — no filesystem paths needed."
+                                 invisible="parqcast_transport_type != 'attachment'">
+                            <div class="text-muted">
+                                Parquet files are stored in Odoo's attachment store.
+                                Download them from the Export Runs view, or let Foreqcast read them directly.
+                            </div>
+                        </setting>
+
+                        <!-- Local Filesystem -->
+                        <setting id="parqcast_local_path" string="Local Path"
+                                 help="Directory on the server filesystem"
+                                 invisible="parqcast_transport_type != 'local'">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="parqcast_local_path" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_local_path" placeholder="/tmp/parqcast_export"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- HTTP Server -->
+                        <setting id="parqcast_http_settings" string="HTTP Server"
+                                 help="Upload raw Parquet files to a parqcast-server instance"
+                                 invisible="parqcast_transport_type != 'http'">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="parqcast_server_url" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_server_url" placeholder="http://localhost:8420"
+                                           required="parqcast_transport_type == 'http'"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_api_key" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_api_key" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_namespace" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_namespace" placeholder="parqcast"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- AWS S3 -->
+                        <setting id="parqcast_s3_settings" string="AWS S3"
+                                 help="Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
+                                 invisible="parqcast_transport_type != 's3'">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_access_key_id" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_access_key_id" placeholder="AKIA..."
+                                           required="parqcast_transport_type == 's3'"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_secret_access_key" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_secret_access_key" password="True"
+                                           required="parqcast_transport_type == 's3'"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_region" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_region" placeholder="eu-west-1"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_bucket" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_bucket" placeholder="my-parqcast-bucket"
+                                           required="parqcast_transport_type == 's3'"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_prefix" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_prefix" placeholder="parqcast"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="parqcast_s3_endpoint_url" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_s3_endpoint_url" placeholder="http://localhost:9000"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    Leave Endpoint URL empty for real AWS S3.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

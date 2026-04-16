@@ -1,0 +1,456 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * parqcast
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-16 00:00+0000\n"
+"PO-Revision-Date: 2026-04-16 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_run
+msgid "Parqcast Export Run"
+msgstr "Parqcast exportuitvoering"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_chunk
+msgid "Parqcast Export Chunk"
+msgstr "Parqcast exportdeel"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_cron
+msgid "Parqcast Export Runner"
+msgstr "Parqcast exportuitvoerder"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__run_uuid
+msgid "Run UUID"
+msgstr "Uitvoerings-UUID"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_id
+msgid "Company ID"
+msgstr "Bedrijfs-ID"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_name
+msgid "Company"
+msgstr "Bedrijf"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__collector_count
+msgid "Collectors"
+msgstr "Verzamelaars"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__manifest_json
+msgid "Manifest"
+msgstr "Manifest"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__error_message
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__error_message
+msgid "Error"
+msgstr "Fout"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__started_at
+msgid "Started"
+msgstr "Gestart"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__finished_at
+msgid "Finished"
+msgstr "Voltooid"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__duration_seconds
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__duration_seconds
+msgid "Duration (s)"
+msgstr "Duur (s)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__chunk_ids
+msgid "Chunks"
+msgstr "Delen"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__attachment_count
+msgid "Attachments"
+msgstr "Bijlagen"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Pending"
+msgstr "In afwachting"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Collecting"
+msgstr "Verzamelen"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Uploading"
+msgstr "Uploaden"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Done"
+msgstr "Gereed"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Error"
+msgstr "Fout"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__row_count
+msgid "Rows"
+msgstr "Rijen"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__byte_count
+msgid "Bytes"
+msgstr "Bytes"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Created"
+msgstr "Aangemaakt"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Uploaded"
+msgstr "Geüpload"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Transport"
+msgstr "Transport"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_local_path
+msgid "Local Export Path"
+msgstr "Lokaal exportpad"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_server_url
+msgid "Server URL"
+msgstr "Server-URL"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_api_key
+msgid "API Key"
+msgstr "API-sleutel"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_namespace
+msgid "Namespace"
+msgstr "Naamruimte"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_access_key_id
+msgid "AWS Access Key ID"
+msgstr "AWS toegangssleutel-ID"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_secret_access_key
+msgid "AWS Secret Access Key"
+msgstr "AWS geheime toegangssleutel"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_region
+msgid "AWS Region"
+msgstr "AWS-regio"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_bucket
+msgid "S3 Bucket"
+msgstr "S3-bucket"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_prefix
+msgid "S3 Prefix"
+msgstr "S3-prefix"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
+msgid "S3 Endpoint URL"
+msgstr "S3 eindpunt-URL"
+
+#. module: parqcast
+#: model:ir.model.fields,help:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
+msgid "For S3-compatible stores (MinIO, LocalStack). Leave empty for AWS."
+msgstr "Voor S3-compatibele opslagdiensten (MinIO, LocalStack). Laat leeg voor AWS."
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cleanup_days
+msgid "Cleanup After (days)"
+msgstr "Opruimen na (dagen)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_time_budget
+msgid "Time Budget (seconds)"
+msgstr "Tijdsbudget (seconden)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_company_id
+msgid "Export Company"
+msgstr "Exportbedrijf"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cron_active
+msgid "Enable Scheduled Export"
+msgstr "Geplande export inschakelen"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Schedule"
+msgstr "Planning"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Odoo Attachments"
+msgstr "Odoo-bijlagen"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Local Filesystem"
+msgstr "Lokaal bestandssysteem"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "HTTP Server"
+msgstr "HTTP-server"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "AWS S3"
+msgstr "AWS S3"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Once daily (midnight UTC)"
+msgstr "Eenmaal per dag (middernacht UTC)"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Continuous (every 5 minutes)"
+msgstr "Continu (elke 5 minuten)"
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_settings.py:0
+#: code:addons/parqcast/models/parqcast_run.py:0
+#, python-format
+msgid "Parqcast"
+msgstr "Parqcast"
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_settings.py:0
+#, python-format
+msgid "Export tick completed. Check Export Runs for results."
+msgstr "Exportcyclus voltooid. Controleer Exportuitvoeringen voor resultaten."
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_run.py:0
+#, python-format
+msgid "No attachment files found for this export run."
+msgstr "Geen bijlagebestanden gevonden voor deze exportuitvoering."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Cancel Run"
+msgstr "Uitvoering annuleren"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Purge Blob Data"
+msgstr "Blob-gegevens wissen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Download ZIP"
+msgstr "ZIP downloaden"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "This will cancel the export run and delete pending chunks. Continue?"
+msgstr "Dit annuleert de exportuitvoering en verwijdert wachtende delen. Doorgaan?"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "This will delete chunk data from the database to free space. The exported files are unaffected. Continue?"
+msgstr "Dit verwijdert deelgegevens uit de database om ruimte vrij te maken. De geëxporteerde bestanden worden niet beïnvloed. Doorgaan?"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Chunks"
+msgstr "Delen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Manifest"
+msgstr "Manifest"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Export Schedule"
+msgstr "Exportplanning"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Enable Scheduled Export"
+msgstr "Geplande export inschakelen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run the export pipeline automatically on a schedule."
+msgstr "Voer de exportpipeline automatisch uit volgens planning."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Manual Export"
+msgstr "Handmatige export"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run one export tick immediately with the current settings."
+msgstr "Voer één exportcyclus onmiddellijk uit met de huidige instellingen."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run Export Now"
+msgstr "Export nu uitvoeren"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "General"
+msgstr "Algemeen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Export Company"
+msgstr "Exportbedrijf"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Company whose data will be exported. Defaults to your current company."
+msgstr "Bedrijf waarvan de gegevens worden geëxporteerd. Standaard uw huidige bedrijf."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Time Budget"
+msgstr "Tijdsbudget"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Maximum seconds per cron tick. The orchestrator pauses and resumes on the next tick."
+msgstr "Maximale seconden per cron-cyclus. De orchestrator pauzeert en hervat bij de volgende cyclus."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Cleanup After"
+msgstr "Opruimen na"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Automatically delete completed export runs older than this many days."
+msgstr "Voltooide exportuitvoeringen ouder dan dit aantal dagen automatisch verwijderen."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Transport"
+msgstr "Transport"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Transport Type"
+msgstr "Transporttype"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Where to send the exported Parquet files"
+msgstr "Waar de geëxporteerde Parquet-bestanden naartoe worden gestuurd"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Odoo Attachments"
+msgstr "Odoo-bijlagen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Exported files are stored as Odoo attachments on the export run record. Foreqcast reads them directly — no filesystem paths needed."
+msgstr "Geëxporteerde bestanden worden opgeslagen als Odoo-bijlagen op het exportuitvoeringsrecord. Foreqcast leest ze rechtstreeks — geen bestandssysteempaden nodig."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Parquet files are stored in Odoo's attachment store. Download them from the Export Runs view, or let Foreqcast read them directly."
+msgstr "Parquet-bestanden worden opgeslagen in Odoo's bijlageopslag. Download ze vanuit de Exportuitvoeringen-weergave, of laat Foreqcast ze rechtstreeks lezen."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Local Path"
+msgstr "Lokaal pad"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Directory on the server filesystem"
+msgstr "Map op het serverbestandssysteem"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "HTTP Server"
+msgstr "HTTP-server"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Upload raw Parquet files to a parqcast-server instance"
+msgstr "Upload ruwe Parquet-bestanden naar een parqcast-server-instantie"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "AWS S3"
+msgstr "AWS S3"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
+msgstr "Upload naar S3 of S3-compatibele opslag (MinIO, LocalStack)"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Leave Endpoint URL empty for real AWS S3."
+msgstr "Laat de eindpunt-URL leeg voor echte AWS S3."
+
+#. module: parqcast
+#: model:ir.actions.act_window,name:parqcast.action_parqcast_run
+msgid "Export Runs"
+msgstr "Exportuitvoeringen"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_tree
+msgid "UUID"
+msgstr "UUID"
+
+#. module: parqcast
+#: model:ir.ui.menu,name:parqcast.menu_parqcast_root
+msgid "Parqcast"
+msgstr "Parqcast"
+
+#. module: parqcast
+#: model:ir.ui.menu,name:parqcast.menu_parqcast_runs
+msgid "Export Runs"
+msgstr "Exportuitvoeringen"
