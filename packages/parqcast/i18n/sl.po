@@ -1,0 +1,456 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * parqcast
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-16 00:00+0000\n"
+"PO-Revision-Date: 2026-04-16 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Slovenian\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_run
+msgid "Parqcast Export Run"
+msgstr "Parqcast izvozni zagon"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_chunk
+msgid "Parqcast Export Chunk"
+msgstr "Parqcast izvozni del"
+
+#. module: parqcast
+#: model:ir.model,name:parqcast.model_parqcast_cron
+msgid "Parqcast Export Runner"
+msgstr "Parqcast izvozni poganjač"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__run_uuid
+msgid "Run UUID"
+msgstr "UUID zagona"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_id
+msgid "Company ID"
+msgstr "ID podjetja"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_name
+msgid "Company"
+msgstr "Podjetje"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__collector_count
+msgid "Collectors"
+msgstr "Zbiralci"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__manifest_json
+msgid "Manifest"
+msgstr "Manifest"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__error_message
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__error_message
+msgid "Error"
+msgstr "Napaka"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__started_at
+msgid "Started"
+msgstr "Začeto"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__finished_at
+msgid "Finished"
+msgstr "Končano"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__duration_seconds
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__duration_seconds
+msgid "Duration (s)"
+msgstr "Trajanje (s)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__chunk_ids
+msgid "Chunks"
+msgstr "Deli"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__attachment_count
+msgid "Attachments"
+msgstr "Priloge"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Pending"
+msgstr "V čakanju"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Collecting"
+msgstr "Zbiranje"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Uploading"
+msgstr "Nalaganje"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+msgid "Done"
+msgstr "Končano"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Error"
+msgstr "Napaka"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__row_count
+msgid "Rows"
+msgstr "Vrstice"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__byte_count
+msgid "Bytes"
+msgstr "Bajti"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Created"
+msgstr "Ustvarjeno"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
+msgid "Uploaded"
+msgstr "Naloženo"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Transport"
+msgstr "Transport"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_local_path
+msgid "Local Export Path"
+msgstr "Lokalna izvozna pot"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_server_url
+msgid "Server URL"
+msgstr "URL strežnika"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_api_key
+msgid "API Key"
+msgstr "API-ključ"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_namespace
+msgid "Namespace"
+msgstr "Imenski prostor"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_access_key_id
+msgid "AWS Access Key ID"
+msgstr "ID dostopnega ključa AWS"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_secret_access_key
+msgid "AWS Secret Access Key"
+msgstr "Tajni dostopni ključ AWS"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_region
+msgid "AWS Region"
+msgstr "Regija AWS"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_bucket
+msgid "S3 Bucket"
+msgstr "S3 vedro"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_prefix
+msgid "S3 Prefix"
+msgstr "S3 predpona"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
+msgid "S3 Endpoint URL"
+msgstr "URL končne točke S3"
+
+#. module: parqcast
+#: model:ir.model.fields,help:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
+msgid "For S3-compatible stores (MinIO, LocalStack). Leave empty for AWS."
+msgstr "Za S3-združljiva skladišča (MinIO, LocalStack). Pustite prazno za AWS."
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cleanup_days
+msgid "Cleanup After (days)"
+msgstr "Čiščenje po (dneh)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_time_budget
+msgid "Time Budget (seconds)"
+msgstr "Časovni proračun (sekund)"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_company_id
+msgid "Export Company"
+msgstr "Izvozno podjetje"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cron_active
+msgid "Enable Scheduled Export"
+msgstr "Omogoči načrtovan izvoz"
+
+#. module: parqcast
+#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Schedule"
+msgstr "Razpored"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Odoo Attachments"
+msgstr "Odoo priloge"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "Local Filesystem"
+msgstr "Lokalni datotečni sistem"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "HTTP Server"
+msgstr "HTTP strežnik"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+msgid "AWS S3"
+msgstr "AWS S3"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Once daily (midnight UTC)"
+msgstr "Enkrat dnevno (polnoč UTC)"
+
+#. module: parqcast
+#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
+msgid "Continuous (every 5 minutes)"
+msgstr "Neprekinjeno (vsakih 5 minut)"
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_settings.py:0
+#: code:addons/parqcast/models/parqcast_run.py:0
+#, python-format
+msgid "Parqcast"
+msgstr "Parqcast"
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_settings.py:0
+#, python-format
+msgid "Export tick completed. Check Export Runs for results."
+msgstr "Izvozni cikel zaključen. Preverite rezultate v Izvoznih zagonih."
+
+#. module: parqcast
+#: code:addons/parqcast/models/parqcast_run.py:0
+#, python-format
+msgid "No attachment files found for this export run."
+msgstr "Za ta izvozni zagon ni bilo najdenih prilog."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Cancel Run"
+msgstr "Prekliči zagon"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Purge Blob Data"
+msgstr "Izbriši blob podatke"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Download ZIP"
+msgstr "Prenesi ZIP"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "This will cancel the export run and delete pending chunks. Continue?"
+msgstr "To bo preklicalo izvozni zagon in izbrisalo čakajoče dele. Nadaljujem?"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "This will delete chunk data from the database to free space. The exported files are unaffected. Continue?"
+msgstr "To bo izbrisalo podatke delov iz baze podatkov za sprostitev prostora. Izvožene datoteke niso prizadete. Nadaljujem?"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Chunks"
+msgstr "Deli"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+msgid "Manifest"
+msgstr "Manifest"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Export Schedule"
+msgstr "Izvozni razpored"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Enable Scheduled Export"
+msgstr "Omogoči načrtovan izvoz"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run the export pipeline automatically on a schedule."
+msgstr "Samodejno zaženite izvozni cevovod po razporedu."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Manual Export"
+msgstr "Ročni izvoz"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run one export tick immediately with the current settings."
+msgstr "Zaženite en izvozni cikel takoj s trenutnimi nastavitvami."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Run Export Now"
+msgstr "Zaženi izvoz zdaj"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "General"
+msgstr "Splošno"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Export Company"
+msgstr "Izvozno podjetje"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Company whose data will be exported. Defaults to your current company."
+msgstr "Podjetje, katerega podatki bodo izvoženi. Privzeto vaše trenutno podjetje."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Time Budget"
+msgstr "Časovni proračun"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Maximum seconds per cron tick. The orchestrator pauses and resumes on the next tick."
+msgstr "Največje število sekund na cron cikel. Orkestrater zaustavi in nadaljuje ob naslednjem ciklu."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Cleanup After"
+msgstr "Čiščenje po"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Automatically delete completed export runs older than this many days."
+msgstr "Samodejno izbriši zaključene izvozne zagone, starejše od tega števila dni."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Transport"
+msgstr "Transport"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Transport Type"
+msgstr "Vrsta transporta"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Where to send the exported Parquet files"
+msgstr "Kam poslati izvožene datoteke Parquet"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Odoo Attachments"
+msgstr "Odoo priloge"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Exported files are stored as Odoo attachments on the export run record. Foreqcast reads them directly — no filesystem paths needed."
+msgstr "Izvožene datoteke so shranjene kot Odoo priloge na zapisu izvoznega zagona. Foreqcast jih bere neposredno — poti datotečnega sistema niso potrebne."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Parquet files are stored in Odoo's attachment store. Download them from the Export Runs view, or let Foreqcast read them directly."
+msgstr "Datoteke Parquet so shranjene v Odoo skladišču prilog. Prenesite jih iz pogleda Izvozni zagoni ali pustite, da jih Foreqcast prebere neposredno."
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Local Path"
+msgstr "Lokalna pot"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Directory on the server filesystem"
+msgstr "Mapa na datotečnem sistemu strežnika"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "HTTP Server"
+msgstr "HTTP strežnik"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Upload raw Parquet files to a parqcast-server instance"
+msgstr "Naložite neobdelane datoteke Parquet na instanco parqcast-strežnika"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "AWS S3"
+msgstr "AWS S3"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
+msgstr "Naložite na S3 ali S3-združljivo skladišče (MinIO, LocalStack)"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+msgid "Leave Endpoint URL empty for real AWS S3."
+msgstr "Pustite URL končne točke prazen za pravi AWS S3."
+
+#. module: parqcast
+#: model:ir.actions.act_window,name:parqcast.action_parqcast_run
+msgid "Export Runs"
+msgstr "Izvozni zagoni"
+
+#. module: parqcast
+#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_tree
+msgid "UUID"
+msgstr "UUID"
+
+#. module: parqcast
+#: model:ir.ui.menu,name:parqcast.menu_parqcast_root
+msgid "Parqcast"
+msgstr "Parqcast"
+
+#. module: parqcast
+#: model:ir.ui.menu,name:parqcast.menu_parqcast_runs
+msgid "Export Runs"
+msgstr "Izvozni zagoni"

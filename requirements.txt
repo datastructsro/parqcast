@@ -1,0 +1,6 @@
+# Odoo.sh auto-installs from this file on deploy.
+# These are the Python packages the parqcast addon needs.
+pyarrow>=23.0.1
+-e packages/parqcast-core
+-e packages/parqcast-collectors
+-e packages/parqcast-ingesters

@@ -1,0 +1,88 @@
+[project]
+name = "parqcast-workspace"
+version = "0.1.0"
+description = "Zero-computation data pipe between Odoo and cloud planning engines"
+readme = "README.md"
+authors = [
+    { name = "DataStruct s.r.o.", email = "info@datastruct.tech" }
+]
+requires-python = "==3.12.3"
+
+[tool.uv.workspace]
+members = [
+    "packages/parqcast-core",
+    "packages/parqcast-collectors",
+    "packages/parqcast-ingesters",
+    "packages/parqcast-transport-http",
+]
+
+[tool.uv.sources]
+parqcast-core = { workspace = true }
+parqcast-collectors = { workspace = true }
+parqcast-ingesters = { workspace = true }
+parqcast-transport-http = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "parqcast-core",
+    "parqcast-collectors",
+    "parqcast-ingesters",
+    "parqcast-transport-http",
+    "psycopg2-binary>=2.9.11",
+    "pytest>=9.0.3",
+    "ruff>=0.15.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# --- Ruff configuration ---
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+    "RUF",    # ruff-specific rules
+    "C4",     # flake8-comprehensions
+    "PIE",    # flake8-pie
+    "PT",     # flake8-pytest-style
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "FLY",    # flynt (f-string conversion)
+    "PERF",   # perflint
+    "FURB",   # refurb
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "N802",   # function name should be lowercase (SQL method names)
+    "N803",   # argument name should be lowercase
+    "N806",   # variable in function should be lowercase (SQL vars)
+    "RUF012", # mutable class default (used intentionally in collectors)
+    "B008",   # do not perform function calls in argument defaults
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Odoo __init__.py re-exports submodules; __manifest__.py is a bare dict literal
+"packages/parqcast/**/__init__.py" = ["F401"]
+"packages/parqcast/__manifest__.py" = ["B018"]
+# Odoo tests must use unittest-style asserts (self.assertEqual), not bare assert
+"packages/parqcast/tests/**" = ["PT009"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["parqcast"]
+known-third-party = ["odoo"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="default_transport_type" model="ir.config_parameter">
+        <field name="key">parqcast.transport_type</field>
+        <field name="value">attachment</field>
+    </record>
+    <record id="default_local_path" model="ir.config_parameter">
+        <field name="key">parqcast.local_path</field>
+        <field name="value">/tmp/parqcast_export</field>
+    </record>
+    <record id="default_time_budget" model="ir.config_parameter">
+        <field name="key">parqcast.time_budget</field>
+        <field name="value">270</field>
+    </record>
+    <record id="default_namespace" model="ir.config_parameter">
+        <field name="key">parqcast.namespace</field>
+        <field name="value">parqcast</field>
+    </record>
+</odoo>

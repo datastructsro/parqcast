@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_parqcast_cron,parqcast.cron,model_parqcast_cron,base.group_system,1,1,1,0
+access_parqcast_run,parqcast.run,model_parqcast_run,base.group_system,1,1,0,0
+access_parqcast_chunk,parqcast.chunk,model_parqcast_chunk,base.group_system,1,0,0,0
