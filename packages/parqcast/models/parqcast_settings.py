@@ -1,6 +1,8 @@
 # Copyright 2025 DataStruct s.r.o.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
+from typing import Any
+
 from odoo import api, fields, models
 
 
@@ -86,7 +88,7 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="parqcast.schedule_mode",
     )
 
-    def set_values(self):
+    def set_values(self) -> Any:
         res = super().set_values()
         self.env["ir.config_parameter"].sudo().set_param("parqcast.company_id", str(self.parqcast_company_id.id or 0))
         cron = self.env.ref("parqcast.ir_cron_parqcast_export", raise_if_not_found=False)
@@ -102,7 +104,7 @@ class ResConfigSettings(models.TransientModel):
         return res
 
     @api.model
-    def get_values(self):
+    def get_values(self) -> dict[str, Any]:
         res = super().get_values()
         cid = int(self.env["ir.config_parameter"].sudo().get_param("parqcast.company_id", "0"))
         res["parqcast_company_id"] = cid or False

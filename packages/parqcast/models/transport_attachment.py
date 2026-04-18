@@ -11,6 +11,7 @@ and foreqcast reads them directly.
 
 import base64
 import logging
+from typing import Any, BinaryIO
 
 from parqcast.transport.base import BaseTransport
 
@@ -20,21 +21,19 @@ _logger = logging.getLogger(__name__)
 class AttachmentTransport(BaseTransport):
     """Store exported parquet files as ir.attachment on the export run record."""
 
-    def __init__(self, env):
-        self._env = env
+    def __init__(self, env: Any) -> None:
+        self._env: Any = env
 
-    def _resolve_run_id(self, prefix):
-        """Extract run_uuid from prefix and find the run record ID."""
-        # Prefix is typically "outbound/{run_uuid}"
+    def _resolve_run_id(self, prefix: str) -> int:
         run_uuid = prefix.rsplit("/", 1)[-1]
         self._env.cr.execute(
             "SELECT id FROM parqcast_export_run WHERE run_uuid = %s",
             (run_uuid,),
         )
         row = self._env.cr.fetchone()
-        return row[0] if row else False
+        return int(row[0]) if row else 0
 
-    def upload_file(self, prefix, filename, data):
+    def upload_file(self, prefix: str, filename: str, data: BinaryIO) -> None:
         run_id = self._resolve_run_id(prefix)
         content = data.read()
         self._env["ir.attachment"].sudo().create({
@@ -46,7 +45,7 @@ class AttachmentTransport(BaseTransport):
         })
         _logger.debug("Stored attachment %s for run %s (%d bytes)", filename, prefix, len(content))
 
-    def download_file(self, prefix, filename):
+    def download_file(self, prefix: str, filename: str) -> bytes:
         run_id = self._resolve_run_id(prefix)
         att = self._env["ir.attachment"].sudo().search([
             ("res_model", "=", "parqcast.run"),
@@ -57,7 +56,7 @@ class AttachmentTransport(BaseTransport):
             raise FileNotFoundError(f"Attachment not found: {filename} (run {prefix})")
         return base64.b64decode(att.datas)
 
-    def list_files(self, prefix):
+    def list_files(self, prefix: str) -> list[str]:
         run_id = self._resolve_run_id(prefix)
         atts = self._env["ir.attachment"].sudo().search([
             ("res_model", "=", "parqcast.run"),

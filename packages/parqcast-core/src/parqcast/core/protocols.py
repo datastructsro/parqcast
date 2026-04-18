@@ -86,9 +86,22 @@ class ReadCursor(Protocol):
 
 @runtime_checkable
 class Connection(Protocol):
-    """Raw psycopg2-like connection for streaming and transaction control."""
+    """Raw psycopg2-like connection for streaming and transaction control.
 
-    autocommit: bool
+    ``autocommit`` is declared via property getter/setter rather than a bare
+    ``autocommit: bool`` because adapters that wrap a psycopg2 connection
+    (notably ``parqcast.models.env_adapter._OdooConnection``) need to forward
+    the read/write through ``@property``. Pyright treats a bare attribute
+    annotation as invariant, which would reject those forwarding wrappers.
+    The property form matches both wrappers and bare-attribute classes
+    (psycopg2's own connection has ``autocommit`` as a plain attribute,
+    which still structurally satisfies the property).
+    """
+
+    @property
+    def autocommit(self) -> bool: ...
+    @autocommit.setter
+    def autocommit(self, value: bool) -> None: ...
 
     def cursor(self, name: str | None = None) -> ReadCursor: ...
     def commit(self) -> None: ...

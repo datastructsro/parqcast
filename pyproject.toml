@@ -50,6 +50,7 @@ include = [
     "packages/parqcast-collectors/src",
     "packages/parqcast-ingesters/src",
     "packages/parqcast-transport-http/src",
+    "packages/parqcast",
 ]
 # Resolve cross-package imports inside the parqcast namespace directly
 # from each package's src/ rather than through the installed distribution.
@@ -60,11 +61,13 @@ extraPaths = [
     "packages/parqcast-ingesters/src",
     "packages/parqcast-transport-http/src",
 ]
-# Only one global suppression remains: the `odoo` module can't be resolved
-# because it's not a pip package. Every other strict-mode rule is enforced
-# across the workspace; localised exceptions live in the
-# ``executionEnvironments`` block below.
-reportMissingImports = "none"
+# The `odoo` module's symbols are covered by the project-local stubs at
+# ``stubs/odoo-stubs/`` (see ``stubPath`` above). Odoo isn't pip-installable,
+# so pyright cannot find its source — silence that one warning category
+# here. Type information itself is fully resolved via the stub package.
+reportMissingModuleSource = "none"
+# Otherwise zero global suppressions. Localised exceptions for the dynamic
+# ORM boundary live in the ``executionEnvironments`` block below.
 
 # The ingester layer talks to Odoo's ORM, whose records expose fields via
 # runtime ``__getattr__``. Our OdooRecord Protocol types that as ``Any``,
@@ -76,6 +79,17 @@ reportMissingImports = "none"
 # enforces them.
 [[tool.pyright.executionEnvironments]]
 root = "packages/parqcast-ingesters/src/parqcast/ingesters/v19"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+
+# Same rationale for the Odoo addon: it inherits Odoo Models and works
+# through self.env's dynamic ORM. The stubs at ``stubs/odoo-stubs/``
+# return Any from BaseModel methods to avoid most Unknown-* propagation,
+# but iteration over recordsets and chained ORM calls still surface as
+# Unknown. Suppress the same three rules here.
+[[tool.pyright.executionEnvironments]]
+root = "packages/parqcast"
 reportUnknownMemberType = "none"
 reportUnknownVariableType = "none"
 reportUnknownArgumentType = "none"

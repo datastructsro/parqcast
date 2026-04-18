@@ -6,6 +6,8 @@ import traceback
 
 from odoo import api, models
 
+from parqcast.transport.base import BaseTransport
+
 _logger = logging.getLogger(__name__)
 
 
@@ -14,7 +16,7 @@ class ParqcastCron(models.AbstractModel):
     _description = "Parqcast Export Runner"
 
     @api.model
-    def _create_transport(self):
+    def _create_transport(self) -> BaseTransport:
         """Create the configured transport instance."""
         ICP = self.env["ir.config_parameter"].sudo()
         transport_type = ICP.get_param("parqcast.transport_type", "local")
@@ -37,7 +39,9 @@ class ParqcastCron(models.AbstractModel):
             )
 
         if transport_type == "s3":
-            from parqcast.transport_s3 import S3Transport
+            # Optional sibling package; not in the workspace, installed via pip
+            # at the deployment level. Pyright cannot resolve it from source.
+            from parqcast.transport_s3 import S3Transport  # pyright: ignore[reportMissingImports]
 
             return S3Transport(
                 bucket=ICP.get_param("parqcast.s3_bucket", ""),
