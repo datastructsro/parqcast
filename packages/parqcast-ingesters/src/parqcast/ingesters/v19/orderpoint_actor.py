@@ -1,5 +1,6 @@
 import pyarrow as pa
 
+from parqcast.core.protocols import OdooEnvironment
 from parqcast.core.version import V19
 
 from ..base import BaseIngester, IngestResult
@@ -8,7 +9,7 @@ from ..base import BaseIngester, IngestResult
 class OrderpointActorV19(BaseIngester[V19]):
     decision_type = "ORDERPOINT"
 
-    def apply(self, decisions: pa.Table, env) -> IngestResult:
+    def apply(self, decisions: pa.Table, env: OdooEnvironment) -> IngestResult:
         df = decisions.to_pydict()
         created = 0
         updated = 0
@@ -59,7 +60,7 @@ class OrderpointActorV19(BaseIngester[V19]):
 
         return IngestResult(created=created, updated=updated, errors=errors, messages=messages)
 
-    def cleanup_previous(self, env, company_id: int) -> int:
+    def cleanup_previous(self, env: OdooEnvironment, company_id: int) -> int:
         recs = env["stock.warehouse.orderpoint"].search(
             [
                 ("name", "=like", "Parqcast%"),

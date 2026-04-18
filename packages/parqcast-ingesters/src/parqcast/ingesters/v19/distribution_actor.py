@@ -1,5 +1,6 @@
 import pyarrow as pa
 
+from parqcast.core.protocols import OdooEnvironment
 from parqcast.core.version import V19
 
 from ..base import BaseIngester, IngestResult
@@ -8,7 +9,7 @@ from ..base import BaseIngester, IngestResult
 class DistributionActorV19(BaseIngester[V19]):
     decision_type = "DO"
 
-    def apply(self, decisions: pa.Table, env) -> IngestResult:
+    def apply(self, decisions: pa.Table, env: OdooEnvironment) -> IngestResult:
         df = decisions.to_pydict()
         created = 0
         pickings = {}
@@ -86,7 +87,7 @@ class DistributionActorV19(BaseIngester[V19]):
 
         return IngestResult(created=created)
 
-    def cleanup_previous(self, env, company_id: int) -> int:
+    def cleanup_previous(self, env: OdooEnvironment, company_id: int) -> int:
         recs = env["stock.picking"].search(
             [
                 ("origin", "=like", "Parqcast%"),

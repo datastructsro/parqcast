@@ -1,5 +1,6 @@
 import pyarrow as pa
 
+from parqcast.core.protocols import OdooEnvironment
 from parqcast.core.version import V19
 
 from ..base import BaseIngester, IngestResult
@@ -8,7 +9,7 @@ from ..base import BaseIngester, IngestResult
 class RescheduleActorV19(BaseIngester[V19]):
     decision_type = "RESCHEDULE"
 
-    def apply(self, decisions: pa.Table, env) -> IngestResult:
+    def apply(self, decisions: pa.Table, env: OdooEnvironment) -> IngestResult:
         df = decisions.to_pydict()
         updated = 0
         errors = 0
@@ -38,5 +39,5 @@ class RescheduleActorV19(BaseIngester[V19]):
 
         return IngestResult(updated=updated, errors=errors)
 
-    def cleanup_previous(self, env, company_id: int) -> int:
+    def cleanup_previous(self, env: OdooEnvironment, company_id: int) -> int:
         return 0

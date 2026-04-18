@@ -16,7 +16,7 @@ Three protocols, from narrowest to widest:
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import NotRequired, Protocol, TypeAlias, TypedDict, runtime_checkable
+from typing import Any, NotRequired, Protocol, TypeAlias, TypedDict, runtime_checkable
 
 # ---------------------------------------------------------------------------
 # Named type aliases shared across the workspace.
@@ -106,3 +106,66 @@ class DatabaseEnv(Protocol):
 
     cr: ReadCursor
     conn: Connection
+
+
+# ---------------------------------------------------------------------------
+# Odoo ORM surface — structural Protocols for what ingesters actually call.
+# ---------------------------------------------------------------------------
+#
+# These Protocols do NOT model the full Odoo ORM. They capture only the
+# methods and attributes parqcast's ingesters touch. Attribute access goes
+# through ``__getattr__`` returning ``Any`` because Odoo resolves fields
+# dynamically at runtime — pyright can't infer e.g. ``po.currency_id.id``
+# without loading Odoo's actual models, which aren't pip-installable.
+#
+# Pragmatically, this gives us:
+#   - compile-time checking of .create / .search / .browse / .write / .unlink
+#     arities (the methods we explicitly declare),
+#   - permissive field access (via __getattr__) at the boundary where we
+#     cannot do better.
+
+
+class OdooRecord(Protocol):
+    """An Odoo record or recordset.
+
+    Models the subset of ``BaseModel`` we call. ``__getattr__`` makes
+    arbitrary field access permissive (typed as ``Any``) because Odoo
+    resolves fields dynamically and parqcast can't enumerate them.
+    """
+
+    id: int
+
+    def write(self, vals: Mapping[str, object]) -> bool: ...
+    def unlink(self) -> bool: ...
+    def __bool__(self) -> bool: ...
+    def __len__(self) -> int: ...
+    def __getattr__(self, name: str) -> Any: ...
+    def __setattr__(self, name: str, value: Any) -> None: ...
+
+
+class OdooModel(Protocol):
+    """An Odoo model accessor — what ``env["<model>"]`` returns."""
+
+    def create(
+        self, vals: Mapping[str, object] | list[Mapping[str, object]]
+    ) -> OdooRecord: ...
+    def search(
+        self,
+        domain: Sequence[object],
+        *,
+        limit: int = 0,
+        order: str = "",
+    ) -> OdooRecord: ...
+    def browse(self, ids: int | Sequence[int]) -> OdooRecord: ...
+
+
+class OdooEnvironment(Protocol):
+    """The minimal Odoo ``env`` surface used by parqcast's ingesters.
+
+    Satisfied by Odoo's own ``odoo.api.Environment`` at runtime. Tests that
+    exercise ingester logic can supply a stub implementing the same shape.
+    """
+
+    company: OdooRecord
+
+    def __getitem__(self, model_name: str) -> OdooModel: ...

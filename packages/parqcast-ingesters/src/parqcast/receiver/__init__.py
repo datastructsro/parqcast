@@ -5,14 +5,14 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 from parqcast.core.manifest import validate_manifest
-from parqcast.core.protocols import JsonDict
+from parqcast.core.protocols import JsonDict, OdooEnvironment
 from parqcast.ingesters import ALL_INGESTERS
 from parqcast.ingesters.base import IngestResult
 from parqcast.transport.base import BaseTransport
 
 
 class Receiver:
-    def __init__(self, env, transport: BaseTransport, company_id: int):
+    def __init__(self, env: OdooEnvironment, transport: BaseTransport, company_id: int) -> None:
         self.env = env
         self.transport = transport
         self.company_id = company_id
