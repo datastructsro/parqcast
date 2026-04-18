@@ -19,6 +19,8 @@ from .mrp_bom import (
 from .mrp_production import MrpProductionCollectorV19
 from .mrp_workorder import MrpWorkorderCollectorV19
 from .orderpoint import OrderpointCollectorV19
+from .pos_order import PosOrderCollectorV19, PosOrderLineCollectorV19
+from .pos_session import PosSessionCollectorV19
 from .pricelist import PricelistCollectorV19, PricelistItemCollectorV19
 from .product import ProductCollectorV19
 from .product_removal import ProductRemovalCollectorV19
@@ -79,6 +81,9 @@ append_to_bundle(
         BomByproductCollectorV19,
         MrpProductionCollectorV19,
         MrpWorkorderCollectorV19,
+        PosSessionCollectorV19,
+        PosOrderCollectorV19,
+        PosOrderLineCollectorV19,
     ),
 )
 
@@ -90,6 +95,9 @@ __all__ = [
     "MrpProductionCollectorV19",
     "MrpWorkorderCollectorV19",
     "OrderpointCollectorV19",
+    "PosOrderCollectorV19",
+    "PosOrderLineCollectorV19",
+    "PosSessionCollectorV19",
     "PricelistCollectorV19",
     "PricelistItemCollectorV19",
     "ProductCollectorV19",

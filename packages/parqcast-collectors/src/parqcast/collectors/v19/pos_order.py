@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import POS_ORDER_LINE_SCHEMA, POS_ORDER_SCHEMA
 
-from .base import PosCollector
+from ..base import PosCollector
 
 
-class PosOrderCollector(PosCollector):
+class PosOrderCollectorV19(PosCollector[V19]):
     name = "pos_order"
     schema = POS_ORDER_SCHEMA
     depends_on = ["partner"]
@@ -25,7 +26,7 @@ class PosOrderCollector(PosCollector):
         )
 
 
-class PosOrderLineCollector(PosCollector):
+class PosOrderLineCollectorV19(PosCollector[V19]):
     name = "pos_order_line"
     schema = POS_ORDER_LINE_SCHEMA
     depends_on = ["pos_order", "product"]

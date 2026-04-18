@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import POS_SESSION_SCHEMA
 
-from .base import PosCollector
+from ..base import PosCollector
 
 
-class PosSessionCollector(PosCollector):
+class PosSessionCollectorV19(PosCollector[V19]):
     name = "pos_session"
     schema = POS_SESSION_SCHEMA
     required_tables = {"pos_session"}

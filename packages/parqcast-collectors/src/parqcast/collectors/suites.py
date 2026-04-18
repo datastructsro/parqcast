@@ -25,8 +25,6 @@ from .country import CountryCollector
 from .currency import CurrencyCollector
 from .mps import MpsForecastCollector, MpsScheduleCollector
 from .partner import PartnerCollector
-from .pos_order import PosOrderCollector, PosOrderLineCollector
-from .pos_session import PosSessionCollector
 from .product_category import ProductCategoryCollector
 from .quality import QualityCheckCollector, QualityPointCollector
 from .v19 import (
@@ -37,6 +35,9 @@ from .v19 import (
     MrpProductionCollectorV19,
     MrpWorkorderCollectorV19,
     OrderpointCollectorV19,
+    PosOrderCollectorV19,
+    PosOrderLineCollectorV19,
+    PosSessionCollectorV19,
     PricelistCollectorV19,
     PricelistItemCollectorV19,
     ProductCollectorV19,
@@ -178,9 +179,9 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "pos",
         frozenset({"point_of_sale"}),
         (
-            PosSessionCollector,
-            PosOrderCollector,
-            PosOrderLineCollector,
+            PosSessionCollectorV19,
+            PosOrderCollectorV19,
+            PosOrderLineCollectorV19,
         ),
     ),
     CollectorSuite(
