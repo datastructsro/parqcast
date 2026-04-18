@@ -49,7 +49,7 @@ class Receiver:
 
             table = pq.read_table(decisions_path)
             type_col = table.column("decision_type").to_pylist()
-            unique_types = set(type_col)
+            unique_types: set[str] = {t for t in type_col if isinstance(t, str)}
 
             for dtype in unique_types:
                 ingester_cls = ALL_INGESTERS.get(dtype)

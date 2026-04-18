@@ -29,9 +29,11 @@ dev = [
     "parqcast-ingesters",
     "parqcast-transport-http",
     "psycopg2-binary>=2.9.11",
+    "pyarrow-stubs>=20.0.0.20250716",
     "pyright>=1.1.408",
     "pytest>=9.0.3",
     "ruff>=0.15.10",
+    "types-psycopg2>=2.9.21",
 ]
 
 [tool.pytest.ini_options]

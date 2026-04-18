@@ -111,9 +111,11 @@ dev = [
     { name = "parqcast-ingesters" },
     { name = "parqcast-transport-http" },
     { name = "psycopg2-binary" },
+    { name = "pyarrow-stubs" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "types-psycopg2" },
 ]
 
 [package.metadata]
@@ -125,9 +127,11 @@ dev = [
     { name = "parqcast-ingesters", editable = "packages/parqcast-ingesters" },
     { name = "parqcast-transport-http", editable = "packages/parqcast-transport-http" },
     { name = "psycopg2-binary", specifier = ">=2.9.11" },
+    { name = "pyarrow-stubs", specifier = ">=20.0.0.20250716" },
     { name = "pyright", specifier = ">=1.1.408" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "ruff", specifier = ">=0.15.10" },
+    { name = "types-psycopg2", specifier = ">=2.9.21" },
 ]
 
 [[package]]
@@ -171,6 +175,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/5b/3c/b7d2ebcff47a514f47f9da1e74b7949138c58cfeb108cdd4ee62f43f0cf3/pyarrow-23.0.1-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:bf5842f960cddd2ef757d486041d57c96483efc295a8c4a0e20e704cbbf39c67", size = 48173045, upload-time = "2026-02-16T10:10:25.363Z" },
     { url = "https://files.pythonhosted.org/packages/43/b2/b40961262213beaba6acfc88698eb773dfce32ecdf34d19291db94c2bd73/pyarrow-23.0.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:564baf97c858ecc03ec01a41062e8f4698abc3e6e2acd79c01c2e97880a19730", size = 50621741, upload-time = "2026-02-16T10:10:33.477Z" },
     { url = "https://files.pythonhosted.org/packages/f6/70/1fdda42d65b28b078e93d75d371b2185a61da89dda4def8ba6ba41ebdeb4/pyarrow-23.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:07deae7783782ac7250989a7b2ecde9b3c343a643f82e8a4df03d93b633006f0", size = 27620678, upload-time = "2026-02-16T10:10:39.31Z" },
+]
+
+[[package]]
+name = "pyarrow-stubs"
+version = "20.0.0.20251215"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyarrow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/30/16/ca991ada0416dc02c246e4b3c853f35053676eb704c63720ef24547d2d68/pyarrow_stubs-20.0.0.20251215.tar.gz", hash = "sha256:92c1fda4998f0c13e608d8abc7e4b8537e3ef108f6bf42c58e5af97e7d143e75", size = 236578, upload-time = "2025-12-15T06:47:46.187Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/7c/a467f91c6c3aa4c34d5a1dafca9ae4db01b757877577d6b0ae04908a0180/pyarrow_stubs-20.0.0.20251215-py3-none-any.whl", hash = "sha256:0634e70388cd23e7c78e2abbb1989822edc34df2d2ff4fd50a2316dd0cdafd9f", size = 235697, upload-time = "2025-12-15T06:47:44.643Z" },
 ]
 
 [[package]]
@@ -234,6 +250,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e4/46/602938f030adfa043e67112b73821024dc79f3ab4df5474c25fa4c1d2d14/ruff-0.15.10-py3-none-win32.whl", hash = "sha256:d4272e87e801e9a27a2e8df7b21011c909d9ddd82f4f3281d269b6ba19789ca5", size = 10588964, upload-time = "2026-04-09T14:06:07.14Z" },
     { url = "https://files.pythonhosted.org/packages/25/b6/261225b875d7a13b33a6d02508c39c28450b2041bb01d0f7f1a83d569512/ruff-0.15.10-py3-none-win_amd64.whl", hash = "sha256:28cb32d53203242d403d819fd6983152489b12e4a3ae44993543d6fe62ab42ed", size = 11745044, upload-time = "2026-04-09T14:05:39.473Z" },
     { url = "https://files.pythonhosted.org/packages/58/ed/dea90a65b7d9e69888890fb14c90d7f51bf0c1e82ad800aeb0160e4bacfd/ruff-0.15.10-py3-none-win_arm64.whl", hash = "sha256:601d1610a9e1f1c2165a4f561eeaa2e2ea1e97f3287c5aa258d3dab8b57c6188", size = 11035607, upload-time = "2026-04-09T14:05:47.593Z" },
+]
+
+[[package]]
+name = "types-psycopg2"
+version = "2.9.21.20260408"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/24/d8ae11a0c056535557aaabeb7d7838423abdfdcf1e5f8dfb2c04d316c65d/types_psycopg2-2.9.21.20260408.tar.gz", hash = "sha256:bb65cd12f53b6633077fd782607a33065e1f3bf585219c9f786b61ad2b72211c", size = 27078, upload-time = "2026-04-08T04:26:15.848Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/fe/9aab9239640107b6e46afddcee578a916b8b98bfee36e03da5b0d2c95124/types_psycopg2-2.9.21.20260408-py3-none-any.whl", hash = "sha256:49b086bfc9e0ce901c6537403ead1c19c75275571040b037af0248a8e48c322f", size = 24921, upload-time = "2026-04-08T04:26:14.715Z" },
 ]
 
 [[package]]
