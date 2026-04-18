@@ -59,12 +59,10 @@ extraPaths = [
     "packages/parqcast-ingesters/src",
     "packages/parqcast-transport-http/src",
 ]
-# Odoo is not pip-installable — the `odoo` module only exists inside a
-# running Odoo server. Rather than accept hundreds of "unknown type"
-# diagnostics from dynamically-typed code, we suppress those families
-# and let strict mode catch structural issues we can actually fix:
-# None-leaks, invalid type forms, cross-version generic mixing, unsafe
-# assignments.
+# Only one global suppression remains: the `odoo` module can't be resolved
+# because it's not a pip package. Every other strict-mode rule is enforced
+# across the workspace; localised exceptions live in the
+# ``executionEnvironments`` block below.
 reportMissingImports = "none"
 
 # The ingester layer talks to Odoo's ORM, whose records expose fields via
