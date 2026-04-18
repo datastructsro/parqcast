@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import COMPANY_SCHEMA
 from .base import CoreCollector
 
 
-class CompanyCollector(CoreCollector):
+class CompanyCollector[V](CoreCollector[V]):
     name = "company"
     schema = COMPANY_SCHEMA
 

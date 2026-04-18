@@ -72,7 +72,6 @@ reportUnknownArgumentType = "none"
 reportUnknownVariableType = "none"
 reportUnknownLambdaType = "none"
 reportMissingParameterType = "none"
-reportMissingTypeArgument = "none"
 
 # --- Ruff configuration ---
 

@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import COUNTRY_SCHEMA
 from .base import CoreCollector
 
 
-class CountryCollector(CoreCollector):
+class CountryCollector[V](CoreCollector[V]):
     name = "country"
     schema = COUNTRY_SCHEMA
     required_tables = {"res_country"}

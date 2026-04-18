@@ -5,6 +5,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 from parqcast.core.manifest import validate_manifest
+from parqcast.core.protocols import JsonDict
 from parqcast.ingesters import ALL_INGESTERS
 from parqcast.ingesters.base import IngestResult
 from parqcast.transport.base import BaseTransport
@@ -16,7 +17,7 @@ class Receiver:
         self.transport = transport
         self.company_id = company_id
 
-    def run(self, remote_prefix: str, cleanup: bool = True) -> dict:
+    def run(self, remote_prefix: str, cleanup: bool = True) -> JsonDict:
         results = {}
 
         # Download manifest

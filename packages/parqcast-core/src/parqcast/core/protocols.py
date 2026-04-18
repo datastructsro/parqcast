@@ -16,7 +16,7 @@ Three protocols, from narrowest to widest:
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Protocol, TypeAlias, runtime_checkable
+from typing import NotRequired, Protocol, TypeAlias, TypedDict, runtime_checkable
 
 # ---------------------------------------------------------------------------
 # Named type aliases shared across the workspace.
@@ -29,6 +29,43 @@ SqlWithParams: TypeAlias = tuple[str, SqlParams]
 """Return shape of ``BaseCollector.get_sql()``: a SQL string paired with
 bind-parameters (or None). Kept as a named alias so collector subclasses
 match the abstract signature verbatim."""
+
+JsonDict: TypeAlias = dict[str, object]
+"""A JSON-serializable dict payload.
+
+Used for manifests, capability summaries, chunk metadata, and anywhere
+else parqcast hands around shape-unconstrained record dicts that will
+eventually be serialised to JSON. Values are ``object`` rather than a
+nested JSON union because the consumers accept anything ``json.dumps``
+can handle (via ``default=str`` if needed)."""
+
+OdooRow: TypeAlias = tuple[object, ...]
+"""One row returned by a psycopg2/Odoo cursor's ``fetchone``/``fetchall``.
+
+Columns are positional; the tuple's arity depends on the SELECT clause."""
+
+
+class ChunkMetadata(TypedDict):
+    """Shape of the per-chunk metadata record.
+
+    Produced by :func:`BaseCollector.to_parquet` and
+    :func:`ExportChunk.get_metadata`; consumed by the orchestrator during
+    upload and by :func:`build_manifest` when it assembles the run's
+    manifest.json. Keeping this as a named TypedDict means the upload
+    path gets ``meta["file"]: str`` without an ad-hoc cast at the call
+    site.
+
+    ``duration_seconds`` is ``NotRequired`` because it is populated only
+    when the record comes from ``ExportChunk.get_metadata``;
+    ``BaseCollector.to_parquet`` does not include it.
+    """
+
+    file: str
+    rows: int
+    bytes: int
+    checksum: str
+    collector: str
+    duration_seconds: NotRequired[float]
 
 
 @runtime_checkable

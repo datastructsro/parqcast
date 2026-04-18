@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import CALENDAR_SCHEMA
 from .base import CoreCollector
 
 
-class CalendarCollector(CoreCollector):
+class CalendarCollector[V](CoreCollector[V]):
     """Odoo 19: no resource_id, no date_from/date_to on attendance. Has duration_days/hours."""
 
     name = "calendar"

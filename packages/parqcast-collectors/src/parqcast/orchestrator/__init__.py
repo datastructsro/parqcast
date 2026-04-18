@@ -26,6 +26,7 @@ import pyarrow.parquet as pq
 
 import parqcast.collectors  # pyright: ignore[reportUnusedImport]  # noqa: F401 — side-effect: registers v19 bundle
 from parqcast.collectors.base import BaseCollector
+from parqcast.core.protocols import JsonDict
 from parqcast.core.registry import REGISTRY, VersionBundle
 from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import (
@@ -41,7 +42,7 @@ from parqcast.transport.base import BaseTransport
 logger = logging.getLogger(__name__)
 
 
-def _resolve_bundle(cr) -> tuple[VersionBundle, Callable[..., Any]]:
+def _resolve_bundle(cr) -> tuple[VersionBundle[Any], Callable[..., Any]]:
     """Verify the DB's Odoo major is supported.
 
     Returns ``(bundle, probe)`` where ``probe`` is guaranteed non-None
@@ -57,9 +58,9 @@ def _resolve_bundle(cr) -> tuple[VersionBundle, Callable[..., Any]]:
     return bundle, bundle.probe_capabilities
 
 
-def _build_collectors(env, bundle: VersionBundle, caps) -> list[BaseCollector]:
+def _build_collectors(env, bundle: VersionBundle[Any], caps) -> list[BaseCollector[Any]]:
     """Suite-gated collector instantiation for this bundle."""
-    collectors: list[BaseCollector] = []
+    collectors: list[BaseCollector[Any]] = []
     skipped: list[str] = []
     for suite in bundle.suites:
         if not suite.is_available(caps):
@@ -77,12 +78,12 @@ def _build_collectors(env, bundle: VersionBundle, caps) -> list[BaseCollector]:
     return collectors
 
 
-def _resolve_order(collectors: list[BaseCollector]) -> list[BaseCollector]:
+def _resolve_order(collectors: list[BaseCollector[Any]]) -> list[BaseCollector[Any]]:
     """Topological sort respecting each collector's ``depends_on``."""
     by_name = {c.name: c for c in collectors}
     active_names = set(by_name.keys())
     visited: set[str] = set()
-    order: list[BaseCollector] = []
+    order: list[BaseCollector[Any]] = []
 
     def visit(name: str) -> None:
         if name in visited:
@@ -134,7 +135,7 @@ class Orchestrator:
     def _time_remaining(self, t0: float) -> float:
         return self.time_budget - (time.monotonic() - t0)
 
-    def run(self) -> dict:
+    def run(self) -> JsonDict:
         """Execute one phase of the export pipeline. Call repeatedly from cron."""
         t0 = time.monotonic()
         cr = self.env.cr
@@ -166,7 +167,7 @@ class Orchestrator:
     # Phase 1: Plan — probe database, create chunk records
     # ------------------------------------------------------------------
 
-    def _phase_plan(self, cr, run, t0) -> dict:
+    def _phase_plan(self, cr, run, t0) -> JsonDict:
         bundle, probe = _resolve_bundle(cr)
         caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
@@ -220,7 +221,7 @@ class Orchestrator:
     # Phase 2: Collect — execute SQL, store parquet blobs in tracking DB
     # ------------------------------------------------------------------
 
-    def _phase_collect(self, cr, run, t0) -> dict:
+    def _phase_collect(self, cr, run, t0) -> JsonDict:
         bundle, probe = _resolve_bundle(cr)
         caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
@@ -294,7 +295,7 @@ class Orchestrator:
     # Phase 3: Upload — stream blobs from tracking DB to transport
     # ------------------------------------------------------------------
 
-    def _phase_upload(self, cr, run, t0) -> dict:
+    def _phase_upload(self, cr, run, t0) -> JsonDict:
         created = self.chunk_cls.find_by_state(cr, run.id, "created")
         logger.info("Run %s: %d chunks to upload", run.run_uuid[:8], len(created))
 
@@ -331,7 +332,7 @@ class Orchestrator:
     # Finalize — build manifest, mark done
     # ------------------------------------------------------------------
 
-    def _finalize(self, cr, run, prefix, t0) -> dict:
+    def _finalize(self, cr, run, prefix, t0) -> JsonDict:
         from parqcast.core.manifest import build_manifest
 
         # Gather metadata from all uploaded chunks

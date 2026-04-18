@@ -34,7 +34,7 @@ import pyarrow.parquet as pq
 
 from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
-from parqcast.core.protocols import SqlWithParams
+from parqcast.core.protocols import ChunkMetadata, OdooRow, SqlWithParams
 
 
 class BaseCollector[V](ABC):
@@ -110,7 +110,7 @@ class BaseCollector[V](ABC):
         rows = self._execute(sql, params)
         return self._to_table(rows)
 
-    def to_parquet(self, table: pa.Table, path: Path) -> dict:
+    def to_parquet(self, table: pa.Table, path: Path) -> ChunkMetadata:
         pq.write_table(table, path, compression="snappy")
         file_bytes = path.read_bytes()
         return {
@@ -144,11 +144,11 @@ class BaseCollector[V](ABC):
             return f"{table}.{column}" if "." not in column else column
         return default
 
-    def _execute(self, sql: str, params=None) -> list[tuple]:
+    def _execute(self, sql: str, params=None) -> list[OdooRow]:
         self.env.cr.execute(sql, params)
         return self.env.cr.fetchall()
 
-    def _to_table(self, rows: list[tuple]) -> pa.Table:
+    def _to_table(self, rows: list[OdooRow]) -> pa.Table:
         cols = {field.name: [] for field in self.schema}
         for row in rows:
             for i, field in enumerate(self.schema):

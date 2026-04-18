@@ -15,6 +15,8 @@ import uuid as _uuid
 from datetime import UTC, datetime
 from hashlib import sha256
 
+from parqcast.core.protocols import ChunkMetadata, JsonDict
+
 
 class ExportRun:
     """Tracks an export run via the parqcast_export_run table."""
@@ -79,7 +81,7 @@ class ExportRun:
         self.state = state
         cr.execute("UPDATE parqcast_export_run SET state = %s WHERE id = %s", (state, self.id))
 
-    def set_capabilities(self, cr, caps_summary: dict, collector_count: int):
+    def set_capabilities(self, cr, caps_summary: JsonDict, collector_count: int):
         cr.execute(
             """
             UPDATE parqcast_export_run
@@ -95,7 +97,7 @@ class ExportRun:
             ),
         )
 
-    def set_manifest(self, cr, manifest: dict):
+    def set_manifest(self, cr, manifest: JsonDict):
         cr.execute(
             """
             UPDATE parqcast_export_run
@@ -279,7 +281,7 @@ class ExportChunk:
             (message, self.id),
         )
 
-    def get_metadata(self, cr) -> dict:
+    def get_metadata(self, cr) -> ChunkMetadata:
         cr.execute(
             """
             SELECT collector, row_count, byte_count, checksum, duration_seconds, key_from

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from parqcast.core.protocols import JsonDict
 from parqcast.core.version import V19
 
 
@@ -82,7 +83,7 @@ class OdooCapabilities[V]:
             return "inventory"
         return "minimal"
 
-    def summary(self) -> dict:
+    def summary(self) -> JsonDict:
         return {
             "mode": self.mode,
             "odoo_version": self.odoo_version,
