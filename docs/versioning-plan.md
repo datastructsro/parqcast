@@ -179,22 +179,29 @@ A `CollectorV19` that takes `OdooCapabilities[V19]` cannot be handed a `OdooCapa
 
 ---
 
-## Migration path (incremental, shippable at each step)
+## Migration path — implemented
 
-Each step leaves `main` green. No long-lived refactor branch.
+The plan above landed across 15 commits on branch `feat/per-version-types`
+(authored 2026-04-18). All originally-listed steps are done; the summary
+below points to the commit that implemented each step.
 
-| Step | Change | Risk |
+| Step | Status | Implementing commit |
 |---|---|---|
-| 1 | Add `parqcast.core.version` (sentinel classes, literals) and `parqcast.core.version_gate` (`assert_supported` + `UnsupportedOdooVersionError`). Wire the gate into `parqcast_cron.run_export` first — cheapest place to land it. | Low |
-| 2 | Add `ParqcastVersionGate._register_hook`. Now the addon refuses to install on unsupported Odoo. | Low — but test on a real Odoo 19 before shipping. |
-| 3 | Make `OdooCapabilities` generic (`OdooCapabilities[V]`). Add `V19` tag. Type-checker pass only; runtime unchanged. | Low |
-| 4 | Move collectors into `parqcast/collectors/v19/` one file at a time. Rename class `ProductCollector` → `ProductCollectorV19`. Update `V19_COLLECTORS` registry. Old `factory.py` becomes a thin shim delegating to the registry, then is deleted in a later commit. | Medium — 43 files, mechanical. Do in one PR per logical group (product*, stock*, mrp*, sale*, purchase*, other) for reviewable diffs. |
-| 5 | Same for ingesters (`v19/`, `…ActorV19`). Only 7 files. | Low |
-| 6 | Add `VersionBundle` + `REGISTRY`. Orchestrator takes a bundle, not raw lists. Cron tick resolves `"19"` → bundle via registry. | Low once 4+5 land |
-| 7 | Enable strict type checking. Recommend **pyright** in strict mode on `parqcast-core` and `parqcast-collectors` (mypy's PEP 695 support lags). Add to CI. This is where the compile-time guarantee becomes real. | Medium — will surface latent `Any` usage; fix as found. |
-| 8 | Document in `README.md`: "Parqcast is released per Odoo major. Use the `19.x` branch for Odoo 19; future `20.x` branch for Odoo 20." | Zero |
+| 1 | ✔ landed | `feat(core): add runtime Odoo-version gate with empty registry` |
+| 2 | ✔ landed | `feat(addon): add _register_hook version gate` |
+| 3 | ✔ landed | `feat(core): make OdooCapabilities generic in V; add probe_v19` |
+| 4 | ✔ landed | One commit per suite (core/uom+product pilot, stock, sale, purchase, mrp, pos, enterprise) |
+| 5 | ✔ landed | `feat(ingesters): migrate ingesters to v19/ with V19 suffix` |
+| 6 | ✔ landed | `feat(cutover): registry replaces factory + suites; version-neutral orchestrator` |
+| 7 | ✔ landed | `feat(tooling): add pyright strict type-checking config` |
+| 8 | ✔ landed | This commit |
 
-Parallelism: steps 1-2 can ship in one afternoon and immediately buy the hard runtime gate. Steps 3-7 are the compile-time layer, spread over the refactor window.
+Tests: 46 pass (0 skipped without `PARQCAST_TEST_DB`), pyright strict: 0 errors.
+
+Runtime verification still to perform: (a) install the resulting addon on
+the production Odoo 19 database and confirm the cron still runs, (b) point
+the addon at an Odoo 18 database and confirm `_register_hook` raises
+`UnsupportedOdooVersionError`.
 
 ---
 
@@ -207,8 +214,25 @@ Parallelism: steps 1-2 can ship in one afternoon and immediately buy the hard ru
 
 ---
 
-## Open questions for the user
+## Open questions — resolved
 
-1. **pyright vs mypy** — pyright has better PEP 695 generic support today, but if your editor/CI is already on mypy, we can pin mypy ≥ 1.11 and live with some warnings. Preference?
-2. **v20 timeline** — are you planning to support Odoo 20 when it ships, or stay on 19 only? If 19-only, the phantom generics still pay off (hard gate, clear naming) but the "add v20" motion is hypothetical and we can defer the registry abstraction until it's concrete.
-3. **Addon distribution** — App Store, Odoo.sh private repo, or GitHub releases? Affects how we tag per-major branches.
+1. **pyright vs mypy** — **Resolved:** pyright strict. Wired into
+   `pyproject.toml` with sensible suppressions for `Unknown*` diagnostics
+   that stem from pyarrow and psycopg2 shipping without type stubs.
+2. **v20 timeline** — **Resolved:** out of scope for this branch. The
+   registry, phantom generics, and suite abstraction are shaped so that
+   adding a `v20/` subpackage is a local change.
+3. **Addon distribution** — **Resolved (deferred):** no change to the
+   current distribution model in this branch. The manifest now advertises
+   `parqcast_supported_versions = ("19",)` which reviewers can use to
+   triage branch-per-major releases later.
+
+## Erratum note
+
+An earlier version of `docs/odoo-18-vs-19-evidence.md` §4 claimed
+`mrp.routing.workcenter.time_cycle` silently changed its unit of
+measurement from minutes to cycle count between v18 and v19, making it a
+"dangerous semantic flip." That conclusion was wrong — the compute body
+is identical in both versions; only the display label changed. The
+corrected §4 is in the evidence doc and the mrp collector docstring was
+fixed in the mrp-suite migration commit.

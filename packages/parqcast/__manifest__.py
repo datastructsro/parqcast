@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 {
     "name": "Parqcast",
-    "version": "19.0.1.2.0",
+    "version": "19.0.3.0.0",
     "category": "Supply Chain",
     "summary": "Zero-computation data pipe to cloud planning engines",
     "author": "DataStruct s.r.o.",
@@ -14,6 +14,9 @@
     "installable": True,
     "application": True,
     "depends": ["base"],
+    # Parqcast certifies per Odoo major. Installs refuse on any
+    # unlisted major via parqcast.core.version_gate.
+    "parqcast_supported_versions": ("19",),
     "external_dependencies": {
         "python": ["pyarrow"],
     },

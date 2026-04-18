@@ -79,49 +79,79 @@ Field is absent. The scrap check is now expressed by `usage = 'inventory'` — s
 
 ---
 
-## 4. `mrp.routing.workcenter.time_cycle` — **(B) Semantic change — dangerous**
+## 4. `mrp.routing.workcenter.time_cycle` — **(C) Label change only, compute unchanged**
 
-This is the nastiest kind of change: **same field name, different meaning.**
+> **Corrected 2026-04-18.** The first draft of this section, following a
+> surface read of the field declarations, claimed that `time_cycle` silently
+> flipped from "Duration in minutes" to "Cycles count" between v18 and v19.
+> That conclusion was wrong. A proper reading of the ``_compute_time_cycle``
+> body in both versions shows the numeric value is unchanged: minutes per
+> cycle, amortised over work orders. Only the display label was renamed.
 
-### v18
-
-`community-18/addons/mrp/models/mrp_routing.py:45`:
+### v18 compute (`community-18/addons/mrp/models/mrp_routing.py:45, 70-97`)
 
 ```python
 time_cycle = fields.Float('Duration', compute="_compute_time_cycle")
+
+def _compute_time_cycle(self):
+    manual_ops = self.filtered(lambda op: op.time_mode == 'manual')
+    for op in manual_ops:
+        op.time_cycle = op.time_cycle_manual            # minutes
+    for op in self - manual_ops:
+        # ... gather total_duration and cycle_number from workorder history ...
+        op.time_cycle = total_duration / cycle_number   # minutes per cycle
 ```
 
-Unit: **minutes** (it's a duration).
-
-### v19
-
-`community-19/addons/mrp/models/mrp_routing.py:38`:
+### v19 compute (`community-19/addons/mrp/models/mrp_routing.py:38, 72-102`)
 
 ```python
 time_cycle = fields.Float('Cycles', compute="_compute_time_cycle")
+
+def _compute_time_cycle(self):
+    manual_ops = self.filtered(lambda op: op.time_mode == 'manual')
+    for op in manual_ops:
+        op.time_cycle = op.time_cycle_manual            # minutes
+    for op in self - manual_ops:
+        # ... gather total_duration and cycle_number the same way ...
+        op.time_cycle = total_duration / cycle_number   # minutes per cycle
 ```
 
-Unit: **count** (number of cycles / repetitions). The "duration" concept moved to new fields at `community-19/addons/mrp/models/mrp_routing.py:57-59`:
+The compute body is identical apart from whitespace. Only the string label
+on the field definition changed from `'Duration'` to `'Cycles'`, which is
+purely a UX rename — the Odoo form shows "Cycles" as the column header but
+the value is still minutes-per-cycle.
+
+### v19 also adds two neighbouring fields (`community-19/addons/mrp/models/mrp_routing.py:57-59, 121`)
 
 ```python
 cycle_number = fields.Integer("Repetitions", compute="_compute_time_cycle")
-time_total  = fields.Float('Total Duration', compute="_compute_time_cycle")
-show_time_total = fields.Boolean('Show Total Duration?', compute="_compute_time_cycle")
+time_total   = fields.Float('Total Duration', compute="_compute_time_cycle")
+# time_total = setup + cleanup + cycle_number * time_cycle * 100 / efficiency
 ```
 
-So in v19, **`time_cycle` × `cycle_number` ≈ `time_total`** (the old v18 `time_cycle`).
+These are new and additive — not a rename. Downstream code that wants the
+total operation duration (setup + cleanup + per-cycle minutes × cycle count)
+can read `time_total` on v19; on v18, the equivalent has to be computed in
+the caller.
 
-`time_cycle_manual` exists in both versions (`community-18:40`, `community-19:33`) and is the operator-entered override.
+### Parqcast collector docstring
 
-### Parqcast collector docstring claim
+The docstring in the old ``mrp_bom.py`` claimed ``time_cycle was renamed to
+time_cycle_manual in Odoo 19``. That was wrong on two counts — both fields
+existed in both versions, and the field is on ``mrp.routing.workcenter``,
+not ``mrp.bom``. The docstring was corrected when the mrp suite migrated
+to ``v19/`` in this branch.
 
-> "mrp.bom: time_cycle renamed to time_cycle_manual"
+### Net
 
-**Verdict: wrong on both counts.**
-- The field lives on `mrp.routing.workcenter`, not `mrp.bom`.
-- Nothing was renamed. Both `time_cycle` and `time_cycle_manual` exist in both v18 and v19. The actual change is that **`time_cycle` silently changed its unit of measurement from minutes to cycle count**. A v18-era collector running against v19 will push numerically plausible but semantically garbage data to Snowflake.
+- `time_cycle`: no action needed. Same field, same semantics, label change
+  is cosmetic.
+- `time_total` on v19: additive; optional to export as a new column if
+  downstream finds it useful. Not required for correctness.
 
-**Action:** v19 collector should export `time_total` (new) when operation duration is wanted. This is a concrete example of why per-version code isolation isn't optional.
+This section is preserved here as an erratum rather than deleted so the
+investigative trail (and the lesson — *always read the compute body, not
+just the field declaration*) stays visible.
 
 ---
 
@@ -219,7 +249,7 @@ Since Odoo 16/17's translation-storage refactor, Postgres columns for `translate
 | `uom.category` removed; `relative_uom_id` + `parent_path` on `uom.uom` | Schema | **A** | **correct** |
 | `purchase.order.line.product_uom` → `product_uom_id` | Rename | **A** | **correct** |
 | `stock.location.scrap_location` removed | Removal | **A** | partially correct (`return_location` claim unsupported) |
-| `mrp.routing.workcenter.time_cycle`: Duration → Cycles count | Meaning flip | **B** | **wrong model + wrong description** |
+| `mrp.routing.workcenter.time_cycle`: label renamed 'Duration' → 'Cycles' | Cosmetic only | **C** | the old docstring's "rename to time_cycle_manual" claim was wrong |
 | `product.product.standard_price` JSONB | Unchanged (pre-v18) | — | misleadingly attributed to v19 |
 | `product.product.price_extra` | Present in both | — | **"removed in v19" is false** |
 | `stock.warehouse.orderpoint.qty_on_hand/qty_forecast` computed | Unchanged | — | true but not v19-specific |
@@ -232,18 +262,38 @@ Since Odoo 16/17's translation-storage refactor, Postgres columns for `translate
 
 ## Implications for the versioning plan
 
-1. **Real v18→v19 breaks are few and specific** — §§1–4. The planned `v19/` subpackage needs version-branching for: uom hierarchy, purchase line uom field rename, scrap_location boolean, mrp operation duration semantics. That's it on the currently-examined surface.
+1. **Real v18→v19 breaks are few and specific** — §§1–3. The `v19/` subpackage
+   needs version-branching for three things: the uom-hierarchy rewrite, the
+   `purchase.order.line.product_uom` → `product_uom_id` field rename, and the
+   removal of the `stock.location.scrap_location` boolean. Everything else
+   examined in this document is either unchanged between v18 and v19 or is an
+   additive enhancement (e.g. v19's new `time_total` field).
 
-2. **Several parqcast docstrings are wrong.** When migrating collectors into `parqcast/collectors/v19/`, treat each docstring as a hypothesis to re-verify against the source, not a specification. The current code may already be doing the wrong thing (e.g. `time_cycle` unit mismatch, `price_extra` assumed absent).
+2. **Several parqcast docstrings were wrong or misleading.** The migration
+   to `parqcast/collectors/v19/` in this branch treated each docstring as a
+   hypothesis to re-verify and corrected the ones that didn't hold up. The
+   most instructive example — `time_cycle` — is documented in §4 above as
+   an erratum, with the correct investigation next to the original wrong
+   conclusion.
 
-3. **The most dangerous class of change is §4** — same column name, different meaning, no type signature to catch it. A generic/base type system cannot detect this. The only defense is:
-   - Explicit v19-suffixed collector classes with explicit comments citing the meaning change.
-   - Downstream schema contracts (PyArrow `OdooDuration` dtype vs a new `OdooCycleCount`) that force the collector author to pick the right target column.
-   - An integration test against a seeded v19 DB that compares `time_cycle × cycle_number ≈ time_total` and fails loud if the mapping is wrong.
+3. **A lot of the alleged v19 surface is actually Odoo-wide** — JSONB
+   storage for `company_dependent` fields, JSONB for translatable Chars.
+   Don't branch on these per major version; they're constant from v18
+   onward and the SQL that handles them is the same in any `vN/` collector.
+   Shared helpers belong in `parqcast.core`, not duplicated per major.
 
-4. **A lot of the alleged v19 surface is actually Odoo-wide** — JSONB storage for `company_dependent` fields, JSONB for translatable Chars. Don't branch on these per major version; they're constant from v18 onward and the SQL that handles them is the same in both `v18/` and `v19/` collectors. Shared helpers belong in `parqcast.core`, not duplicated per major.
+4. **Scope for an Odoo 18 collector set (`v18/`), if it becomes needed,**
+   is bounded: invert §§1–3 and keep §§4–9 shared. A `v18/` subpackage
+   would be roughly the same size as `v19/` minus those three real deltas.
+   This validates the "one directory per major, bounded cost" assumption
+   in `versioning-plan.md`.
 
-5. **Scope for an Odoo 18 collector set (`v18/`), if it becomes needed,** is bounded: invert §§1–4 and keep §§5–9 shared. A `v18/` subpackage would be roughly the same size as `v19/` minus the four real deltas. This validates the "one directory per major, bounded cost" assumption in `versioning-plan.md`.
+5. **Lesson on investigation discipline** — §4's original wrong conclusion
+   came from reading the field declaration (``fields.Float('Cycles', …)``)
+   without reading the ``_compute_time_cycle`` body. When a field's
+   semantics are in question, read the compute; the label on the
+   declaration is only a UI hint. The one-line difference would have been
+   invisible without opening both files side by side.
 
 ---
 
