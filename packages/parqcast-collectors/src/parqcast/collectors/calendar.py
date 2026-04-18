@@ -4,15 +4,31 @@ from .base import CoreCollector
 
 
 class CalendarCollector[V](CoreCollector[V]):
-    """Odoo 19: no resource_id, no date_from/date_to on attendance. Has duration_days/hours."""
+    """Resource-calendar attendance collector, shared across Odoo majors.
+
+    ``resource_calendar_attendance.duration_hours`` was added in Odoo 19;
+    v18 lacks the column and Odoo derives the same value from
+    ``hour_to - hour_from`` at runtime. We mirror that derivation here via
+    :meth:`col_or_default` so one collector serves both majors.
+    """
 
     name = "calendar"
     schema = CALENDAR_SCHEMA
     required_tables = {"resource_calendar", "resource_calendar_attendance"}
 
+    optional_columns = {
+        "resource_calendar_attendance.duration_hours": (
+            "COALESCE(rca.duration_hours, 0)",
+            "COALESCE(rca.hour_to - rca.hour_from, 0)",
+        ),
+    }
+
     def get_sql(self):
+        duration_hours_col = self.col_or_default(
+            "resource_calendar_attendance", "duration_hours", "COALESCE(rca.hour_to - rca.hour_from, 0)"
+        )
         return (
-            """
+            f"""
             SELECT
                 rca.calendar_id,
                 rc.name || ' ' || rc.id,
@@ -22,7 +38,7 @@ class CalendarCollector[V](CoreCollector[V]):
                 rca.dayofweek::int,
                 rca.hour_from, rca.hour_to,
                 COALESCE(rca.duration_days, 0),
-                COALESCE(rca.duration_hours, 0),
+                {duration_hours_col},
                 rca.week_type, rca.day_period
             FROM resource_calendar_attendance rca
             JOIN resource_calendar rc ON rca.calendar_id = rc.id

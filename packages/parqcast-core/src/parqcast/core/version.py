@@ -11,11 +11,15 @@ from __future__ import annotations
 from typing import Literal
 
 
+class V18:
+    """Phantom type-tag for Odoo 18."""
+
+
 class V19:
     """Phantom type-tag for Odoo 19."""
 
 
-SupportedVersionStr = Literal["19"]
+SupportedVersionStr = Literal["18", "19"]
 
 
 class UnsupportedOdooVersionError(RuntimeError):

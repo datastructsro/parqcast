@@ -1,13 +1,22 @@
-from parqcast.core.version import V19
+from parqcast.core.version import V18
 from parqcast.schemas.outbound import ORDERPOINT_SCHEMA
 
 from ..base import StockCollector
 
 
-class OrderpointCollectorV19(StockCollector[V19]):
-    """``qty_on_hand`` / ``qty_forecast`` / ``qty_to_order`` / ``lead_days`` are
-    computed (not stored) on ``stock.warehouse.orderpoint`` in v19 — same as
-    v18, so the optional-column probe handles both transparently.
+class OrderpointCollectorV18(StockCollector[V18]):
+    """Orderpoint collector for Odoo 18.
+
+    v18 lacks two columns that v19 added:
+    - ``qty_to_order_computed``: new in v19's replenishment UI rewrite.
+    - ``deadline_date``: absent on v18; v19 added it on the orderpoint.
+
+    Both are gated via ``optional_columns`` so the SQL gracefully NULLs them
+    on v18 while v19 reads the real values.
+
+    ``snoozed_until`` is ``fields.Date`` (PostgreSQL ``date``) in v18; the
+    outbound schema expects a timestamp so we cast in SQL. Same pattern as
+    ``CurrencyCollector``'s ``rcr.name::timestamp``.
     """
 
     name = "orderpoint"
@@ -20,6 +29,7 @@ class OrderpointCollectorV19(StockCollector[V19]):
         "stock_warehouse_orderpoint.qty_to_order_computed": ("op.qty_to_order_computed", "NULL::numeric"),
         "stock_warehouse_orderpoint.qty_to_order_manual": ("op.qty_to_order_manual", "NULL::numeric"),
         "stock_warehouse_orderpoint.supplier_id": ("op.supplier_id", "NULL::int"),
+        "stock_warehouse_orderpoint.deadline_date": ("op.deadline_date", "NULL::timestamp"),
     }
 
     def get_sql(self):
@@ -28,6 +38,7 @@ class OrderpointCollectorV19(StockCollector[V19]):
         qty_computed = self.col_or_default("stock_warehouse_orderpoint", "qty_to_order_computed", "NULL::numeric")
         qty_manual = self.col_or_default("stock_warehouse_orderpoint", "qty_to_order_manual", "NULL::numeric")
         supplier = self.col_or_default("stock_warehouse_orderpoint", "supplier_id", "NULL::int")
+        deadline = self.col_or_default("stock_warehouse_orderpoint", "deadline_date", "NULL::timestamp")
 
         return (
             f"""
@@ -39,7 +50,7 @@ class OrderpointCollectorV19(StockCollector[V19]):
                 op.trigger, op.active,
                 op.snoozed_until::timestamp,
                 op.route_id, sr.name->>'{lang1}',
-                op.deadline_date::timestamp,
+                {deadline},
                 {repl_uom},
                 {qty_computed},
                 {qty_manual},

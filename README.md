@@ -34,7 +34,7 @@ reads the connected DB's `ir_module_module.latest_version` and raises
 `UnsupportedOdooVersionError` if the detected major is not in the bundle
 registry. The cron tick repeats the check as defense in depth.
 
-Currently supported: Odoo 19.
+Currently supported: Odoo 18, 19.
 
 ## Setup
 

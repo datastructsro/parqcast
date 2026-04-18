@@ -1,4 +1,4 @@
-from parqcast.core.version import V19
+from parqcast.core.version import V18
 from parqcast.schemas.outbound import (
     BOM_BYPRODUCT_SCHEMA,
     BOM_LINES_SCHEMA,
@@ -9,7 +9,13 @@ from parqcast.schemas.outbound import (
 from ..base import MrpCollector
 
 
-class BomCollectorV19(MrpCollector[V19]):
+class BomCollectorV18(MrpCollector[V18]):
+    """BOM collector for Odoo 18.
+
+    v18 lacks ``mrp_bom.product_qty_multiple`` (introduced in v19); gated
+    optional with fallback ``0``. ``days_to_prepare_mo`` exists in both.
+    """
+
     name = "bom"
     schema = BOM_SCHEMA
     depends_on = ["product"]
@@ -50,7 +56,10 @@ class BomCollectorV19(MrpCollector[V19]):
         )
 
 
-class BomLinesCollectorV19(MrpCollector[V19]):
+class BomLinesCollectorV18(MrpCollector[V18]):
+    """``mrp_bom_line`` columns (bom_id, product_id, product_qty, product_uom_id,
+    operation_id) are identical in v18 and v19."""
+
     name = "bom_lines"
     schema = BOM_LINES_SCHEMA
     depends_on = ["bom"]
@@ -79,17 +88,17 @@ class BomLinesCollectorV19(MrpCollector[V19]):
         )
 
 
-class BomOperationsCollectorV19(MrpCollector[V19]):
-    """BOM routing operations.
+class BomOperationsCollectorV18(MrpCollector[V18]):
+    """BOM routing operations for Odoo 18.
 
-    Note on ``mrp.routing.workcenter.time_cycle``: this field exists in both
-    v18 and v19 (no rename; the earlier parqcast docstring claiming a
-    ``time_cycle -> time_cycle_manual`` rename was incorrect). The v19
-    display label flipped from ``'Duration'`` to ``'Cycles'`` but the
-    underlying compute (``_compute_time_cycle``) still assigns
-    ``time_cycle_manual`` in manual mode and ``total_duration / cycle_number``
-    in auto mode — i.e. minutes-per-cycle in both versions. We export the
-    computed value via the optional-column fallback.
+    Evidence doc §4 erratum: ``time_cycle`` / ``time_cycle_manual`` semantics
+    are identical across v18 and v19 — only the display label changed. On
+    v18 the stored column may be ``time_cycle_manual`` while v19 exposes a
+    computed ``time_cycle``; ``col_or_default`` picks whichever is
+    available. Some optional metadata columns
+    (``workcenter_quantity``, ``skill``, ``post_operation_time``,
+    ``search_mode``) are v19-only on ``mrp_routing_workcenter`` and fall
+    back to NULL/default on v18.
     """
 
     name = "bom_operations"
@@ -117,8 +126,6 @@ class BomOperationsCollectorV19(MrpCollector[V19]):
         post_op = self.col_or_default("mrp_routing_workcenter", "post_operation_time", "0")
         search_mode = self.col_or_default("mrp_routing_workcenter", "search_mode", "NULL::text")
 
-        # time_cycle exists on both v18 and v19; time_cycle_manual is the manual-mode
-        # fallback on both. Prefer the computed column when available.
         if self.caps.has_column("mrp_routing_workcenter", "time_cycle"):
             time_cycle = "rw.time_cycle"
         elif self.caps.has_column("mrp_routing_workcenter", "time_cycle_manual"):
@@ -126,7 +133,6 @@ class BomOperationsCollectorV19(MrpCollector[V19]):
         else:
             time_cycle = "NULL::float"
 
-        # mrp_skill table only exists with the mrp_skills module.
         skill_join = ""
         skill_name = "NULL::text"
         if self.caps.has_table("mrp_skill") and self.caps.has_column("mrp_routing_workcenter", "skill"):
@@ -152,7 +158,9 @@ class BomOperationsCollectorV19(MrpCollector[V19]):
         )
 
 
-class BomByproductCollectorV19(MrpCollector[V19]):
+class BomByproductCollectorV18(MrpCollector[V18]):
+    """``mrp_bom_byproduct`` columns are identical in v18 and v19."""
+
     name = "bom_byproduct"
     schema = BOM_BYPRODUCT_SCHEMA
     depends_on = ["bom", "product"]

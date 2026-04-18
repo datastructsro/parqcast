@@ -15,10 +15,11 @@ cutover lands.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 from parqcast.core.protocols import JsonDict, ReadCursor
 from parqcast.core.sql import fetch_all, fetch_one
-from parqcast.core.version import V19
+from parqcast.core.version import V18, V19
 
 
 @dataclass(frozen=True)
@@ -171,14 +172,15 @@ _DEFAULT_PROBE_TABLES = frozenset(
 )
 
 
-def probe_v19(cr: ReadCursor, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
-    """Probe a database cursor and return its Odoo-19 capability profile.
+def _probe_shared(cr: ReadCursor, probe_tables: frozenset[str] | None) -> OdooCapabilities[Any]:
+    """Version-neutral capability probe.
 
-    Args:
-        cr: Database cursor (Odoo-style or psycopg2).
-        probe_tables: Tables to inspect for columns. When None, uses the
-            built-in default list. The CollectorFactory derives this from
-            collector declarations so new collectors auto-extend the probe.
+    Introspects the database and builds an ``OdooCapabilities`` profile using
+    only schema-level queries (``ir_module_module``, ``information_schema``)
+    that are stable across every supported Odoo major. The version-specific
+    wrappers (:func:`probe_v18`, :func:`probe_v19`) narrow the phantom tag
+    on the return type — no runtime branching needed because the probe logic
+    itself is identical.
     """
 
     # 1. Installed modules
@@ -272,3 +274,19 @@ def probe_v19(cr: ReadCursor, *, probe_tables: frozenset[str] | None = None) -> 
     )
 
 
+def probe_v18(cr: ReadCursor, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V18]:
+    """Return the Odoo-18 capability profile for the connected database.
+
+    Thin wrapper over :func:`_probe_shared`: the probe SQL is version-neutral,
+    and the phantom ``V18`` tag appears only in the return annotation so
+    downstream code typed as ``OdooCapabilities[V18]`` stays type-safe.
+    """
+    return _probe_shared(cr, probe_tables)
+
+
+def probe_v19(cr: ReadCursor, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
+    """Return the Odoo-19 capability profile for the connected database.
+
+    Thin wrapper over :func:`_probe_shared` — see :func:`probe_v18` docstring.
+    """
+    return _probe_shared(cr, probe_tables)

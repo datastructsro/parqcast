@@ -4,7 +4,12 @@
 # Odoo manifests are bare dict literals at module top level.
 {
     "name": "Parqcast",
-    "version": "19.0.3.0.0",
+    # Major-agnostic version (`x.y.z`). Odoo prepends its own major at
+    # discovery time, so this same manifest installs cleanly on every
+    # major listed in `parqcast_supported_versions`. A pinned `19.0.x.y`
+    # would be rejected by the v18 loader (which validates against
+    # `18.0.x.y` or bare `x.y[.z]`).
+    "version": "3.0.0",
     "category": "Supply Chain",
     "summary": "Zero-computation data pipe to cloud planning engines",
     "author": "DataStruct s.r.o.",
@@ -18,7 +23,7 @@
     "depends": ["base"],
     # Parqcast certifies per Odoo major. Installs refuse on any
     # unlisted major via parqcast.core.version_gate.
-    "parqcast_supported_versions": ("19",),
+    "parqcast_supported_versions": ("18", "19"),
     "external_dependencies": {
         "python": ["pyarrow"],
     },

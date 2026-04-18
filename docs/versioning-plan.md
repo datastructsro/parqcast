@@ -196,6 +196,7 @@ below points to the commit that implemented each step.
 | 7 | ✔ landed | `feat(tooling): add pyright strict type-checking config` |
 | 8 | ✔ landed | This commit |
 | 9 | ✔ landed | `feat(addon): bring packages/parqcast/ under pyright strict` (stubs commit set, see below) |
+| 10 | ✔ landed | `feat(core): add V18 phantom tag` + per-suite commits + `feat(ingesters): migrate ingesters to v18` (v18 support commit set on `feat/v18-support`) |
 
 Tests: 46 pass (0 skipped without `PARQCAST_TEST_DB`), pyright strict: 0 errors.
 
