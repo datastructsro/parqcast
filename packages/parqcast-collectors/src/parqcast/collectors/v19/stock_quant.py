@@ -1,10 +1,13 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_QUANT_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockQuantCollector(StockCollector):
-    """Odoo 19: stock_quant_package -> stock_package, no scrap/return flags on location."""
+class StockQuantCollectorV19(StockCollector[V19]):
+    """Odoo 19 renamed the package table from ``stock_quant_package`` to
+    ``stock_package``. We fall back to the old name if present on upgraded DBs.
+    """
 
     name = "stock_quant"
     schema = STOCK_QUANT_SCHEMA

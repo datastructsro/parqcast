@@ -10,7 +10,21 @@ from __future__ import annotations
 
 from parqcast.core.registry import append_to_bundle
 
+from .orderpoint import OrderpointCollectorV19
 from .product import ProductCollectorV19
+from .product_removal import ProductRemovalCollectorV19
+from .stock_location import StockLocationCollectorV19
+from .stock_lot import StockLotCollectorV19
+from .stock_move import StockMoveCollectorV19
+from .stock_move_line import StockMoveLineCollectorV19
+from .stock_package import StockPackageCollectorV19, StockPackageTypeCollectorV19
+from .stock_picking import StockPickingCollectorV19
+from .stock_picking_type import StockPickingTypeCollectorV19
+from .stock_putaway_rule import StockPutawayRuleCollectorV19
+from .stock_quant import StockQuantCollectorV19
+from .stock_route import StockRouteCollectorV19
+from .stock_storage_category import StockStorageCategoryCollectorV19
+from .stock_warehouse import StockWarehouseCollectorV19
 from .uom import UomCollectorV19
 
 append_to_bundle(
@@ -18,10 +32,40 @@ append_to_bundle(
     collectors=(
         UomCollectorV19,
         ProductCollectorV19,
+        StockLocationCollectorV19,
+        StockWarehouseCollectorV19,
+        StockStorageCategoryCollectorV19,
+        StockPackageTypeCollectorV19,
+        StockPackageCollectorV19,
+        StockPickingTypeCollectorV19,
+        StockQuantCollectorV19,
+        StockMoveCollectorV19,
+        StockMoveLineCollectorV19,
+        StockPickingCollectorV19,
+        StockRouteCollectorV19,
+        StockLotCollectorV19,
+        StockPutawayRuleCollectorV19,
+        ProductRemovalCollectorV19,
+        OrderpointCollectorV19,
     ),
 )
 
 __all__ = [
+    "OrderpointCollectorV19",
     "ProductCollectorV19",
+    "ProductRemovalCollectorV19",
+    "StockLocationCollectorV19",
+    "StockLotCollectorV19",
+    "StockMoveCollectorV19",
+    "StockMoveLineCollectorV19",
+    "StockPackageCollectorV19",
+    "StockPackageTypeCollectorV19",
+    "StockPickingCollectorV19",
+    "StockPickingTypeCollectorV19",
+    "StockPutawayRuleCollectorV19",
+    "StockQuantCollectorV19",
+    "StockRouteCollectorV19",
+    "StockStorageCategoryCollectorV19",
+    "StockWarehouseCollectorV19",
     "UomCollectorV19",
 ]

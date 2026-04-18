@@ -1,10 +1,13 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PRODUCT_REMOVAL_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class ProductRemovalCollector(StockCollector):
-    """Both product_removal.name and product_removal.method are JSONB."""
+class ProductRemovalCollectorV19(StockCollector[V19]):
+    """Both ``product_removal.name`` and ``product_removal.method`` are
+    translatable fields stored as JSONB (Odoo-wide since 16/17).
+    """
 
     name = "product_removal"
     schema = PRODUCT_REMOVAL_SCHEMA

@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_WAREHOUSE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockWarehouseCollector(StockCollector):
+class StockWarehouseCollectorV19(StockCollector[V19]):
     name = "stock_warehouse"
     schema = STOCK_WAREHOUSE_SCHEMA
     depends_on = ["stock_location"]

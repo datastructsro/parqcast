@@ -1,10 +1,14 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_ROUTE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockRouteCollector(StockCollector):
-    """Denormalized route + rules. Both stock_route.name and stock_rule.name are JSONB."""
+class StockRouteCollectorV19(StockCollector[V19]):
+    """Denormalised route + rules. Both ``stock_route.name`` and
+    ``stock_rule.name`` are translatable ``Char`` stored as JSONB (Odoo-wide
+    since 16/17, not v19-specific).
+    """
 
     name = "stock_route"
     schema = STOCK_ROUTE_SCHEMA

@@ -1,10 +1,14 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import ORDERPOINT_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class OrderpointCollector(StockCollector):
-    """Odoo 19: qty_on_hand/qty_forecast/qty_to_order/lead_days are computed, not stored."""
+class OrderpointCollectorV19(StockCollector[V19]):
+    """``qty_on_hand`` / ``qty_forecast`` / ``qty_to_order`` / ``lead_days`` are
+    computed (not stored) on ``stock.warehouse.orderpoint`` in v19 — same as
+    v18, so the optional-column probe handles both transparently.
+    """
 
     name = "orderpoint"
     schema = ORDERPOINT_SCHEMA

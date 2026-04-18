@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_PUTAWAY_RULE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockPutawayRuleCollector(StockCollector):
+class StockPutawayRuleCollectorV19(StockCollector[V19]):
     name = "stock_putaway_rule"
     schema = STOCK_PUTAWAY_RULE_SCHEMA
     depends_on = ["stock_location", "product"]

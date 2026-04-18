@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_PACKAGE_SCHEMA, STOCK_PACKAGE_TYPE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockPackageTypeCollector(StockCollector):
+class StockPackageTypeCollectorV19(StockCollector[V19]):
     name = "stock_package_type"
     schema = STOCK_PACKAGE_TYPE_SCHEMA
     required_tables = {"stock_package_type"}
@@ -25,8 +26,11 @@ class StockPackageTypeCollector(StockCollector):
         )
 
 
-class StockPackageCollector(StockCollector):
-    """Odoo 19: stock_quant_package -> stock_package."""
+class StockPackageCollectorV19(StockCollector[V19]):
+    """Odoo 19 renamed the ``stock_quant_package`` table to ``stock_package``.
+    For databases that still have the old name (upgraded from earlier majors),
+    we fall back at runtime.
+    """
 
     name = "stock_package"
     schema = STOCK_PACKAGE_SCHEMA

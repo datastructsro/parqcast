@@ -1,10 +1,13 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_PICKING_TYPE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockPickingTypeCollector(StockCollector):
-    """stock_picking_type.name is JSONB in Odoo 19."""
+class StockPickingTypeCollectorV19(StockCollector[V19]):
+    """``stock_picking_type.name`` is a translatable ``Char`` stored as JSONB
+    (Odoo-wide since 16/17, not a v19-specific change).
+    """
 
     name = "stock_picking_type"
     schema = STOCK_PICKING_TYPE_SCHEMA

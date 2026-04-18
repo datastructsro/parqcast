@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_MOVE_LINE_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockMoveLineCollector(StockCollector):
+class StockMoveLineCollectorV19(StockCollector[V19]):
     name = "stock_move_line"
     schema = STOCK_MOVE_LINE_SCHEMA
     required_tables = {"stock_move_line"}

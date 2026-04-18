@@ -1,10 +1,11 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_LOT_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockLotCollector(StockCollector):
-    """Expiry date columns come from product_expiry module — made optional."""
+class StockLotCollectorV19(StockCollector[V19]):
+    """Expiry columns come from the ``product_expiry`` module; made optional."""
 
     name = "stock_lot"
     schema = STOCK_LOT_SCHEMA

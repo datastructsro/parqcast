@@ -27,13 +27,11 @@ from .mps import MpsForecastCollector, MpsScheduleCollector
 from .mrp_bom import BomByproductCollector, BomCollector, BomLinesCollector, BomOperationsCollector
 from .mrp_production import MrpProductionCollector
 from .mrp_workorder import MrpWorkorderCollector
-from .orderpoint import OrderpointCollector
 from .partner import PartnerCollector
 from .pos_order import PosOrderCollector, PosOrderLineCollector
 from .pos_session import PosSessionCollector
 from .pricelist import PricelistCollector, PricelistItemCollector
 from .product_category import ProductCategoryCollector
-from .product_removal import ProductRemovalCollector
 from .product_supplierinfo import ProductSupplierinfoCollector
 from .purchase_order import PurchaseOrderCollector
 from .purchase_order_line import PurchaseOrderLineCollector
@@ -41,19 +39,25 @@ from .purchase_requisition import PurchaseRequisitionCollector
 from .quality import QualityCheckCollector, QualityPointCollector
 from .sale_order import SaleOrderCollector
 from .sale_order_line import SaleOrderLineCollector
-from .stock_location import StockLocationCollector
-from .stock_lot import StockLotCollector
-from .stock_move import StockMoveCollector
-from .stock_move_line import StockMoveLineCollector
-from .stock_package import StockPackageCollector, StockPackageTypeCollector
-from .stock_picking import StockPickingCollector
-from .stock_picking_type import StockPickingTypeCollector
-from .stock_putaway_rule import StockPutawayRuleCollector
-from .stock_quant import StockQuantCollector
-from .stock_route import StockRouteCollector
-from .stock_storage_category import StockStorageCategoryCollector
-from .stock_warehouse import StockWarehouseCollector
-from .v19 import ProductCollectorV19, UomCollectorV19
+from .v19 import (
+    OrderpointCollectorV19,
+    ProductCollectorV19,
+    ProductRemovalCollectorV19,
+    StockLocationCollectorV19,
+    StockLotCollectorV19,
+    StockMoveCollectorV19,
+    StockMoveLineCollectorV19,
+    StockPackageCollectorV19,
+    StockPackageTypeCollectorV19,
+    StockPickingCollectorV19,
+    StockPickingTypeCollectorV19,
+    StockPutawayRuleCollectorV19,
+    StockQuantCollectorV19,
+    StockRouteCollectorV19,
+    StockStorageCategoryCollectorV19,
+    StockWarehouseCollectorV19,
+    UomCollectorV19,
+)
 from .workcenter import WorkcenterCapacityCollector, WorkcenterCollector
 
 
@@ -118,21 +122,21 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "stock",
         frozenset({"stock"}),
         (
-            StockLocationCollector,
-            StockWarehouseCollector,
-            StockStorageCategoryCollector,
-            StockPackageTypeCollector,
-            StockPackageCollector,
-            StockPickingTypeCollector,
-            StockQuantCollector,
-            StockMoveCollector,
-            StockMoveLineCollector,
-            StockPickingCollector,
-            StockRouteCollector,
-            StockLotCollector,
-            StockPutawayRuleCollector,
-            ProductRemovalCollector,
-            OrderpointCollector,
+            StockLocationCollectorV19,
+            StockWarehouseCollectorV19,
+            StockStorageCategoryCollectorV19,
+            StockPackageTypeCollectorV19,
+            StockPackageCollectorV19,
+            StockPickingTypeCollectorV19,
+            StockQuantCollectorV19,
+            StockMoveCollectorV19,
+            StockMoveLineCollectorV19,
+            StockPickingCollectorV19,
+            StockRouteCollectorV19,
+            StockLotCollectorV19,
+            StockPutawayRuleCollectorV19,
+            ProductRemovalCollectorV19,
+            OrderpointCollectorV19,
         ),
         probe_extra_tables=frozenset(
             {

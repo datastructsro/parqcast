@@ -1,10 +1,15 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_LOCATION_SCHEMA
 
-from .base import StockCollector
+from ..base import StockCollector
 
 
-class StockLocationCollector(StockCollector):
-    """Odoo 19: scrap_location and return_location columns removed."""
+class StockLocationCollectorV19(StockCollector[V19]):
+    """Odoo 19: ``scrap_location`` boolean column is removed; scrap locations
+    are now identified by ``usage = 'inventory'`` (see the
+    ``_check_scrap_location`` constraint in core stock). We do not rely on
+    the old boolean.
+    """
 
     name = "stock_location"
     schema = STOCK_LOCATION_SCHEMA
