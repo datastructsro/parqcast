@@ -70,9 +70,12 @@ class ParqcastCron(models.AbstractModel):
     def run_export(self):
         """Called by ir.cron to run one tick of the export pipeline."""
         try:
+            from parqcast.core.version_gate import assert_supported
             from parqcast.orchestrator import Orchestrator
 
             from .env_adapter import OdooAdapter
+
+            assert_supported(self.env.cr)
 
             ICP = self.env["ir.config_parameter"].sudo()
             time_budget = int(ICP.get_param("parqcast.time_budget", "270"))
