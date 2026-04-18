@@ -1,9 +1,11 @@
 import pyarrow as pa
 
-from .base import BaseIngester, IngestResult
+from parqcast.core.version import V19
+
+from ..base import BaseIngester, IngestResult
 
 
-class DistributionActor(BaseIngester):
+class DistributionActorV19(BaseIngester[V19]):
     decision_type = "DO"
 
     def apply(self, decisions: pa.Table, env) -> IngestResult:

@@ -1,9 +1,11 @@
 import pyarrow as pa
 
-from .base import BaseIngester, IngestResult
+from parqcast.core.version import V19
+
+from ..base import BaseIngester, IngestResult
 
 
-class RescheduleActor(BaseIngester):
+class RescheduleActorV19(BaseIngester[V19]):
     decision_type = "RESCHEDULE"
 
     def apply(self, decisions: pa.Table, env) -> IngestResult:

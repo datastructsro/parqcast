@@ -1,9 +1,18 @@
 import pyarrow as pa
 
-from .base import BaseIngester, IngestResult
+from parqcast.core.version import V19
+
+from ..base import BaseIngester, IngestResult
 
 
-class PurchaseActor(BaseIngester):
+class PurchaseActorV19(BaseIngester[V19]):
+    """Create purchase orders and lines from planning-engine decisions.
+
+    On Odoo 19 the UoM field on ``purchase.order.line`` is ``product_uom_id``
+    (it was ``product_uom`` in v18; see docs/odoo-18-vs-19-evidence.md §2).
+    This ingester targets the v19 name.
+    """
+
     decision_type = "PO"
 
     def apply(self, decisions: pa.Table, env) -> IngestResult:
@@ -45,7 +54,7 @@ class PurchaseActor(BaseIngester):
                     "order_id": po.id,
                     "product_id": product_id,
                     "product_qty": quantity,
-                    "product_uom": uom_id,
+                    "product_uom_id": uom_id,
                 }
             )
 

@@ -14,7 +14,14 @@ class IngestResult:
         return f"IngestResult(created={self.created}, updated={self.updated}, errors={self.errors})"
 
 
-class BaseIngester(ABC):
+class BaseIngester[V](ABC):
+    """Abstract ingester. Generic in a phantom Odoo version tag V.
+
+    Concrete subclasses live in a version-specific subpackage (e.g.
+    ``parqcast.ingesters.v19``) and parameterise V to the corresponding
+    phantom tag so cross-version mixing is rejected by the type checker.
+    """
+
     decision_type: str
 
     @abstractmethod
