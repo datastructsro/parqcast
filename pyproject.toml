@@ -48,15 +48,24 @@ include = [
     "packages/parqcast-core/src",
     "packages/parqcast-collectors/src",
     "packages/parqcast-ingesters/src",
+    "packages/parqcast-transport-http/src",
+]
+# Resolve cross-package imports inside the parqcast namespace directly
+# from each package's src/ rather than through the installed distribution.
+# This lets pyright see the py.typed marker in each source tree.
+extraPaths = [
+    "packages/parqcast-core/src",
+    "packages/parqcast-collectors/src",
+    "packages/parqcast-ingesters/src",
+    "packages/parqcast-transport-http/src",
 ]
 # Odoo is not pip-installable — the `odoo` module only exists inside a
-# running Odoo server. pyarrow and psycopg2 ship without type stubs. Rather
-# than accept ~1000 "unknown type" diagnostics from third-party libs, we
-# suppress those families and let strict mode catch structural issues we
-# can actually fix: None-leaks, invalid type forms, cross-version generic
-# mixing, unsafe assignments.
+# running Odoo server. Rather than accept hundreds of "unknown type"
+# diagnostics from dynamically-typed code, we suppress those families
+# and let strict mode catch structural issues we can actually fix:
+# None-leaks, invalid type forms, cross-version generic mixing, unsafe
+# assignments.
 reportMissingImports = "none"
-reportMissingTypeStubs = "none"
 reportUnknownMemberType = "none"
 reportUnknownParameterType = "none"
 reportUnknownArgumentType = "none"
