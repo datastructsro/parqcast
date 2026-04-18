@@ -35,10 +35,18 @@ from parqcast.transport.local_fs import LocalFSTransport
 
 def _probe_and_build(env):
     """Mirrors the orchestrator's collector-build path for live-DB tests."""
-    bundle = REGISTRY["19"]
+    bundle = REGISTRY[TEST_ODOO_VERSION]
     caps = bundle.probe_capabilities(env.cr, probe_tables=collect_probe_tables(bundle.suites))
     collectors = _build_collectors(env, bundle, caps)
     return bundle, caps, collectors
+
+TEST_ODOO_VERSION = os.environ.get("PARQCAST_TEST_ODOO_VERSION", "19")
+if TEST_ODOO_VERSION not in REGISTRY:
+    pytest.skip(
+        f"PARQCAST_TEST_ODOO_VERSION={TEST_ODOO_VERSION!r} is not a registered "
+        f"bundle ({sorted(REGISTRY)}); skipping live-DB tests",
+        allow_module_level=True,
+    )
 
 DB_NAME = os.environ.get("PARQCAST_TEST_DB")
 if not DB_NAME:
