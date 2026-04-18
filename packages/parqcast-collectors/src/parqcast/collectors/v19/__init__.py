@@ -14,6 +14,10 @@ from .orderpoint import OrderpointCollectorV19
 from .pricelist import PricelistCollectorV19, PricelistItemCollectorV19
 from .product import ProductCollectorV19
 from .product_removal import ProductRemovalCollectorV19
+from .product_supplierinfo import ProductSupplierinfoCollectorV19
+from .purchase_order import PurchaseOrderCollectorV19
+from .purchase_order_line import PurchaseOrderLineCollectorV19
+from .purchase_requisition import PurchaseRequisitionCollectorV19
 from .sale_order import SaleOrderCollectorV19
 from .sale_order_line import SaleOrderLineCollectorV19
 from .stock_location import StockLocationCollectorV19
@@ -54,6 +58,10 @@ append_to_bundle(
         SaleOrderLineCollectorV19,
         PricelistCollectorV19,
         PricelistItemCollectorV19,
+        PurchaseOrderCollectorV19,
+        PurchaseOrderLineCollectorV19,
+        ProductSupplierinfoCollectorV19,
+        PurchaseRequisitionCollectorV19,
     ),
 )
 
@@ -63,6 +71,10 @@ __all__ = [
     "PricelistItemCollectorV19",
     "ProductCollectorV19",
     "ProductRemovalCollectorV19",
+    "ProductSupplierinfoCollectorV19",
+    "PurchaseOrderCollectorV19",
+    "PurchaseOrderLineCollectorV19",
+    "PurchaseRequisitionCollectorV19",
     "SaleOrderCollectorV19",
     "SaleOrderLineCollectorV19",
     "StockLocationCollectorV19",

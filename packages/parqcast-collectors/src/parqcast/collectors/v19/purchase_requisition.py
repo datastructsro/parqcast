@@ -1,10 +1,11 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PURCHASE_REQUISITION_SCHEMA
 
-from .base import PurchaseCollector
+from ..base import PurchaseCollector
 
 
-class PurchaseRequisitionCollector(PurchaseCollector):
-    """Requires both purchase and purchase_requisition modules."""
+class PurchaseRequisitionCollectorV19(PurchaseCollector[V19]):
+    """Requires both ``purchase`` and ``purchase_requisition`` modules."""
 
     name = "purchase_requisition"
     schema = PURCHASE_REQUISITION_SCHEMA

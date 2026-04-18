@@ -1,10 +1,20 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PURCHASE_ORDER_LINE_SCHEMA
 
-from .base import PurchaseCollector
+from ..base import PurchaseCollector
 
 
-class PurchaseOrderLineCollector(PurchaseCollector):
-    """Odoo 19: product_uom -> product_uom_id, uom.name is JSONB."""
+class PurchaseOrderLineCollectorV19(PurchaseCollector[V19]):
+    """Purchase-order-line collector for Odoo 19.
+
+    This is the one model where the UoM field was genuinely renamed between
+    v18 and v19: ``purchase.order.line.product_uom`` in v18 became
+    ``product_uom_id`` in v19 (see docs/odoo-18-vs-19-evidence.md §2). The
+    SELECT uses the v19 name directly.
+
+    ``uom.name`` is a translatable ``Char`` stored as JSONB Odoo-wide
+    since 16/17 — not a v19-specific detail.
+    """
 
     name = "purchase_order_line"
     schema = PURCHASE_ORDER_LINE_SCHEMA

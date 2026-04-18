@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PRODUCT_SUPPLIERINFO_SCHEMA
 
-from .base import PurchaseCollector
+from ..base import PurchaseCollector
 
 
-class ProductSupplierinfoCollector(PurchaseCollector):
+class ProductSupplierinfoCollectorV19(PurchaseCollector[V19]):
     name = "product_supplierinfo"
     schema = PRODUCT_SUPPLIERINFO_SCHEMA
     depends_on = ["product"]

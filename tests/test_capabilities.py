@@ -260,21 +260,21 @@ def test_pos_collectors_need_pos():
 
 
 def test_purchase_requisition_needs_both_modules():
-    from parqcast.collectors.purchase_requisition import PurchaseRequisitionCollector
+    from parqcast.collectors.v19.purchase_requisition import PurchaseRequisitionCollectorV19
 
     # Has purchase but not purchase_requisition
     caps_purchase_only = _make_caps(
         installed_modules=frozenset({"purchase"}),
         existing_tables=frozenset({"purchase_requisition"}),
     )
-    assert not PurchaseRequisitionCollector.is_compatible(caps_purchase_only)
+    assert not PurchaseRequisitionCollectorV19.is_compatible(caps_purchase_only)
 
     # Has both modules + table
     caps_both = _make_caps(
         installed_modules=frozenset({"purchase", "purchase_requisition"}),
         existing_tables=frozenset({"purchase_requisition"}),
     )
-    assert PurchaseRequisitionCollector.is_compatible(caps_both)
+    assert PurchaseRequisitionCollectorV19.is_compatible(caps_both)
 
 
 def test_active_languages():

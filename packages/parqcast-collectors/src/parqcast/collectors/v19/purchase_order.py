@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PURCHASE_ORDER_SCHEMA
 
-from .base import PurchaseCollector
+from ..base import PurchaseCollector
 
 
-class PurchaseOrderCollector(PurchaseCollector):
+class PurchaseOrderCollectorV19(PurchaseCollector[V19]):
     name = "purchase_order"
     schema = PURCHASE_ORDER_SCHEMA
     depends_on = ["partner"]
