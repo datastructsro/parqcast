@@ -24,6 +24,10 @@ from .orderpoint import OrderpointCollectorV18
 from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
 from .product_removal import ProductRemovalCollectorV18
+from .product_supplierinfo import ProductSupplierinfoCollectorV18
+from .purchase_order import PurchaseOrderCollectorV18
+from .purchase_order_line import PurchaseOrderLineCollectorV18
+from .purchase_requisition import PurchaseRequisitionCollectorV18
 from .sale_order import SaleOrderCollectorV18
 from .sale_order_line import SaleOrderLineCollectorV18
 from .stock_location import StockLocationCollectorV18
@@ -96,6 +100,16 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
             SaleOrderLineCollectorV18,
             PricelistCollectorV18,
             PricelistItemCollectorV18,
+        ),
+    ),
+    CollectorSuite(
+        "purchase",
+        frozenset({"purchase"}),
+        (
+            PurchaseOrderCollectorV18,
+            PurchaseOrderLineCollectorV18,
+            ProductSupplierinfoCollectorV18,
+            PurchaseRequisitionCollectorV18,
         ),
     ),
 )
