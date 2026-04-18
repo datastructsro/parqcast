@@ -26,7 +26,8 @@ import pyarrow.parquet as pq
 
 import parqcast.collectors  # pyright: ignore[reportUnusedImport]  # noqa: F401 — side-effect: registers v19 bundle
 from parqcast.collectors.base import BaseCollector
-from parqcast.core.protocols import JsonDict
+from parqcast.core.capabilities import OdooCapabilities
+from parqcast.core.protocols import DatabaseEnv, JsonDict, ReadCursor
 from parqcast.core.registry import REGISTRY, VersionBundle
 from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import (
@@ -42,7 +43,7 @@ from parqcast.transport.base import BaseTransport
 logger = logging.getLogger(__name__)
 
 
-def _resolve_bundle(cr) -> tuple[VersionBundle[Any], Callable[..., Any]]:
+def _resolve_bundle(cr: ReadCursor) -> tuple[VersionBundle[Any], Callable[..., Any]]:
     """Verify the DB's Odoo major is supported.
 
     Returns ``(bundle, probe)`` where ``probe`` is guaranteed non-None
@@ -58,7 +59,9 @@ def _resolve_bundle(cr) -> tuple[VersionBundle[Any], Callable[..., Any]]:
     return bundle, bundle.probe_capabilities
 
 
-def _build_collectors(env, bundle: VersionBundle[Any], caps) -> list[BaseCollector[Any]]:
+def _build_collectors(
+    env: DatabaseEnv, bundle: VersionBundle[Any], caps: OdooCapabilities[Any]
+) -> list[BaseCollector[Any]]:
     """Suite-gated collector instantiation for this bundle."""
     collectors: list[BaseCollector[Any]] = []
     skipped: list[str] = []

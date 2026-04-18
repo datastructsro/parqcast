@@ -34,7 +34,7 @@ import pyarrow.parquet as pq
 
 from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
-from parqcast.core.protocols import ChunkMetadata, OdooRow, SqlWithParams
+from parqcast.core.protocols import ChunkMetadata, DatabaseEnv, OdooRow, SqlWithParams
 
 
 class BaseCollector[V](ABC):
@@ -53,8 +53,8 @@ class BaseCollector[V](ABC):
     max_chunk_rows: int = 50_000  # max rows per sub-chunk
     primary_table: str = ""  # main FROM table name (for row estimation)
 
-    def __init__(self, env, caps: OdooCapabilities[V]) -> None:
-        self.env = env
+    def __init__(self, env: DatabaseEnv, caps: OdooCapabilities[V]) -> None:
+        self.env: DatabaseEnv = env
         self.caps = caps
 
     def _stamped_schema(self) -> pa.Schema:
