@@ -1,22 +1,20 @@
 """Odoo 19-specific collector implementations.
 
-Importing this subpackage registers the v19 collector classes into
-:data:`parqcast.core.registry.REGISTRY` under the ``"19"`` key. As new
-collectors move from the flat layout into this subpackage, they are added
-to the registration list below.
+Importing this subpackage populates the v19 bundle in
+:data:`parqcast.core.registry.REGISTRY` via the side-effect import of
+:mod:`parqcast.collectors.v19.bundle`.
 """
 
 from __future__ import annotations
 
-from parqcast.core.registry import append_to_bundle
-
+from . import bundle as bundle  # noqa: F401 — side-effect: registers v19 bundle
+from .mps import MpsForecastCollectorV19, MpsScheduleCollectorV19
 from .mrp_bom import (
     BomByproductCollectorV19,
     BomCollectorV19,
     BomLinesCollectorV19,
     BomOperationsCollectorV19,
 )
-from .mps import MpsForecastCollectorV19, MpsScheduleCollectorV19
 from .mrp_production import MrpProductionCollectorV19
 from .mrp_workorder import MrpWorkorderCollectorV19
 from .orderpoint import OrderpointCollectorV19
@@ -46,52 +44,6 @@ from .stock_storage_category import StockStorageCategoryCollectorV19
 from .stock_warehouse import StockWarehouseCollectorV19
 from .uom import UomCollectorV19
 from .workcenter import WorkcenterCapacityCollectorV19, WorkcenterCollectorV19
-
-append_to_bundle(
-    "19",
-    collectors=(
-        UomCollectorV19,
-        ProductCollectorV19,
-        StockLocationCollectorV19,
-        StockWarehouseCollectorV19,
-        StockStorageCategoryCollectorV19,
-        StockPackageTypeCollectorV19,
-        StockPackageCollectorV19,
-        StockPickingTypeCollectorV19,
-        StockQuantCollectorV19,
-        StockMoveCollectorV19,
-        StockMoveLineCollectorV19,
-        StockPickingCollectorV19,
-        StockRouteCollectorV19,
-        StockLotCollectorV19,
-        StockPutawayRuleCollectorV19,
-        ProductRemovalCollectorV19,
-        OrderpointCollectorV19,
-        SaleOrderCollectorV19,
-        SaleOrderLineCollectorV19,
-        PricelistCollectorV19,
-        PricelistItemCollectorV19,
-        PurchaseOrderCollectorV19,
-        PurchaseOrderLineCollectorV19,
-        ProductSupplierinfoCollectorV19,
-        PurchaseRequisitionCollectorV19,
-        WorkcenterCollectorV19,
-        WorkcenterCapacityCollectorV19,
-        BomCollectorV19,
-        BomLinesCollectorV19,
-        BomOperationsCollectorV19,
-        BomByproductCollectorV19,
-        MrpProductionCollectorV19,
-        MrpWorkorderCollectorV19,
-        PosSessionCollectorV19,
-        PosOrderCollectorV19,
-        PosOrderLineCollectorV19,
-        MpsScheduleCollectorV19,
-        MpsForecastCollectorV19,
-        QualityPointCollectorV19,
-        QualityCheckCollectorV19,
-    ),
-)
 
 __all__ = [
     "BomByproductCollectorV19",

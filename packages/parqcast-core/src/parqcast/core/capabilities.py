@@ -270,11 +270,3 @@ def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabili
     )
 
 
-def probe(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
-    """Legacy shim around :func:`probe_v19`.
-
-    Retained so existing callers (CollectorFactory, tests) keep working
-    while the per-version migration is in progress. Removed once the
-    registry cutover commit rewires all call sites.
-    """
-    return probe_v19(cr, probe_tables=probe_tables)

@@ -1,4 +1,4 @@
-from parqcast.collectors import ALL_COLLECTOR_CLASSES, ALL_SUITES, collect_probe_tables
+import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
 from parqcast.collectors.base import (
     CoreCollector,
     MpsCollector,
@@ -9,6 +9,11 @@ from parqcast.collectors.base import (
     SaleCollector,
 )
 from parqcast.core.capabilities import _DEFAULT_PROBE_TABLES, OdooCapabilities
+from parqcast.core.registry import REGISTRY
+from parqcast.core.suite import collect_probe_tables
+
+ALL_COLLECTOR_CLASSES = list(REGISTRY["19"].collectors)
+ALL_SUITES = REGISTRY["19"].suites
 
 
 def _make_caps(**kwargs) -> OdooCapabilities:

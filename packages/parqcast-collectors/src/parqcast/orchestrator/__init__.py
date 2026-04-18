@@ -22,7 +22,10 @@ import time
 
 import pyarrow.parquet as pq
 
-from parqcast.collectors.factory import CollectorFactory
+import parqcast.collectors as _collectors  # noqa: F401 — side-effect: registers v19 bundle
+from parqcast.collectors.base import BaseCollector
+from parqcast.core.registry import REGISTRY, VersionBundle
+from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import (
     DEFAULT_STREAMING_RATE,
     ExportChunk,
@@ -30,9 +33,65 @@ from parqcast.core.tracking import (
     estimate_row_count,
     get_id_range,
 )
+from parqcast.core.version_gate import assert_supported
 from parqcast.transport.base import BaseTransport
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_bundle(cr) -> VersionBundle:
+    """Verify the DB's Odoo major is supported and return its bundle."""
+    version = assert_supported(cr)
+    bundle = REGISTRY[version]
+    if bundle.probe_capabilities is None:
+        raise RuntimeError(
+            f"Bundle for Odoo {version!r} has no probe_capabilities — "
+            f"the v{version} subpackage may have failed to import."
+        )
+    return bundle
+
+
+def _build_collectors(env, bundle: VersionBundle, caps) -> list[BaseCollector]:
+    """Suite-gated collector instantiation for this bundle."""
+    collectors: list[BaseCollector] = []
+    skipped: list[str] = []
+    for suite in bundle.suites:
+        if not suite.is_available(caps):
+            skipped.append(suite.name)
+            continue
+        collectors.extend(cls(env, caps) for cls in suite.collector_classes if cls.is_compatible(caps))
+    if skipped:
+        logger.info("Skipped suites: %s", ", ".join(skipped))
+    logger.info(
+        "Instantiated %d collectors for %s mode: %s",
+        len(collectors),
+        caps.mode,
+        ", ".join(c.name for c in collectors),
+    )
+    return collectors
+
+
+def _resolve_order(collectors: list[BaseCollector]) -> list[BaseCollector]:
+    """Topological sort respecting each collector's ``depends_on``."""
+    by_name = {c.name: c for c in collectors}
+    active_names = set(by_name.keys())
+    visited: set[str] = set()
+    order: list[BaseCollector] = []
+
+    def visit(name: str) -> None:
+        if name in visited:
+            return
+        visited.add(name)
+        collector = by_name.get(name)
+        if collector:
+            for dep in collector.depends_on:
+                if dep in active_names:
+                    visit(dep)
+            order.append(collector)
+
+    for c in collectors:
+        visit(c.name)
+    return order
 
 # Default time budget: 4.5 minutes, leaving 30s buffer for cleanup
 DEFAULT_TIME_BUDGET = 270
@@ -102,10 +161,10 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     def _phase_plan(self, cr, run, t0) -> dict:
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
-        collectors = factory.create_collectors(caps)
-        ordered = factory.resolve_order(collectors)
+        bundle = _resolve_bundle(cr)
+        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
+        collectors = _build_collectors(self.env, bundle, caps)
+        ordered = _resolve_order(collectors)
 
         seq = 0
         for collector in ordered:
@@ -156,9 +215,9 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     def _phase_collect(self, cr, run, t0) -> dict:
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
-        collectors = factory.create_collectors(caps)
+        bundle = _resolve_bundle(cr)
+        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
+        collectors = _build_collectors(self.env, bundle, caps)
         collectors_by_name = {c.name: c for c in collectors}
 
         pending = self.chunk_cls.find_by_state(cr, run.id, "pending")
@@ -276,8 +335,8 @@ class Orchestrator:
         errors = [f"{c.collector}: {c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
 
         # Re-probe for capabilities (needed for manifest)
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
+        bundle = _resolve_bundle(cr)
+        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
 
         manifest = build_manifest(
             files=file_metas,

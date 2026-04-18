@@ -24,11 +24,21 @@ import psycopg2
 import pyarrow.parquet as pq
 import pytest
 
-from parqcast.collectors.factory import CollectorFactory
-from parqcast.core.capabilities import probe
+import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
+from parqcast.core.capabilities import probe_v19
+from parqcast.core.registry import REGISTRY
+from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import ExportChunk, ExportRun, get_id_range
-from parqcast.orchestrator import Orchestrator
+from parqcast.orchestrator import Orchestrator, _build_collectors, _resolve_order
 from parqcast.transport.local_fs import LocalFSTransport
+
+
+def _probe_and_build(env):
+    """Mirrors the orchestrator's collector-build path for live-DB tests."""
+    bundle = REGISTRY["19"]
+    caps = bundle.probe_capabilities(env.cr, probe_tables=collect_probe_tables(bundle.suites))
+    collectors = _build_collectors(env, bundle, caps)
+    return bundle, caps, collectors
 
 DB_NAME = os.environ.get("PARQCAST_TEST_DB")
 if not DB_NAME:
@@ -95,7 +105,7 @@ def _clean_tracking(env):
 
 
 def test_probe_capabilities(env):
-    caps = probe(env.cr)
+    caps = probe_v19(env.cr)
     print(f"\n  Mode: {caps.mode}")
     print(f"  Odoo version: {caps.odoo_version}")
     print(f"  Warehouses: {caps.warehouse_count}")
@@ -110,9 +120,7 @@ def test_probe_capabilities(env):
 
 
 def test_factory_creates_correct_collectors(env):
-    factory = CollectorFactory(env)
-    caps = factory.probe()
-    collectors = factory.create_collectors(caps)
+    _, caps, collectors = _probe_and_build(env)
     names = {c.name for c in collectors}
 
     print(f"\n  Active collectors ({len(collectors)}): {', '.join(sorted(names))}")
@@ -147,10 +155,8 @@ def test_factory_creates_correct_collectors(env):
 
 
 def test_run_all_compatible_collectors(env):
-    factory = CollectorFactory(env)
-    caps = factory.probe()
-    collectors = factory.create_collectors(caps)
-    ordered = factory.resolve_order(collectors)
+    _, caps, collectors = _probe_and_build(env)
+    ordered = _resolve_order(collectors)
 
     results = {}
     for collector in ordered:
@@ -173,9 +179,7 @@ def test_run_all_compatible_collectors(env):
 
 def test_keyset_collect(env):
     """Verify keyset pagination produces correct row counts when split."""
-    factory = CollectorFactory(env)
-    caps = factory.probe()
-    collectors = factory.create_collectors(caps)
+    _, caps, collectors = _probe_and_build(env)
 
     collector = next(c for c in collectors if c.name == "stock_picking")
     full_table = collector.collect()

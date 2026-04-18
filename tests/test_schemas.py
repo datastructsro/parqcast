@@ -1,8 +1,11 @@
 import pyarrow as pa
 
-from parqcast.collectors import ALL_COLLECTOR_CLASSES
+import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
+from parqcast.core.registry import REGISTRY
 from parqcast.schemas.inbound import DECISIONS_SCHEMA
 from parqcast.schemas.outbound import ALL_OUTBOUND_SCHEMAS
+
+ALL_COLLECTOR_CLASSES = list(REGISTRY["19"].collectors)
 
 
 def test_all_outbound_schemas_are_valid():
