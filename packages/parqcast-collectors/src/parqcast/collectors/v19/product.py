@@ -1,20 +1,28 @@
 import re
 
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PRODUCT_SCHEMA
 
-from .base import CoreCollector
+from ..base import CoreCollector
 
 _LANG_RE = re.compile(r"^[a-z]{2}_[A-Z]{2}$")
 
 
-class ProductCollector(CoreCollector):
-    """
-    Odoo 19:
-    - standard_price on product_product as JSONB, needs cast
-    - no price_extra (variant pricing changed)
-    - tracking on product_template
-    - uom.name is JSONB
-    - multi-language: exports name in up to 3 active languages
+class ProductCollectorV19(CoreCollector[V19]):
+    """Product collector for Odoo 19.
+
+    Notes on storage shape (not all v19-specific):
+
+    - ``pp.standard_price`` is declared ``company_dependent=True`` and stored
+      as JSONB keyed by company — an Odoo-wide format since company-dependent
+      fields were migrated to JSONB (pre-18, not v19-specific). We extract the
+      value for the first active language and cast to float8.
+    - ``pt.name``, ``sr.name``, ``pt.description_sale`` are translatable
+      ``Char``/``Text`` fields and likewise stored as JSONB (also pre-18).
+    - ``price_extra`` still exists on ``product.product`` in v19; we do not
+      export it here because it's a computed variant-pricing field — extract
+      from ``list_price`` when needed downstream.
+    - Multi-language: name is exported in up to 3 active languages.
     """
 
     name = "product"

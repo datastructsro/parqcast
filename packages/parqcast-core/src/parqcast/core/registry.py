@@ -9,7 +9,8 @@ accepts at runtime.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Iterable
+from dataclasses import dataclass, replace
 from typing import Any
 
 from parqcast.core.version import SupportedVersionStr
@@ -45,3 +46,29 @@ def _bootstrap() -> None:
 
 
 _bootstrap()
+
+
+def append_to_bundle(
+    version: SupportedVersionStr,
+    *,
+    collectors: Iterable[type] = (),
+    ingesters: Iterable[type] = (),
+) -> None:
+    """Extend the version bundle at ``REGISTRY[version]`` with more components.
+
+    Per-version subpackages (e.g. ``parqcast.collectors.v19``) call this at
+    import time to register their collector and ingester classes. Each call
+    replaces ``REGISTRY[version]`` with a new frozen bundle — ``VersionBundle``
+    is immutable by design, so accumulation goes through :func:`dataclasses.replace`.
+    """
+    current = REGISTRY.get(version)
+    if current is None:
+        raise RuntimeError(
+            f"append_to_bundle: no bundle registered for Odoo {version!r}; "
+            f"bootstrap should have installed one."
+        )
+    REGISTRY[version] = replace(
+        current,
+        collectors=current.collectors + tuple(collectors),
+        ingesters=current.ingesters + tuple(ingesters),
+    )

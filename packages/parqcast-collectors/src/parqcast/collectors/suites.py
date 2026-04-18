@@ -32,7 +32,6 @@ from .partner import PartnerCollector
 from .pos_order import PosOrderCollector, PosOrderLineCollector
 from .pos_session import PosSessionCollector
 from .pricelist import PricelistCollector, PricelistItemCollector
-from .product import ProductCollector
 from .product_category import ProductCategoryCollector
 from .product_removal import ProductRemovalCollector
 from .product_supplierinfo import ProductSupplierinfoCollector
@@ -54,7 +53,7 @@ from .stock_quant import StockQuantCollector
 from .stock_route import StockRouteCollector
 from .stock_storage_category import StockStorageCategoryCollector
 from .stock_warehouse import StockWarehouseCollector
-from .uom import UomCollector
+from .v19 import ProductCollectorV19, UomCollectorV19
 from .workcenter import WorkcenterCapacityCollector, WorkcenterCollector
 
 
@@ -103,9 +102,9 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "core",
         frozenset(),
         (
-            UomCollector,
+            UomCollectorV19,
             PartnerCollector,
-            ProductCollector,
+            ProductCollectorV19,
             ProductCategoryCollector,
             CalendarCollector,
             CalendarLeavesCollector,

@@ -36,7 +36,7 @@ from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
 
 
-class BaseCollector(ABC):
+class BaseCollector[V](ABC):
     name: str
     schema: pa.Schema
     depends_on: list[str] = []
@@ -52,7 +52,7 @@ class BaseCollector(ABC):
     max_chunk_rows: int = 50_000  # max rows per sub-chunk
     primary_table: str = ""  # main FROM table name (for row estimation)
 
-    def __init__(self, env, caps: OdooCapabilities):
+    def __init__(self, env, caps: OdooCapabilities[V]) -> None:
         self.env = env
         self.caps = caps
 
@@ -66,7 +66,7 @@ class BaseCollector(ABC):
         return self.schema.with_metadata({**existing, **meta})
 
     @classmethod
-    def is_compatible(cls, caps: OdooCapabilities) -> bool:
+    def is_compatible(cls, caps: OdooCapabilities[V]) -> bool:
         for mod in cls.required_modules:
             if not caps.has_module(mod):
                 return False
@@ -161,50 +161,50 @@ class BaseCollector(ABC):
 # --- Type hierarchy tiers ---
 
 
-class CoreCollector(BaseCollector):
+class CoreCollector[V](BaseCollector[V]):
     """Always runs. No module requirements."""
 
     required_modules = set()
 
 
-class StockCollector(BaseCollector):
+class StockCollector[V](BaseCollector[V]):
     """Requires the stock module."""
 
     required_modules = {"stock"}
 
 
-class SaleCollector(BaseCollector):
+class SaleCollector[V](BaseCollector[V]):
     """Requires the sale module."""
 
     required_modules = {"sale"}
 
 
-class PurchaseCollector(BaseCollector):
+class PurchaseCollector[V](BaseCollector[V]):
     """Requires the purchase module."""
 
     required_modules = {"purchase"}
 
 
-class MrpCollector(BaseCollector):
+class MrpCollector[V](BaseCollector[V]):
     """Requires the mrp (Manufacturing) module."""
 
     required_modules = {"mrp"}
     required_tables = {"mrp_production", "mrp_bom", "mrp_workcenter"}
 
 
-class PosCollector(BaseCollector):
+class PosCollector[V](BaseCollector[V]):
     """Requires the point_of_sale module."""
 
     required_modules = {"point_of_sale"}
 
 
-class MpsCollector(BaseCollector):
+class MpsCollector[V](BaseCollector[V]):
     """Requires the mrp_mps (Master Production Schedule) module."""
 
     required_modules = {"mrp_mps"}
 
 
-class QualityCollector(BaseCollector):
+class QualityCollector[V](BaseCollector[V]):
     """Requires the quality module."""
 
     required_modules = {"quality"}
