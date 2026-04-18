@@ -78,6 +78,12 @@ reportMissingModuleSource = "none"
 # three dynamic-access rules suppressed; the rest of the workspace
 # enforces them.
 [[tool.pyright.executionEnvironments]]
+root = "packages/parqcast-ingesters/src/parqcast/ingesters/v18"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+
+[[tool.pyright.executionEnvironments]]
 root = "packages/parqcast-ingesters/src/parqcast/ingesters/v19"
 reportUnknownMemberType = "none"
 reportUnknownVariableType = "none"
