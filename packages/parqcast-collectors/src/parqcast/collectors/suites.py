@@ -23,15 +23,15 @@ from .calendar_leaves import CalendarLeavesCollector
 from .company import CompanyCollector
 from .country import CountryCollector
 from .currency import CurrencyCollector
-from .mps import MpsForecastCollector, MpsScheduleCollector
 from .partner import PartnerCollector
 from .product_category import ProductCategoryCollector
-from .quality import QualityCheckCollector, QualityPointCollector
 from .v19 import (
     BomByproductCollectorV19,
     BomCollectorV19,
     BomLinesCollectorV19,
     BomOperationsCollectorV19,
+    MpsForecastCollectorV19,
+    MpsScheduleCollectorV19,
     MrpProductionCollectorV19,
     MrpWorkorderCollectorV19,
     OrderpointCollectorV19,
@@ -46,6 +46,8 @@ from .v19 import (
     PurchaseOrderCollectorV19,
     PurchaseOrderLineCollectorV19,
     PurchaseRequisitionCollectorV19,
+    QualityCheckCollectorV19,
+    QualityPointCollectorV19,
     SaleOrderCollectorV19,
     SaleOrderLineCollectorV19,
     StockLocationCollectorV19,
@@ -203,16 +205,16 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "mps",
         frozenset({"mrp_mps"}),
         (
-            MpsScheduleCollector,
-            MpsForecastCollector,
+            MpsScheduleCollectorV19,
+            MpsForecastCollectorV19,
         ),
     ),
     CollectorSuite(
         "quality",
         frozenset({"quality"}),
         (
-            QualityPointCollector,
-            QualityCheckCollector,
+            QualityPointCollectorV19,
+            QualityCheckCollectorV19,
         ),
     ),
 )

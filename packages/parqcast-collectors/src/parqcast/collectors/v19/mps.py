@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import MPS_FORECAST_SCHEMA, MPS_SCHEDULE_SCHEMA
 
-from .base import MpsCollector
+from ..base import MpsCollector
 
 
-class MpsScheduleCollector(MpsCollector):
+class MpsScheduleCollectorV19(MpsCollector[V19]):
     name = "mps_schedule"
     schema = MPS_SCHEDULE_SCHEMA
     primary_table = "mrp_production_schedule"
@@ -28,7 +29,7 @@ class MpsScheduleCollector(MpsCollector):
         )
 
 
-class MpsForecastCollector(MpsCollector):
+class MpsForecastCollectorV19(MpsCollector[V19]):
     name = "mps_forecast"
     schema = MPS_FORECAST_SCHEMA
     depends_on = ["mps_schedule"]

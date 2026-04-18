@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import QUALITY_CHECK_SCHEMA, QUALITY_POINT_SCHEMA
 
-from .base import QualityCollector
+from ..base import QualityCollector
 
 
-class QualityPointCollector(QualityCollector):
+class QualityPointCollectorV19(QualityCollector[V19]):
     name = "quality_point"
     schema = QUALITY_POINT_SCHEMA
     primary_table = "quality_point"
@@ -53,7 +54,7 @@ class QualityPointCollector(QualityCollector):
         )
 
 
-class QualityCheckCollector(QualityCollector):
+class QualityCheckCollectorV19(QualityCollector[V19]):
     name = "quality_check"
     schema = QUALITY_CHECK_SCHEMA
     depends_on = ["quality_point"]

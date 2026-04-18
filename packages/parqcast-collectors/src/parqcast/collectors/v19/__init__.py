@@ -16,6 +16,7 @@ from .mrp_bom import (
     BomLinesCollectorV19,
     BomOperationsCollectorV19,
 )
+from .mps import MpsForecastCollectorV19, MpsScheduleCollectorV19
 from .mrp_production import MrpProductionCollectorV19
 from .mrp_workorder import MrpWorkorderCollectorV19
 from .orderpoint import OrderpointCollectorV19
@@ -28,6 +29,7 @@ from .product_supplierinfo import ProductSupplierinfoCollectorV19
 from .purchase_order import PurchaseOrderCollectorV19
 from .purchase_order_line import PurchaseOrderLineCollectorV19
 from .purchase_requisition import PurchaseRequisitionCollectorV19
+from .quality import QualityCheckCollectorV19, QualityPointCollectorV19
 from .sale_order import SaleOrderCollectorV19
 from .sale_order_line import SaleOrderLineCollectorV19
 from .stock_location import StockLocationCollectorV19
@@ -84,6 +86,10 @@ append_to_bundle(
         PosSessionCollectorV19,
         PosOrderCollectorV19,
         PosOrderLineCollectorV19,
+        MpsScheduleCollectorV19,
+        MpsForecastCollectorV19,
+        QualityPointCollectorV19,
+        QualityCheckCollectorV19,
     ),
 )
 
@@ -92,6 +98,8 @@ __all__ = [
     "BomCollectorV19",
     "BomLinesCollectorV19",
     "BomOperationsCollectorV19",
+    "MpsForecastCollectorV19",
+    "MpsScheduleCollectorV19",
     "MrpProductionCollectorV19",
     "MrpWorkorderCollectorV19",
     "OrderpointCollectorV19",
@@ -106,6 +114,8 @@ __all__ = [
     "PurchaseOrderCollectorV19",
     "PurchaseOrderLineCollectorV19",
     "PurchaseRequisitionCollectorV19",
+    "QualityCheckCollectorV19",
+    "QualityPointCollectorV19",
     "SaleOrderCollectorV19",
     "SaleOrderLineCollectorV19",
     "StockLocationCollectorV19",
