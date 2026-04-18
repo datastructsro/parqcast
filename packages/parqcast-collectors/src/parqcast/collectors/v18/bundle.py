@@ -20,6 +20,14 @@ from ..country import CountryCollector
 from ..currency import CurrencyCollector
 from ..partner import PartnerCollector
 from ..product_category import ProductCategoryCollector
+from .mrp_bom import (
+    BomByproductCollectorV18,
+    BomCollectorV18,
+    BomLinesCollectorV18,
+    BomOperationsCollectorV18,
+)
+from .mrp_production import MrpProductionCollectorV18
+from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
 from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
@@ -43,6 +51,7 @@ from .stock_route import StockRouteCollectorV18
 from .stock_storage_category import StockStorageCategoryCollectorV18
 from .stock_warehouse import StockWarehouseCollectorV18
 from .uom import UomCollectorV18
+from .workcenter import WorkcenterCapacityCollectorV18, WorkcenterCollectorV18
 
 V18_SUITES: tuple[CollectorSuite, ...] = (
     CollectorSuite(
@@ -110,6 +119,20 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
             PurchaseOrderLineCollectorV18,
             ProductSupplierinfoCollectorV18,
             PurchaseRequisitionCollectorV18,
+        ),
+    ),
+    CollectorSuite(
+        "mrp",
+        frozenset({"mrp"}),
+        (
+            WorkcenterCollectorV18,
+            WorkcenterCapacityCollectorV18,
+            BomCollectorV18,
+            BomLinesCollectorV18,
+            BomOperationsCollectorV18,
+            BomByproductCollectorV18,
+            MrpProductionCollectorV18,
+            MrpWorkorderCollectorV18,
         ),
     ),
 )

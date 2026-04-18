@@ -8,6 +8,14 @@ Importing this subpackage populates the v18 bundle in
 from __future__ import annotations
 
 from . import bundle as bundle  # noqa: F401 — side-effect: registers v18 bundle
+from .mrp_bom import (
+    BomByproductCollectorV18,
+    BomCollectorV18,
+    BomLinesCollectorV18,
+    BomOperationsCollectorV18,
+)
+from .mrp_production import MrpProductionCollectorV18
+from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
 from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
@@ -31,8 +39,15 @@ from .stock_route import StockRouteCollectorV18
 from .stock_storage_category import StockStorageCategoryCollectorV18
 from .stock_warehouse import StockWarehouseCollectorV18
 from .uom import UomCollectorV18
+from .workcenter import WorkcenterCapacityCollectorV18, WorkcenterCollectorV18
 
 __all__ = [
+    "BomByproductCollectorV18",
+    "BomCollectorV18",
+    "BomLinesCollectorV18",
+    "BomOperationsCollectorV18",
+    "MrpProductionCollectorV18",
+    "MrpWorkorderCollectorV18",
     "OrderpointCollectorV18",
     "PricelistCollectorV18",
     "PricelistItemCollectorV18",
@@ -58,4 +73,6 @@ __all__ = [
     "StockStorageCategoryCollectorV18",
     "StockWarehouseCollectorV18",
     "UomCollectorV18",
+    "WorkcenterCapacityCollectorV18",
+    "WorkcenterCollectorV18",
 ]
