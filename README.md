@@ -92,6 +92,15 @@ are populated (see `packages/parqcast/i18n/`):
 Regenerate the `.pot` template after changing user-facing strings:
 `scripts/gen_pot.sh`. Translation PRs welcome.
 
+## About
+
+Built and maintained by **[DataStruct s.r.o.](https://datastruct.tech)** — an **[Odoo Official Partner](https://www.odoo.com/partners)** based in the Czech Republic, specialising in demand forecasting and ERP implementation for manufacturing, retail, and logistics in the Czech–German–Polish triangle.
+
+- **See it in production:** [demand-forecast case study](https://datastruct.tech/post/demand-forecasts-shift-planning) · [SAP→Odoo migration, 84% cost reduction](https://datastruct.tech/post/sap-to-odoo-vibecoded-migration)
+- **Book a 30-min technical diagnostic:** [cal.com/oleg-popov-sjwko9/30min](https://cal.com/oleg-popov-sjwko9/30min)
+- **Questions / partnership:** info@datastruct.tech
+- **Companion:** [foreqcast](https://github.com/datastructsro/foreqcast) (demand forecaster that consumes these exports) · [parqcast-lambda](https://github.com/datastructsro/parqcast-lambda) · [parqcast-server](https://github.com/datastructsro/parqcast-server)
+
 ## License
 
 LGPL-3.0-or-later
