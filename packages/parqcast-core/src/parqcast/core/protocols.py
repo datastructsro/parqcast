@@ -16,7 +16,19 @@ Three protocols, from narrowest to widest:
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Protocol, runtime_checkable
+from typing import Protocol, TypeAlias, runtime_checkable
+
+# ---------------------------------------------------------------------------
+# Named type aliases shared across the workspace.
+# ---------------------------------------------------------------------------
+
+SqlParams: TypeAlias = Sequence[object] | Mapping[str, object] | None
+"""Positional or named parameters accepted by psycopg2's execute()."""
+
+SqlWithParams: TypeAlias = tuple[str, SqlParams]
+"""Return shape of ``BaseCollector.get_sql()``: a SQL string paired with
+bind-parameters (or None). Kept as a named alias so collector subclasses
+match the abstract signature verbatim."""
 
 
 @runtime_checkable
@@ -28,12 +40,7 @@ class ReadCursor(Protocol):
     pass a keyword (psycopg2 also accepts positional only).
     """
 
-    def execute(
-        self,
-        sql: str,
-        params: Sequence[object] | Mapping[str, object] | None = None,
-        /,
-    ) -> object: ...
+    def execute(self, sql: str, params: SqlParams = None, /) -> object: ...
 
     def fetchone(self) -> tuple[object, ...] | None: ...
 

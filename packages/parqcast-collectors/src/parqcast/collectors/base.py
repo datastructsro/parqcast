@@ -34,6 +34,7 @@ import pyarrow.parquet as pq
 
 from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
+from parqcast.core.protocols import SqlWithParams
 
 
 class BaseCollector[V](ABC):
@@ -81,7 +82,7 @@ class BaseCollector[V](ABC):
 
     # --- SQL generation (override in subclasses) ---
 
-    def get_sql(self) -> tuple[str, tuple | None]:
+    def get_sql(self) -> SqlWithParams:
         """Return (sql_string, params_or_None). Subclasses must implement this."""
         raise NotImplementedError(f"{self.__class__.__name__} must implement get_sql()")
 
