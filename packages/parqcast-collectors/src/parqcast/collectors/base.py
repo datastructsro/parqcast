@@ -59,12 +59,13 @@ class BaseCollector[V](ABC):
 
     def _stamped_schema(self) -> pa.Schema:
         """Return schema with parqcast and Odoo version metadata embedded."""
-        meta = {
+        meta: dict[bytes, bytes] = {
             b"parqcast_version": __version__.encode(),
             b"odoo_version": (self.caps.odoo_version or "unknown").encode(),
         }
-        existing = self.schema.metadata or {}
-        return self.schema.with_metadata({**existing, **meta})
+        existing: dict[bytes, bytes] = dict(self.schema.metadata or {})
+        # pyarrow-stubs does not fully type Schema.with_metadata's return.
+        return self.schema.with_metadata({**existing, **meta})  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
     @classmethod
     def is_compatible(cls, caps: OdooCapabilities[V]) -> bool:
@@ -111,7 +112,8 @@ class BaseCollector[V](ABC):
         return self._to_table(rows)
 
     def to_parquet(self, table: pa.Table, path: Path) -> ChunkMetadata:
-        pq.write_table(table, path, compression="snappy")
+        # pyarrow-stubs does not fully type parquet.write_table.
+        pq.write_table(table, path, compression="snappy")  # pyright: ignore[reportUnknownMemberType]
         file_bytes = path.read_bytes()
         return {
             "file": f"{self.name}.parquet",
@@ -149,14 +151,19 @@ class BaseCollector[V](ABC):
         return self.env.cr.fetchall()
 
     def _to_table(self, rows: list[OdooRow]) -> pa.Table:
-        cols = {field.name: [] for field in self.schema}
+        # pyarrow-stubs types schema iteration / pa.table partially; the
+        # resulting Field/Table values come back as unknown even though
+        # their .name / schema usage is well-defined in practice.
+        cols: dict[str, list[object]] = {
+            field.name: [] for field in self.schema  # pyright: ignore[reportUnknownVariableType]
+        }
         for row in rows:
-            for i, field in enumerate(self.schema):
-                val = row[i] if i < len(row) else None
+            for i, field in enumerate(self.schema):  # pyright: ignore[reportUnknownVariableType]
+                val: object = row[i] if i < len(row) else None
                 if isinstance(val, Decimal):
                     val = float(val)
                 cols[field.name].append(val)
-        return pa.table(cols, schema=self._stamped_schema())
+        return pa.table(cols, schema=self._stamped_schema())  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
 
 # --- Type hierarchy tiers ---

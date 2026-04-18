@@ -2,6 +2,7 @@ import json
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import cast
 
 from parqcast.core.protocols import ChunkMetadata, JsonDict
 
@@ -46,14 +47,16 @@ def read_manifest(path: Path) -> JsonDict:
 
 def validate_manifest(manifest: JsonDict, directory: Path) -> list[str]:
     errors: list[str] = []
-    files = manifest.get("files", [])
-    if not isinstance(files, list):
+    files_raw: object = manifest.get("files", [])
+    if not isinstance(files_raw, list):
         return ["manifest['files'] must be a list"]
+    files = cast("list[object]", files_raw)
     for f in files:
         if not isinstance(f, dict):
             errors.append(f"Expected dict in manifest['files'], got {type(f).__name__}")
             continue
-        file_name = f.get("file")
+        entry = cast("dict[str, object]", f)
+        file_name = entry.get("file")
         if not isinstance(file_name, str):
             errors.append("manifest['files'][].file must be a string")
             continue
@@ -62,7 +65,7 @@ def validate_manifest(manifest: JsonDict, directory: Path) -> list[str]:
             errors.append(f"Missing file: {file_name}")
             continue
         actual = checksum_file(fpath)
-        expected = f.get("checksum")
+        expected = entry.get("checksum")
         if actual != expected:
-            errors.append(f"Checksum mismatch for {file_name}: expected {expected}, got {actual}")
+            errors.append(f"Checksum mismatch for {file_name}: expected {expected!r}, got {actual}")
     return errors

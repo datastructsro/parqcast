@@ -26,7 +26,7 @@ class CollectorSuite:
     collector_classes: tuple[type, ...]
     # Tables that need column introspection but are referenced in JOINs or
     # inline caps checks rather than via required_tables / optional_columns.
-    probe_extra_tables: frozenset[str] = field(default_factory=frozenset)
+    probe_extra_tables: frozenset[str] = field(default_factory=lambda: frozenset[str]())
 
     def is_available(self, caps: Any) -> bool:
         return all(caps.has_module(m) for m in self.required_modules)

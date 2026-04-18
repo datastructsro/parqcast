@@ -69,7 +69,14 @@ def _build_collectors(
         if not suite.is_available(caps):
             skipped.append(suite.name)
             continue
-        collectors.extend(cls(env, caps) for cls in suite.collector_classes if cls.is_compatible(caps))
+        # CollectorSuite.collector_classes is tuple[type, ...] at the core layer
+        # (core cannot import BaseCollector without a layering violation), so
+        # cls.is_compatible comes back as Unknown here.
+        collectors.extend(
+            cls(env, caps)
+            for cls in suite.collector_classes
+            if cls.is_compatible(caps)  # pyright: ignore[reportUnknownMemberType]
+        )
     if skipped:
         logger.info("Skipped suites: %s", ", ".join(skipped))
     logger.info(
@@ -260,7 +267,7 @@ class Orchestrator:
                     key_to=chunk_rec.key_to,
                 )
                 buf = io.BytesIO()
-                pq.write_table(table, buf, compression="snappy")
+                pq.write_table(table, buf, compression="snappy")  # pyright: ignore[reportUnknownMemberType]
                 data = buf.getvalue()
                 rows = table.num_rows
 

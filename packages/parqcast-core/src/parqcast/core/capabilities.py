@@ -24,9 +24,9 @@ from parqcast.core.version import V19
 @dataclass(frozen=True)
 class OdooCapabilities[V]:
     # Module presence
-    installed_modules: frozenset[str] = field(default_factory=frozenset)
-    existing_tables: frozenset[str] = field(default_factory=frozenset)
-    columns_by_table: dict[str, frozenset[str]] = field(default_factory=dict)
+    installed_modules: frozenset[str] = field(default_factory=lambda: frozenset[str]())
+    existing_tables: frozenset[str] = field(default_factory=lambda: frozenset[str]())
+    columns_by_table: dict[str, frozenset[str]] = field(default_factory=lambda: dict[str, frozenset[str]]())
 
     # Derived module flags
     has_stock: bool = False

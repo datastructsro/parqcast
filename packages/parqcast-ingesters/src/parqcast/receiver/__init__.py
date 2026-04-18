@@ -18,7 +18,7 @@ class Receiver:
         self.company_id = company_id
 
     def run(self, remote_prefix: str, cleanup: bool = True) -> JsonDict:
-        results = {}
+        results: dict[str, IngestResult] = {}
 
         # Download manifest
         try:
@@ -48,7 +48,7 @@ class Receiver:
             if not decisions_path.exists():
                 return {"error": "No decisions.parquet found"}
 
-            table = pq.read_table(decisions_path)
+            table = pq.read_table(decisions_path)  # pyright: ignore[reportUnknownMemberType]
             type_col = table.column("decision_type").to_pylist()
             unique_types: set[str] = {t for t in type_col if isinstance(t, str)}
 
@@ -59,7 +59,7 @@ class Receiver:
                     continue
 
                 mask = [t == dtype for t in type_col]
-                filtered = table.filter(mask)
+                filtered = table.filter(mask)  # pyright: ignore[reportUnknownMemberType]
 
                 ingester = ingester_cls()
                 if cleanup:
