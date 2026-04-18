@@ -9,18 +9,12 @@ that is not registered.
 
 from __future__ import annotations
 
-from typing import Protocol
-
+from parqcast.core.protocols import ReadCursor
 from parqcast.core.registry import REGISTRY
 from parqcast.core.version import SupportedVersionStr, UnsupportedOdooVersionError
 
 
-class _Cursor(Protocol):
-    def execute(self, sql: str) -> object: ...
-    def fetchone(self) -> tuple[object, ...] | None: ...
-
-
-def _read_odoo_major(cr: _Cursor) -> str:
+def _read_odoo_major(cr: ReadCursor) -> str:
     """Return the Odoo major (e.g. ``"19"``) reported by the connected DB.
 
     Reads ``ir_module_module.latest_version`` of the ``base`` module — the
@@ -37,7 +31,7 @@ def _read_odoo_major(cr: _Cursor) -> str:
     return str(row[0]).split(".", 1)[0]
 
 
-def assert_supported(cr: _Cursor) -> SupportedVersionStr:
+def assert_supported(cr: ReadCursor) -> SupportedVersionStr:
     """Verify the DB is an Odoo major parqcast supports; return the tag.
 
     Raises :class:`UnsupportedOdooVersionError` if the detected major is not
