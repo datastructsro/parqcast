@@ -44,6 +44,7 @@ testpaths = ["tests"]
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
+stubPath = "stubs"
 include = [
     "packages/parqcast-core/src",
     "packages/parqcast-collectors/src",
