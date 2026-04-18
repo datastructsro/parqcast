@@ -66,16 +66,39 @@ def test_registry_bootstrap_has_supported_versions():
         assert isinstance(REGISTRY[version], VersionBundle)
 
 
-def test_v19_bundle_is_populated_after_collector_import():
-    """After importing parqcast.collectors, REGISTRY['19'] is fully assembled."""
-    import parqcast.collectors  # noqa: F401 — side-effect: registers v19 bundle
-    import parqcast.ingesters  # noqa: F401 — side-effect: registers v19 ingesters
+def test_bundles_are_populated_after_collector_import():
+    """After importing parqcast.collectors and parqcast.ingesters, every
+    supported bundle is fully assembled."""
+    import parqcast.collectors  # noqa: F401 — side-effect: registers v18+v19 bundles
+    import parqcast.ingesters  # noqa: F401 — side-effect: registers v18+v19 ingesters
 
-    bundle = REGISTRY["19"]
-    assert len(bundle.collectors) > 0, "v19 bundle has no collectors"
-    assert len(bundle.suites) > 0, "v19 bundle has no suites"
-    assert len(bundle.ingesters) > 0, "v19 bundle has no ingesters"
-    assert bundle.probe_capabilities is not None, "v19 bundle missing probe callable"
+    for version in ("18", "19"):
+        bundle = REGISTRY[version]
+        assert len(bundle.collectors) > 0, f"v{version} bundle has no collectors"
+        assert len(bundle.suites) > 0, f"v{version} bundle has no suites"
+        assert len(bundle.ingesters) > 0, f"v{version} bundle has no ingesters"
+        assert bundle.probe_capabilities is not None, f"v{version} bundle missing probe callable"
+
+
+def test_v18_and_v19_bundles_have_same_shape():
+    """Both bundles should register the same number of collectors / suites /
+    ingesters — v18 mirrors v19's surface by design (Snowflake contract)."""
+    import parqcast.collectors  # noqa: F401
+    import parqcast.ingesters  # noqa: F401
+
+    b18 = REGISTRY["18"]
+    b19 = REGISTRY["19"]
+    assert len(b18.collectors) == len(b19.collectors), (
+        f"v18 has {len(b18.collectors)} collectors, v19 has {len(b19.collectors)}"
+    )
+    assert len(b18.suites) == len(b19.suites), (
+        f"v18 has {len(b18.suites)} suites, v19 has {len(b19.suites)}"
+    )
+    assert len(b18.ingesters) == len(b19.ingesters), (
+        f"v18 has {len(b18.ingesters)} ingesters, v19 has {len(b19.ingesters)}"
+    )
+    # Suite names must match 1:1 (same module-gated groupings)
+    assert {s.name for s in b18.suites} == {s.name for s in b19.suites}
 
 
 def test_unsupported_version_list_in_error_message():

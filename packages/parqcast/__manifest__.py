@@ -18,7 +18,7 @@
     "depends": ["base"],
     # Parqcast certifies per Odoo major. Installs refuse on any
     # unlisted major via parqcast.core.version_gate.
-    "parqcast_supported_versions": ("19",),
+    "parqcast_supported_versions": ("18", "19"),
     "external_dependencies": {
         "python": ["pyarrow"],
     },
