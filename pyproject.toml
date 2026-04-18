@@ -66,20 +66,20 @@ extraPaths = [
 # None-leaks, invalid type forms, cross-version generic mixing, unsafe
 # assignments.
 reportMissingImports = "none"
-reportUnknownArgumentType = "none"
-reportUnknownLambdaType = "none"
 
 # The ingester layer talks to Odoo's ORM, whose records expose fields via
 # runtime ``__getattr__``. Our OdooRecord Protocol types that as ``Any``,
-# which pyright then flags as Unknown-member / Unknown-variable every time
-# a field is read. Casting at every attribute access would bloat the code
-# without catching bugs (the Odoo ORM itself is the source of truth). So
-# this one directory keeps the two Unknown-* rules suppressed; the rest of
-# the workspace enforces them.
+# which pyright then flags as Unknown-member / Unknown-variable / Unknown-
+# argument every time a field is read or passed on. Casting at every
+# attribute access would bloat the code without catching bugs (the Odoo
+# ORM itself is the source of truth). So this one directory keeps the
+# three dynamic-access rules suppressed; the rest of the workspace
+# enforces them.
 [[tool.pyright.executionEnvironments]]
 root = "packages/parqcast-ingesters/src/parqcast/ingesters/v19"
 reportUnknownMemberType = "none"
 reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
 
 # --- Ruff configuration ---
 

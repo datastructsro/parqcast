@@ -267,7 +267,10 @@ class ExportChunk:
         row = fetch_one_or_none(cr)
         if row and row[0]:
             data = row[0]
-            return bytes(data) if isinstance(data, memoryview) else data
+            if isinstance(data, memoryview):
+                return bytes(data)  # pyright: ignore[reportUnknownArgumentType]
+            if isinstance(data, (bytes, bytearray)):
+                return bytes(data)
         return b""
 
     def set_uploaded(self, cr: ReadCursor):
