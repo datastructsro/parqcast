@@ -5,19 +5,20 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 from parqcast.core.manifest import validate_manifest
+from parqcast.core.protocols import JsonDict, OdooEnvironment
 from parqcast.ingesters import ALL_INGESTERS
 from parqcast.ingesters.base import IngestResult
 from parqcast.transport.base import BaseTransport
 
 
 class Receiver:
-    def __init__(self, env, transport: BaseTransport, company_id: int):
+    def __init__(self, env: OdooEnvironment, transport: BaseTransport, company_id: int) -> None:
         self.env = env
         self.transport = transport
         self.company_id = company_id
 
-    def run(self, remote_prefix: str, cleanup: bool = True) -> dict:
-        results = {}
+    def run(self, remote_prefix: str, cleanup: bool = True) -> JsonDict:
+        results: dict[str, IngestResult] = {}
 
         # Download manifest
         try:
@@ -47,9 +48,9 @@ class Receiver:
             if not decisions_path.exists():
                 return {"error": "No decisions.parquet found"}
 
-            table = pq.read_table(decisions_path)
+            table = pq.read_table(decisions_path)  # pyright: ignore[reportUnknownMemberType]
             type_col = table.column("decision_type").to_pylist()
-            unique_types = set(type_col)
+            unique_types: set[str] = {t for t in type_col if isinstance(t, str)}
 
             for dtype in unique_types:
                 ingester_cls = ALL_INGESTERS.get(dtype)
@@ -58,7 +59,7 @@ class Receiver:
                     continue
 
                 mask = [t == dtype for t in type_col]
-                filtered = table.filter(mask)
+                filtered = table.filter(mask)  # pyright: ignore[reportUnknownMemberType]
 
                 ingester = ingester_cls()
                 if cleanup:

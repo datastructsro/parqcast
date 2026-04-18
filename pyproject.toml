@@ -29,12 +29,70 @@ dev = [
     "parqcast-ingesters",
     "parqcast-transport-http",
     "psycopg2-binary>=2.9.11",
+    "pyarrow-stubs>=20.0.0.20250716",
+    "pyright>=1.1.408",
     "pytest>=9.0.3",
     "ruff>=0.15.10",
+    "types-psycopg2>=2.9.21",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+# --- Pyright (strict for everything except Odoo-facing addon code) ---
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+stubPath = "stubs"
+include = [
+    "packages/parqcast-core/src",
+    "packages/parqcast-collectors/src",
+    "packages/parqcast-ingesters/src",
+    "packages/parqcast-transport-http/src",
+    "packages/parqcast",
+]
+# Resolve cross-package imports inside the parqcast namespace directly
+# from each package's src/ rather than through the installed distribution.
+# This lets pyright see the py.typed marker in each source tree.
+extraPaths = [
+    "packages/parqcast-core/src",
+    "packages/parqcast-collectors/src",
+    "packages/parqcast-ingesters/src",
+    "packages/parqcast-transport-http/src",
+]
+# The `odoo` module's symbols are covered by the project-local stubs at
+# ``stubs/odoo-stubs/`` (see ``stubPath`` above). Odoo isn't pip-installable,
+# so pyright cannot find its source — silence that one warning category
+# here. Type information itself is fully resolved via the stub package.
+reportMissingModuleSource = "none"
+# Otherwise zero global suppressions. Localised exceptions for the dynamic
+# ORM boundary live in the ``executionEnvironments`` block below.
+
+# The ingester layer talks to Odoo's ORM, whose records expose fields via
+# runtime ``__getattr__``. Our OdooRecord Protocol types that as ``Any``,
+# which pyright then flags as Unknown-member / Unknown-variable / Unknown-
+# argument every time a field is read or passed on. Casting at every
+# attribute access would bloat the code without catching bugs (the Odoo
+# ORM itself is the source of truth). So this one directory keeps the
+# three dynamic-access rules suppressed; the rest of the workspace
+# enforces them.
+[[tool.pyright.executionEnvironments]]
+root = "packages/parqcast-ingesters/src/parqcast/ingesters/v19"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+
+# Same rationale for the Odoo addon: it inherits Odoo Models and works
+# through self.env's dynamic ORM. The stubs at ``stubs/odoo-stubs/``
+# return Any from BaseModel methods to avoid most Unknown-* propagation,
+# but iteration over recordsets and chained ORM calls still surface as
+# Unknown. Suppress the same three rules here.
+[[tool.pyright.executionEnvironments]]
+root = "packages/parqcast"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
 
 # --- Ruff configuration ---
 

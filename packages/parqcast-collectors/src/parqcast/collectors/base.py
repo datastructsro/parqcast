@@ -34,9 +34,10 @@ import pyarrow.parquet as pq
 
 from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
+from parqcast.core.protocols import ChunkMetadata, DatabaseEnv, OdooRow, SqlParams, SqlWithParams
 
 
-class BaseCollector(ABC):
+class BaseCollector[V](ABC):
     name: str
     schema: pa.Schema
     depends_on: list[str] = []
@@ -52,21 +53,22 @@ class BaseCollector(ABC):
     max_chunk_rows: int = 50_000  # max rows per sub-chunk
     primary_table: str = ""  # main FROM table name (for row estimation)
 
-    def __init__(self, env, caps: OdooCapabilities):
-        self.env = env
+    def __init__(self, env: DatabaseEnv, caps: OdooCapabilities[V]) -> None:
+        self.env: DatabaseEnv = env
         self.caps = caps
 
     def _stamped_schema(self) -> pa.Schema:
         """Return schema with parqcast and Odoo version metadata embedded."""
-        meta = {
+        meta: dict[bytes, bytes] = {
             b"parqcast_version": __version__.encode(),
             b"odoo_version": (self.caps.odoo_version or "unknown").encode(),
         }
-        existing = self.schema.metadata or {}
-        return self.schema.with_metadata({**existing, **meta})
+        existing: dict[bytes, bytes] = dict(self.schema.metadata or {})
+        # pyarrow-stubs does not fully type Schema.with_metadata's return.
+        return self.schema.with_metadata({**existing, **meta})  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
     @classmethod
-    def is_compatible(cls, caps: OdooCapabilities) -> bool:
+    def is_compatible(cls, caps: OdooCapabilities[V]) -> bool:
         for mod in cls.required_modules:
             if not caps.has_module(mod):
                 return False
@@ -81,7 +83,7 @@ class BaseCollector(ABC):
 
     # --- SQL generation (override in subclasses) ---
 
-    def get_sql(self) -> tuple[str, tuple | None]:
+    def get_sql(self) -> SqlWithParams:
         """Return (sql_string, params_or_None). Subclasses must implement this."""
         raise NotImplementedError(f"{self.__class__.__name__} must implement get_sql()")
 
@@ -109,8 +111,9 @@ class BaseCollector(ABC):
         rows = self._execute(sql, params)
         return self._to_table(rows)
 
-    def to_parquet(self, table: pa.Table, path: Path) -> dict:
-        pq.write_table(table, path, compression="snappy")
+    def to_parquet(self, table: pa.Table, path: Path) -> ChunkMetadata:
+        # pyarrow-stubs does not fully type parquet.write_table.
+        pq.write_table(table, path, compression="snappy")  # pyright: ignore[reportUnknownMemberType]
         file_bytes = path.read_bytes()
         return {
             "file": f"{self.name}.parquet",
@@ -143,68 +146,73 @@ class BaseCollector(ABC):
             return f"{table}.{column}" if "." not in column else column
         return default
 
-    def _execute(self, sql: str, params=None) -> list[tuple]:
+    def _execute(self, sql: str, params: SqlParams = None) -> list[OdooRow]:
         self.env.cr.execute(sql, params)
         return self.env.cr.fetchall()
 
-    def _to_table(self, rows: list[tuple]) -> pa.Table:
-        cols = {field.name: [] for field in self.schema}
+    def _to_table(self, rows: list[OdooRow]) -> pa.Table:
+        # pyarrow-stubs types schema iteration / pa.table partially; the
+        # resulting Field/Table values come back as unknown even though
+        # their .name / schema usage is well-defined in practice.
+        cols: dict[str, list[object]] = {
+            field.name: [] for field in self.schema  # pyright: ignore[reportUnknownVariableType]
+        }
         for row in rows:
-            for i, field in enumerate(self.schema):
-                val = row[i] if i < len(row) else None
+            for i, field in enumerate(self.schema):  # pyright: ignore[reportUnknownVariableType]
+                val: object = row[i] if i < len(row) else None
                 if isinstance(val, Decimal):
                     val = float(val)
                 cols[field.name].append(val)
-        return pa.table(cols, schema=self._stamped_schema())
+        return pa.table(cols, schema=self._stamped_schema())  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
 
 # --- Type hierarchy tiers ---
 
 
-class CoreCollector(BaseCollector):
+class CoreCollector[V](BaseCollector[V]):
     """Always runs. No module requirements."""
 
     required_modules = set()
 
 
-class StockCollector(BaseCollector):
+class StockCollector[V](BaseCollector[V]):
     """Requires the stock module."""
 
     required_modules = {"stock"}
 
 
-class SaleCollector(BaseCollector):
+class SaleCollector[V](BaseCollector[V]):
     """Requires the sale module."""
 
     required_modules = {"sale"}
 
 
-class PurchaseCollector(BaseCollector):
+class PurchaseCollector[V](BaseCollector[V]):
     """Requires the purchase module."""
 
     required_modules = {"purchase"}
 
 
-class MrpCollector(BaseCollector):
+class MrpCollector[V](BaseCollector[V]):
     """Requires the mrp (Manufacturing) module."""
 
     required_modules = {"mrp"}
     required_tables = {"mrp_production", "mrp_bom", "mrp_workcenter"}
 
 
-class PosCollector(BaseCollector):
+class PosCollector[V](BaseCollector[V]):
     """Requires the point_of_sale module."""
 
     required_modules = {"point_of_sale"}
 
 
-class MpsCollector(BaseCollector):
+class MpsCollector[V](BaseCollector[V]):
     """Requires the mrp_mps (Master Production Schedule) module."""
 
     required_modules = {"mrp_mps"}
 
 
-class QualityCollector(BaseCollector):
+class QualityCollector[V](BaseCollector[V]):
     """Requires the quality module."""
 
     required_modules = {"quality"}

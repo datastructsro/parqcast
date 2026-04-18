@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import CALENDAR_LEAVES_SCHEMA
 from .base import CoreCollector
 
 
-class CalendarLeavesCollector(CoreCollector):
+class CalendarLeavesCollector[V](CoreCollector[V]):
     name = "calendar_leaves"
     schema = CALENDAR_LEAVES_SCHEMA
     depends_on = ["calendar"]

@@ -1,14 +1,16 @@
 from .base import BaseIngester as BaseIngester
-from .distribution_actor import DistributionActor
-from .orderpoint_actor import OrderpointActor
-from .production_actor import ProductionActor
-from .purchase_actor import PurchaseActor
-from .reschedule_actor import RescheduleActor
+from .v19 import (
+    DistributionActorV19,
+    OrderpointActorV19,
+    ProductionActorV19,
+    PurchaseActorV19,
+    RescheduleActorV19,
+)
 
 ALL_INGESTERS = {
-    "PO": PurchaseActor,
-    "MO": ProductionActor,
-    "DO": DistributionActor,
-    "RESCHEDULE": RescheduleActor,
-    "ORDERPOINT": OrderpointActor,
+    "PO": PurchaseActorV19,
+    "MO": ProductionActorV19,
+    "DO": DistributionActorV19,
+    "RESCHEDULE": RescheduleActorV19,
+    "ORDERPOINT": OrderpointActorV19,
 }

@@ -2,6 +2,9 @@ import json
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import cast
+
+from parqcast.core.protocols import ChunkMetadata, JsonDict
 
 
 def checksum_file(path: Path) -> str:
@@ -9,7 +12,7 @@ def checksum_file(path: Path) -> str:
 
 
 def build_manifest(
-    files: list[dict],
+    files: list[ChunkMetadata],
     company: str,
     company_id: int,
     odoo_version: str = "17.0",
@@ -17,7 +20,7 @@ def build_manifest(
     errors: list[str] | None = None,
     warnings: list[str] | None = None,
     total_duration: float = 0.0,
-) -> dict:
+) -> JsonDict:
     return {
         "version": parqcast_version,
         "schema_version": datetime.now(UTC).strftime("%Y-%m-%d"),
@@ -34,22 +37,35 @@ def build_manifest(
     }
 
 
-def write_manifest(manifest: dict, path: Path) -> None:
+def write_manifest(manifest: JsonDict, path: Path) -> None:
     path.write_text(json.dumps(manifest, indent=2, default=str))
 
 
-def read_manifest(path: Path) -> dict:
+def read_manifest(path: Path) -> JsonDict:
     return json.loads(path.read_text())
 
 
-def validate_manifest(manifest: dict, directory: Path) -> list[str]:
-    errors = []
-    for f in manifest.get("files", []):
-        fpath = directory / f["file"]
+def validate_manifest(manifest: JsonDict, directory: Path) -> list[str]:
+    errors: list[str] = []
+    files_raw: object = manifest.get("files", [])
+    if not isinstance(files_raw, list):
+        return ["manifest['files'] must be a list"]
+    files = cast("list[object]", files_raw)
+    for f in files:
+        if not isinstance(f, dict):
+            errors.append(f"Expected dict in manifest['files'], got {type(f).__name__}")
+            continue
+        entry = cast("dict[str, object]", f)
+        file_name = entry.get("file")
+        if not isinstance(file_name, str):
+            errors.append("manifest['files'][].file must be a string")
+            continue
+        fpath = directory / file_name
         if not fpath.exists():
-            errors.append(f"Missing file: {f['file']}")
+            errors.append(f"Missing file: {file_name}")
             continue
         actual = checksum_file(fpath)
-        if actual != f.get("checksum"):
-            errors.append(f"Checksum mismatch for {f['file']}: expected {f.get('checksum')}, got {actual}")
+        expected = entry.get("checksum")
+        if actual != expected:
+            errors.append(f"Checksum mismatch for {file_name}: expected {expected!r}, got {actual}")
     return errors

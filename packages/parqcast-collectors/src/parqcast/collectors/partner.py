@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import PARTNER_SCHEMA
 from .base import CoreCollector
 
 
-class PartnerCollector(CoreCollector):
+class PartnerCollector[V](CoreCollector[V]):
     name = "partner"
     schema = PARTNER_SCHEMA
     pk_column = "rp.id"

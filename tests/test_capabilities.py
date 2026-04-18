@@ -1,4 +1,4 @@
-from parqcast.collectors import ALL_COLLECTOR_CLASSES, ALL_SUITES, collect_probe_tables
+import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
 from parqcast.collectors.base import (
     CoreCollector,
     MpsCollector,
@@ -9,6 +9,11 @@ from parqcast.collectors.base import (
     SaleCollector,
 )
 from parqcast.core.capabilities import _DEFAULT_PROBE_TABLES, OdooCapabilities
+from parqcast.core.registry import REGISTRY
+from parqcast.core.suite import collect_probe_tables
+
+ALL_COLLECTOR_CLASSES = list(REGISTRY["19"].collectors)
+ALL_SUITES = REGISTRY["19"].suites
 
 
 def _make_caps(**kwargs) -> OdooCapabilities:
@@ -260,21 +265,21 @@ def test_pos_collectors_need_pos():
 
 
 def test_purchase_requisition_needs_both_modules():
-    from parqcast.collectors.purchase_requisition import PurchaseRequisitionCollector
+    from parqcast.collectors.v19.purchase_requisition import PurchaseRequisitionCollectorV19
 
     # Has purchase but not purchase_requisition
     caps_purchase_only = _make_caps(
         installed_modules=frozenset({"purchase"}),
         existing_tables=frozenset({"purchase_requisition"}),
     )
-    assert not PurchaseRequisitionCollector.is_compatible(caps_purchase_only)
+    assert not PurchaseRequisitionCollectorV19.is_compatible(caps_purchase_only)
 
     # Has both modules + table
     caps_both = _make_caps(
         installed_modules=frozenset({"purchase", "purchase_requisition"}),
         existing_tables=frozenset({"purchase_requisition"}),
     )
-    assert PurchaseRequisitionCollector.is_compatible(caps_both)
+    assert PurchaseRequisitionCollectorV19.is_compatible(caps_both)
 
 
 def test_active_languages():

@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import PRODUCT_CATEGORY_SCHEMA
 from .base import CoreCollector
 
 
-class ProductCategoryCollector(CoreCollector):
+class ProductCategoryCollector[V](CoreCollector[V]):
     name = "product_category"
     schema = PRODUCT_CATEGORY_SCHEMA
     required_tables = {"product_category"}

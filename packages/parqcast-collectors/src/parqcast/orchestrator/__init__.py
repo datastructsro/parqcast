@@ -19,10 +19,17 @@ import io
 import json
 import logging
 import time
+from collections.abc import Callable
+from typing import Any
 
 import pyarrow.parquet as pq
 
-from parqcast.collectors.factory import CollectorFactory
+import parqcast.collectors  # pyright: ignore[reportUnusedImport]  # noqa: F401 — side-effect: registers v19 bundle
+from parqcast.collectors.base import BaseCollector
+from parqcast.core.capabilities import OdooCapabilities
+from parqcast.core.protocols import DatabaseEnv, JsonDict, ReadCursor
+from parqcast.core.registry import REGISTRY, VersionBundle
+from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import (
     DEFAULT_STREAMING_RATE,
     ExportChunk,
@@ -30,9 +37,78 @@ from parqcast.core.tracking import (
     estimate_row_count,
     get_id_range,
 )
+from parqcast.core.version_gate import assert_supported
 from parqcast.transport.base import BaseTransport
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_bundle(cr: ReadCursor) -> tuple[VersionBundle[Any], Callable[..., Any]]:
+    """Verify the DB's Odoo major is supported.
+
+    Returns ``(bundle, probe)`` where ``probe`` is guaranteed non-None
+    (narrowing that the caller would otherwise have to repeat).
+    """
+    version = assert_supported(cr)
+    bundle = REGISTRY[version]
+    if bundle.probe_capabilities is None:
+        raise RuntimeError(
+            f"Bundle for Odoo {version!r} has no probe_capabilities — "
+            f"the v{version} subpackage may have failed to import."
+        )
+    return bundle, bundle.probe_capabilities
+
+
+def _build_collectors(
+    env: DatabaseEnv, bundle: VersionBundle[Any], caps: OdooCapabilities[Any]
+) -> list[BaseCollector[Any]]:
+    """Suite-gated collector instantiation for this bundle."""
+    collectors: list[BaseCollector[Any]] = []
+    skipped: list[str] = []
+    for suite in bundle.suites:
+        if not suite.is_available(caps):
+            skipped.append(suite.name)
+            continue
+        # CollectorSuite.collector_classes is tuple[type, ...] at the core layer
+        # (core cannot import BaseCollector without a layering violation), so
+        # cls.is_compatible comes back as Unknown here.
+        collectors.extend(
+            cls(env, caps)
+            for cls in suite.collector_classes
+            if cls.is_compatible(caps)  # pyright: ignore[reportUnknownMemberType]
+        )
+    if skipped:
+        logger.info("Skipped suites: %s", ", ".join(skipped))
+    logger.info(
+        "Instantiated %d collectors for %s mode: %s",
+        len(collectors),
+        caps.mode,
+        ", ".join(c.name for c in collectors),
+    )
+    return collectors
+
+
+def _resolve_order(collectors: list[BaseCollector[Any]]) -> list[BaseCollector[Any]]:
+    """Topological sort respecting each collector's ``depends_on``."""
+    by_name = {c.name: c for c in collectors}
+    active_names = set(by_name.keys())
+    visited: set[str] = set()
+    order: list[BaseCollector[Any]] = []
+
+    def visit(name: str) -> None:
+        if name in visited:
+            return
+        visited.add(name)
+        collector = by_name.get(name)
+        if collector:
+            for dep in collector.depends_on:
+                if dep in active_names:
+                    visit(dep)
+            order.append(collector)
+
+    for c in collectors:
+        visit(c.name)
+    return order
 
 # Default time budget: 4.5 minutes, leaving 30s buffer for cleanup
 DEFAULT_TIME_BUDGET = 270
@@ -41,35 +117,35 @@ DEFAULT_TIME_BUDGET = 270
 class Orchestrator:
     def __init__(
         self,
-        env,
+        env: DatabaseEnv,
         transport: BaseTransport,
         company: str,
         company_id: int,
         time_budget: int = DEFAULT_TIME_BUDGET,
-        run_cls: type | None = None,
-        chunk_cls: type | None = None,
-    ):
-        self.env = env
+        run_cls: type[ExportRun] | None = None,
+        chunk_cls: type[ExportChunk] | None = None,
+    ) -> None:
+        self.env: DatabaseEnv = env
         self.transport = transport
         self.company = company
         self.company_id = company_id
         self.time_budget = time_budget
-        self.run_cls = run_cls or ExportRun
-        self.chunk_cls = chunk_cls or ExportChunk
+        self.run_cls: type[ExportRun] = run_cls or ExportRun
+        self.chunk_cls: type[ExportChunk] = chunk_cls or ExportChunk
 
-    def _commit(self):
+    def _commit(self) -> None:
         """Commit the current transaction via the Connection protocol."""
         if not self.env.conn.autocommit:
             self.env.conn.commit()
 
-    def _rollback(self):
+    def _rollback(self) -> None:
         """Rollback the current transaction — call before error handling."""
         self.env.conn.rollback()
 
     def _time_remaining(self, t0: float) -> float:
         return self.time_budget - (time.monotonic() - t0)
 
-    def run(self) -> dict:
+    def run(self) -> JsonDict:
         """Execute one phase of the export pipeline. Call repeatedly from cron."""
         t0 = time.monotonic()
         cr = self.env.cr
@@ -101,11 +177,11 @@ class Orchestrator:
     # Phase 1: Plan — probe database, create chunk records
     # ------------------------------------------------------------------
 
-    def _phase_plan(self, cr, run, t0) -> dict:
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
-        collectors = factory.create_collectors(caps)
-        ordered = factory.resolve_order(collectors)
+    def _phase_plan(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
+        collectors = _build_collectors(self.env, bundle, caps)
+        ordered = _resolve_order(collectors)
 
         seq = 0
         for collector in ordered:
@@ -155,10 +231,10 @@ class Orchestrator:
     # Phase 2: Collect — execute SQL, store parquet blobs in tracking DB
     # ------------------------------------------------------------------
 
-    def _phase_collect(self, cr, run, t0) -> dict:
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
-        collectors = factory.create_collectors(caps)
+    def _phase_collect(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
+        collectors = _build_collectors(self.env, bundle, caps)
         collectors_by_name = {c.name: c for c in collectors}
 
         pending = self.chunk_cls.find_by_state(cr, run.id, "pending")
@@ -191,7 +267,7 @@ class Orchestrator:
                     key_to=chunk_rec.key_to,
                 )
                 buf = io.BytesIO()
-                pq.write_table(table, buf, compression="snappy")
+                pq.write_table(table, buf, compression="snappy")  # pyright: ignore[reportUnknownMemberType]
                 data = buf.getvalue()
                 rows = table.num_rows
 
@@ -229,7 +305,7 @@ class Orchestrator:
     # Phase 3: Upload — stream blobs from tracking DB to transport
     # ------------------------------------------------------------------
 
-    def _phase_upload(self, cr, run, t0) -> dict:
+    def _phase_upload(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
         created = self.chunk_cls.find_by_state(cr, run.id, "created")
         logger.info("Run %s: %d chunks to upload", run.run_uuid[:8], len(created))
 
@@ -266,7 +342,7 @@ class Orchestrator:
     # Finalize — build manifest, mark done
     # ------------------------------------------------------------------
 
-    def _finalize(self, cr, run, prefix, t0) -> dict:
+    def _finalize(self, cr: ReadCursor, run: ExportRun, prefix: str, t0: float) -> JsonDict:
         from parqcast.core.manifest import build_manifest
 
         # Gather metadata from all uploaded chunks
@@ -276,8 +352,8 @@ class Orchestrator:
         errors = [f"{c.collector}: {c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
 
         # Re-probe for capabilities (needed for manifest)
-        factory = CollectorFactory(self.env)
-        caps = factory.probe()
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
 
         manifest = build_manifest(
             files=file_metas,

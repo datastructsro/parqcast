@@ -3,7 +3,7 @@ from parqcast.schemas.outbound import CURRENCY_SCHEMA
 from .base import CoreCollector
 
 
-class CurrencyCollector(CoreCollector):
+class CurrencyCollector[V](CoreCollector[V]):
     name = "currency"
     schema = CURRENCY_SCHEMA
 
