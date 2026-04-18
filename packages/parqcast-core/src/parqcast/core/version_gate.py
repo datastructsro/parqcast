@@ -9,7 +9,7 @@ that is not registered.
 
 from __future__ import annotations
 
-from typing import Protocol, cast
+from typing import Protocol
 
 from parqcast.core.registry import REGISTRY
 from parqcast.core.version import SupportedVersionStr, UnsupportedOdooVersionError
@@ -46,7 +46,7 @@ def assert_supported(cr: _Cursor) -> SupportedVersionStr:
     """
     major = _read_odoo_major(cr)
     if major and major in REGISTRY:
-        return cast(SupportedVersionStr, major)
+        return major
     supported = sorted(REGISTRY.keys()) or ["<none>"]
     detected = major or "<unknown>"
     raise UnsupportedOdooVersionError(

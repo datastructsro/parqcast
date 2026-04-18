@@ -19,10 +19,12 @@ import io
 import json
 import logging
 import time
+from collections.abc import Callable
+from typing import Any
 
 import pyarrow.parquet as pq
 
-import parqcast.collectors as _collectors  # noqa: F401 — side-effect: registers v19 bundle
+import parqcast.collectors  # pyright: ignore[reportUnusedImport]  # noqa: F401 — side-effect: registers v19 bundle
 from parqcast.collectors.base import BaseCollector
 from parqcast.core.registry import REGISTRY, VersionBundle
 from parqcast.core.suite import collect_probe_tables
@@ -39,8 +41,12 @@ from parqcast.transport.base import BaseTransport
 logger = logging.getLogger(__name__)
 
 
-def _resolve_bundle(cr) -> VersionBundle:
-    """Verify the DB's Odoo major is supported and return its bundle."""
+def _resolve_bundle(cr) -> tuple[VersionBundle, Callable[..., Any]]:
+    """Verify the DB's Odoo major is supported.
+
+    Returns ``(bundle, probe)`` where ``probe`` is guaranteed non-None
+    (narrowing that the caller would otherwise have to repeat).
+    """
     version = assert_supported(cr)
     bundle = REGISTRY[version]
     if bundle.probe_capabilities is None:
@@ -48,7 +54,7 @@ def _resolve_bundle(cr) -> VersionBundle:
             f"Bundle for Odoo {version!r} has no probe_capabilities — "
             f"the v{version} subpackage may have failed to import."
         )
-    return bundle
+    return bundle, bundle.probe_capabilities
 
 
 def _build_collectors(env, bundle: VersionBundle, caps) -> list[BaseCollector]:
@@ -161,8 +167,8 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     def _phase_plan(self, cr, run, t0) -> dict:
-        bundle = _resolve_bundle(cr)
-        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
         ordered = _resolve_order(collectors)
 
@@ -215,8 +221,8 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     def _phase_collect(self, cr, run, t0) -> dict:
-        bundle = _resolve_bundle(cr)
-        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
         collectors_by_name = {c.name: c for c in collectors}
 
@@ -335,8 +341,8 @@ class Orchestrator:
         errors = [f"{c.collector}: {c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
 
         # Re-probe for capabilities (needed for manifest)
-        bundle = _resolve_bundle(cr)
-        caps = bundle.probe_capabilities(cr, probe_tables=collect_probe_tables(bundle.suites))
+        bundle, probe = _resolve_bundle(cr)
+        caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
 
         manifest = build_manifest(
             files=file_metas,

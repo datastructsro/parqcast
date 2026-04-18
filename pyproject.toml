@@ -29,12 +29,39 @@ dev = [
     "parqcast-ingesters",
     "parqcast-transport-http",
     "psycopg2-binary>=2.9.11",
+    "pyright>=1.1.408",
     "pytest>=9.0.3",
     "ruff>=0.15.10",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+# --- Pyright (strict for everything except Odoo-facing addon code) ---
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = [
+    "packages/parqcast-core/src",
+    "packages/parqcast-collectors/src",
+    "packages/parqcast-ingesters/src",
+]
+# Odoo is not pip-installable — the `odoo` module only exists inside a
+# running Odoo server. pyarrow and psycopg2 ship without type stubs. Rather
+# than accept ~1000 "unknown type" diagnostics from third-party libs, we
+# suppress those families and let strict mode catch structural issues we
+# can actually fix: None-leaks, invalid type forms, cross-version generic
+# mixing, unsafe assignments.
+reportMissingImports = "none"
+reportMissingTypeStubs = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownVariableType = "none"
+reportUnknownLambdaType = "none"
+reportMissingParameterType = "none"
+reportMissingTypeArgument = "none"
 
 # --- Ruff configuration ---
 
