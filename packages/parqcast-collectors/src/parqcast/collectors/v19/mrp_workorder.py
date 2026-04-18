@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import MRP_WORKORDER_SCHEMA
 
-from .base import MrpCollector
+from ..base import MrpCollector
 
 
-class MrpWorkorderCollector(MrpCollector):
+class MrpWorkorderCollectorV19(MrpCollector[V19]):
     name = "mrp_workorder"
     schema = MRP_WORKORDER_SCHEMA
     depends_on = ["mrp_production", "workcenter"]

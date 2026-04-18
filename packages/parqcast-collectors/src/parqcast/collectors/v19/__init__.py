@@ -10,6 +10,14 @@ from __future__ import annotations
 
 from parqcast.core.registry import append_to_bundle
 
+from .mrp_bom import (
+    BomByproductCollectorV19,
+    BomCollectorV19,
+    BomLinesCollectorV19,
+    BomOperationsCollectorV19,
+)
+from .mrp_production import MrpProductionCollectorV19
+from .mrp_workorder import MrpWorkorderCollectorV19
 from .orderpoint import OrderpointCollectorV19
 from .pricelist import PricelistCollectorV19, PricelistItemCollectorV19
 from .product import ProductCollectorV19
@@ -33,6 +41,7 @@ from .stock_route import StockRouteCollectorV19
 from .stock_storage_category import StockStorageCategoryCollectorV19
 from .stock_warehouse import StockWarehouseCollectorV19
 from .uom import UomCollectorV19
+from .workcenter import WorkcenterCapacityCollectorV19, WorkcenterCollectorV19
 
 append_to_bundle(
     "19",
@@ -62,10 +71,24 @@ append_to_bundle(
         PurchaseOrderLineCollectorV19,
         ProductSupplierinfoCollectorV19,
         PurchaseRequisitionCollectorV19,
+        WorkcenterCollectorV19,
+        WorkcenterCapacityCollectorV19,
+        BomCollectorV19,
+        BomLinesCollectorV19,
+        BomOperationsCollectorV19,
+        BomByproductCollectorV19,
+        MrpProductionCollectorV19,
+        MrpWorkorderCollectorV19,
     ),
 )
 
 __all__ = [
+    "BomByproductCollectorV19",
+    "BomCollectorV19",
+    "BomLinesCollectorV19",
+    "BomOperationsCollectorV19",
+    "MrpProductionCollectorV19",
+    "MrpWorkorderCollectorV19",
     "OrderpointCollectorV19",
     "PricelistCollectorV19",
     "PricelistItemCollectorV19",
@@ -91,4 +114,6 @@ __all__ = [
     "StockStorageCategoryCollectorV19",
     "StockWarehouseCollectorV19",
     "UomCollectorV19",
+    "WorkcenterCapacityCollectorV19",
+    "WorkcenterCollectorV19",
 ]

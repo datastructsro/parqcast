@@ -1,3 +1,4 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import (
     BOM_BYPRODUCT_SCHEMA,
     BOM_LINES_SCHEMA,
@@ -5,10 +6,10 @@ from parqcast.schemas.outbound import (
     BOM_SCHEMA,
 )
 
-from .base import MrpCollector
+from ..base import MrpCollector
 
 
-class BomCollector(MrpCollector):
+class BomCollectorV19(MrpCollector[V19]):
     name = "bom"
     schema = BOM_SCHEMA
     depends_on = ["product"]
@@ -49,7 +50,7 @@ class BomCollector(MrpCollector):
         )
 
 
-class BomLinesCollector(MrpCollector):
+class BomLinesCollectorV19(MrpCollector[V19]):
     name = "bom_lines"
     schema = BOM_LINES_SCHEMA
     depends_on = ["bom"]
@@ -78,7 +79,19 @@ class BomLinesCollector(MrpCollector):
         )
 
 
-class BomOperationsCollector(MrpCollector):
+class BomOperationsCollectorV19(MrpCollector[V19]):
+    """BOM routing operations.
+
+    Note on ``mrp.routing.workcenter.time_cycle``: this field exists in both
+    v18 and v19 (no rename; the earlier parqcast docstring claiming a
+    ``time_cycle -> time_cycle_manual`` rename was incorrect). The v19
+    display label flipped from ``'Duration'`` to ``'Cycles'`` but the
+    underlying compute (``_compute_time_cycle``) still assigns
+    ``time_cycle_manual`` in manual mode and ``total_duration / cycle_number``
+    in auto mode — i.e. minutes-per-cycle in both versions. We export the
+    computed value via the optional-column fallback.
+    """
+
     name = "bom_operations"
     schema = BOM_OPERATIONS_SCHEMA
     depends_on = ["bom", "workcenter"]
@@ -104,7 +117,8 @@ class BomOperationsCollector(MrpCollector):
         post_op = self.col_or_default("mrp_routing_workcenter", "post_operation_time", "0")
         search_mode = self.col_or_default("mrp_routing_workcenter", "search_mode", "NULL::text")
 
-        # time_cycle was renamed to time_cycle_manual in Odoo 19
+        # time_cycle exists on both v18 and v19; time_cycle_manual is the manual-mode
+        # fallback on both. Prefer the computed column when available.
         if self.caps.has_column("mrp_routing_workcenter", "time_cycle"):
             time_cycle = "rw.time_cycle"
         elif self.caps.has_column("mrp_routing_workcenter", "time_cycle_manual"):
@@ -112,7 +126,7 @@ class BomOperationsCollector(MrpCollector):
         else:
             time_cycle = "NULL::float"
 
-        # mrp_skill table may not exist (requires mrp_skills module)
+        # mrp_skill table only exists with the mrp_skills module.
         skill_join = ""
         skill_name = "NULL::text"
         if self.caps.has_table("mrp_skill") and self.caps.has_column("mrp_routing_workcenter", "skill"):
@@ -138,7 +152,7 @@ class BomOperationsCollector(MrpCollector):
         )
 
 
-class BomByproductCollector(MrpCollector):
+class BomByproductCollectorV19(MrpCollector[V19]):
     name = "bom_byproduct"
     schema = BOM_BYPRODUCT_SCHEMA
     depends_on = ["bom", "product"]

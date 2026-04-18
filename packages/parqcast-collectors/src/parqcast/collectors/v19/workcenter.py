@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import WORKCENTER_CAPACITY_SCHEMA, WORKCENTER_SCHEMA
 
-from .base import MrpCollector
+from ..base import MrpCollector
 
 
-class WorkcenterCollector(MrpCollector):
+class WorkcenterCollectorV19(MrpCollector[V19]):
     name = "workcenter"
     schema = WORKCENTER_SCHEMA
     depends_on = ["stock_location"]
@@ -51,7 +52,7 @@ class WorkcenterCollector(MrpCollector):
         )
 
 
-class WorkcenterCapacityCollector(MrpCollector):
+class WorkcenterCapacityCollectorV19(MrpCollector[V19]):
     name = "workcenter_capacity"
     schema = WORKCENTER_CAPACITY_SCHEMA
     depends_on = ["workcenter", "product"]

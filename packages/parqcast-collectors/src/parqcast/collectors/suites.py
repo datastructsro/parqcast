@@ -24,15 +24,18 @@ from .company import CompanyCollector
 from .country import CountryCollector
 from .currency import CurrencyCollector
 from .mps import MpsForecastCollector, MpsScheduleCollector
-from .mrp_bom import BomByproductCollector, BomCollector, BomLinesCollector, BomOperationsCollector
-from .mrp_production import MrpProductionCollector
-from .mrp_workorder import MrpWorkorderCollector
 from .partner import PartnerCollector
 from .pos_order import PosOrderCollector, PosOrderLineCollector
 from .pos_session import PosSessionCollector
 from .product_category import ProductCategoryCollector
 from .quality import QualityCheckCollector, QualityPointCollector
 from .v19 import (
+    BomByproductCollectorV19,
+    BomCollectorV19,
+    BomLinesCollectorV19,
+    BomOperationsCollectorV19,
+    MrpProductionCollectorV19,
+    MrpWorkorderCollectorV19,
     OrderpointCollectorV19,
     PricelistCollectorV19,
     PricelistItemCollectorV19,
@@ -58,8 +61,9 @@ from .v19 import (
     StockStorageCategoryCollectorV19,
     StockWarehouseCollectorV19,
     UomCollectorV19,
+    WorkcenterCapacityCollectorV19,
+    WorkcenterCollectorV19,
 )
-from .workcenter import WorkcenterCapacityCollector, WorkcenterCollector
 
 
 @dataclass(frozen=True)
@@ -183,14 +187,14 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "mrp",
         frozenset({"mrp"}),
         (
-            WorkcenterCollector,
-            WorkcenterCapacityCollector,
-            BomCollector,
-            BomLinesCollector,
-            BomOperationsCollector,
-            BomByproductCollector,
-            MrpProductionCollector,
-            MrpWorkorderCollector,
+            WorkcenterCollectorV19,
+            WorkcenterCapacityCollectorV19,
+            BomCollectorV19,
+            BomLinesCollectorV19,
+            BomOperationsCollectorV19,
+            BomByproductCollectorV19,
+            MrpProductionCollectorV19,
+            MrpWorkorderCollectorV19,
         ),
     ),
     # -- Enterprise --

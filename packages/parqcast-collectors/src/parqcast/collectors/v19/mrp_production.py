@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import MRP_PRODUCTION_SCHEMA
 
-from .base import MrpCollector
+from ..base import MrpCollector
 
 
-class MrpProductionCollector(MrpCollector):
+class MrpProductionCollectorV19(MrpCollector[V19]):
     name = "mrp_production"
     schema = MRP_PRODUCTION_SCHEMA
     depends_on = ["product"]
