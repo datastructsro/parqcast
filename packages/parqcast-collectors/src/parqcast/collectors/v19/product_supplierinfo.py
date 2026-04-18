@@ -5,6 +5,11 @@ from ..base import PurchaseCollector
 
 
 class ProductSupplierinfoCollectorV19(PurchaseCollector[V19]):
+    """``date_start`` / ``date_end`` are ``fields.Date`` (PostgreSQL ``date``)
+    in both v18 and v19 but the outbound schema is ``OdooDate = pa.timestamp``.
+    Cast in SQL so psycopg2 yields ``datetime.datetime`` (pyarrow refuses
+    ``datetime.date`` → ``pa.timestamp``)."""
+
     name = "product_supplierinfo"
     schema = PRODUCT_SUPPLIERINFO_SCHEMA
     depends_on = ["product"]
@@ -36,7 +41,7 @@ class ProductSupplierinfoCollectorV19(PurchaseCollector[V19]):
                 ps.delay, ps.min_qty, ps.price,
                 ps.currency_id, rc.name,
                 ps.sequence,
-                ps.date_start, ps.date_end,
+                ps.date_start::timestamp, ps.date_end::timestamp,
                 {batch_col},
                 {subcon_col}
             FROM product_supplierinfo ps
