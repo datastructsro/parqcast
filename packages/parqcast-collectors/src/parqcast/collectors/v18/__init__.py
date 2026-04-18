@@ -14,6 +14,7 @@ from .mrp_bom import (
     BomLinesCollectorV18,
     BomOperationsCollectorV18,
 )
+from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
@@ -26,6 +27,7 @@ from .product_supplierinfo import ProductSupplierinfoCollectorV18
 from .purchase_order import PurchaseOrderCollectorV18
 from .purchase_order_line import PurchaseOrderLineCollectorV18
 from .purchase_requisition import PurchaseRequisitionCollectorV18
+from .quality import QualityCheckCollectorV18, QualityPointCollectorV18
 from .sale_order import SaleOrderCollectorV18
 from .sale_order_line import SaleOrderLineCollectorV18
 from .stock_location import StockLocationCollectorV18
@@ -48,6 +50,8 @@ __all__ = [
     "BomCollectorV18",
     "BomLinesCollectorV18",
     "BomOperationsCollectorV18",
+    "MpsForecastCollectorV18",
+    "MpsScheduleCollectorV18",
     "MrpProductionCollectorV18",
     "MrpWorkorderCollectorV18",
     "OrderpointCollectorV18",
@@ -62,6 +66,8 @@ __all__ = [
     "PurchaseOrderCollectorV18",
     "PurchaseOrderLineCollectorV18",
     "PurchaseRequisitionCollectorV18",
+    "QualityCheckCollectorV18",
+    "QualityPointCollectorV18",
     "SaleOrderCollectorV18",
     "SaleOrderLineCollectorV18",
     "StockLocationCollectorV18",

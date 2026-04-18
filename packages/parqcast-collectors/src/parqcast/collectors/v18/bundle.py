@@ -26,6 +26,7 @@ from .mrp_bom import (
     BomLinesCollectorV18,
     BomOperationsCollectorV18,
 )
+from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
@@ -38,6 +39,7 @@ from .product_supplierinfo import ProductSupplierinfoCollectorV18
 from .purchase_order import PurchaseOrderCollectorV18
 from .purchase_order_line import PurchaseOrderLineCollectorV18
 from .purchase_requisition import PurchaseRequisitionCollectorV18
+from .quality import QualityCheckCollectorV18, QualityPointCollectorV18
 from .sale_order import SaleOrderCollectorV18
 from .sale_order_line import SaleOrderLineCollectorV18
 from .stock_location import StockLocationCollectorV18
@@ -144,6 +146,23 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
             BomByproductCollectorV18,
             MrpProductionCollectorV18,
             MrpWorkorderCollectorV18,
+        ),
+    ),
+    # -- Enterprise --
+    CollectorSuite(
+        "mps",
+        frozenset({"mrp_mps"}),
+        (
+            MpsScheduleCollectorV18,
+            MpsForecastCollectorV18,
+        ),
+    ),
+    CollectorSuite(
+        "quality",
+        frozenset({"quality"}),
+        (
+            QualityPointCollectorV18,
+            QualityCheckCollectorV18,
         ),
     ),
 )
