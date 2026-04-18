@@ -163,6 +163,22 @@ def test_factory_creates_correct_collectors(env):
 
 
 def test_run_all_compatible_collectors(env):
+    """Build every compatible collector for the connected DB's bundle and run
+    it end-to-end.
+
+    Two layers of assertion:
+
+    1. **Always-on (correctness):** each collector produces an Arrow table
+       whose schema matches the declared ``cls.schema``. Runs against every
+       DB pointed at by ``PARQCAST_TEST_DB`` — demo or production.
+
+    2. **Production-scale thresholds (``PARQCAST_TEST_SCALE=production``):**
+       row-count floors that only hold on a realistically-loaded v19 tenant
+       (e.g. ``product > 100k``). These break on the v18 demo DB and on
+       any demo DB by construction, so they're opt-in. Set the env var
+       explicitly when running against the live production v19 database
+       to guard against silent row-count regressions.
+    """
     _, caps, collectors = _probe_and_build(env)
     ordered = _resolve_order(collectors)
 
@@ -172,6 +188,9 @@ def test_run_all_compatible_collectors(env):
         results[collector.name] = table.num_rows
         print(f"\n  {collector.name}: {table.num_rows:,} rows, {table.num_columns} cols")
         assert table.schema == collector.schema, f"{collector.name} schema mismatch"
+
+    if os.environ.get("PARQCAST_TEST_SCALE") != "production":
+        pytest.skip("Skipping production-scale thresholds; set PARQCAST_TEST_SCALE=production to enable")
 
     assert results["product"] > 100_000
     assert results["partner"] > 100_000
