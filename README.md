@@ -74,6 +74,24 @@ module skips if the value is not a registered bundle.
 | `scripts/gen_pot.sh` | Regenerate the `.pot` translation template |
 | `scripts/oca_lint.sh` | Run OCA lint checks |
 
+## Locales
+
+The addon ships with UI translations in 19 languages. All `msgstr` entries
+are populated (see `packages/parqcast/i18n/`):
+
+| | | |
+|---|---|---|
+| العربية (ar) | Čeština (cs) | Dansk (da) |
+| Deutsch (de) | Ελληνικά (el) | Español (es) |
+| Eesti (et) | Suomi (fi) | Hrvatski (hr) |
+| Magyar (hu) | Kurdî (ku) | Norsk Bokmål (nb) |
+| Nederlands (nl) | Polski (pl) | Português (pt) |
+| Română (ro) | Slovenčina (sk) | Slovenščina (sl) |
+| Svenska (sv) | | |
+
+Regenerate the `.pot` template after changing user-facing strings:
+`scripts/gen_pot.sh`. Translation PRs welcome.
+
 ## License
 
 LGPL-3.0-or-later
