@@ -195,8 +195,28 @@ below points to the commit that implemented each step.
 | 6 | ✔ landed | `feat(cutover): registry replaces factory + suites; version-neutral orchestrator` |
 | 7 | ✔ landed | `feat(tooling): add pyright strict type-checking config` |
 | 8 | ✔ landed | This commit |
+| 9 | ✔ landed | `feat(addon): bring packages/parqcast/ under pyright strict` (stubs commit set, see below) |
 
 Tests: 46 pass (0 skipped without `PARQCAST_TEST_DB`), pyright strict: 0 errors.
+
+**Addon stubs follow-on (6 commits).** Step 7 brought the four `packages/*-{core,collectors,ingesters,transport-http}/src/` trees under
+`typeCheckingMode = "strict"` but left two suppressions: a global
+`reportMissingImports = "none"` (so the addon's `from odoo import …`
+lines wouldn't error out of pyright's reach entirely) and the directory
+`packages/parqcast/models/` was left out of `include` for the same
+reason. A separate commit set added a project-local stub package at
+`stubs/odoo-stubs/` covering the ~40 Odoo symbols parqcast actually
+touches (`api.model`, the field constructors, `Environment`,
+`BaseModel`, `TransactionCase`). Each stub method returns `Any` rather
+than a parameterised type to sidestep `Unknown*` propagation through
+the addon. With the stubs in place, the global suppression was dropped
+and `packages/parqcast/` joined `include`. The dynamic-ORM exception
+that already covered `ingesters/v19/` was extended to the addon
+directory by a second `executionEnvironments` block — same justification
+(recordset iteration and chained ORM access). Final state: zero global
+suppressions except `reportMissingModuleSource` (Odoo isn't
+pip-installable, only the stub exists), one ORM-dynamic-access
+exception per affected directory.
 
 Runtime verification still to perform: (a) install the resulting addon on
 the production Odoo 19 database and confirm the cron still runs, (b) point

@@ -47,6 +47,13 @@ uv run ruff format .       # format
 uv run pyright             # strict type check (must pass cleanly)
 ```
 
+Pyright runs in `strict` mode across the whole workspace, addon
+included. Odoo isn't pip-installable, so the addon's `from odoo
+import …` resolves through a project-local stub package at
+`stubs/odoo-stubs/` (wired via `[tool.pyright].stubPath`). The stubs
+cover only what parqcast actually touches; extending them is a
+two-minute change.
+
 ## Testing
 
 ```bash
