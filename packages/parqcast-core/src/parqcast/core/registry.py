@@ -47,12 +47,14 @@ REGISTRY: dict[SupportedVersionStr, VersionBundle[Any]] = {}
 
 
 def _bootstrap() -> None:
-    """Install an empty bundle for Odoo 19 so the runtime gate accepts it.
+    """Install empty bundles for every supported Odoo major so the runtime
+    gate accepts them.
 
     Real collector and ingester classes are appended as per-suite migrations
-    land. The bootstrap entry is replaced with the fully-assembled bundle
-    once ``parqcast.collectors.v19.bundle`` is imported.
+    land. Each bootstrap entry is replaced with the fully-assembled bundle
+    once the corresponding ``parqcast.collectors.v{N}.bundle`` is imported.
     """
+    REGISTRY.setdefault("18", VersionBundle(version_str="18"))
     REGISTRY.setdefault("19", VersionBundle(version_str="19"))
 
 

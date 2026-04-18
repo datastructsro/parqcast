@@ -26,17 +26,23 @@ class StubCursor:
         return self._row
 
 
-def test_supported_version_returns_tag():
+def test_supported_version_returns_tag_v19():
     cr = StubCursor(("19.0.1.2.0",))
     assert assert_supported(cr) == "19"
 
 
+def test_supported_version_returns_tag_v18():
+    cr = StubCursor(("18.0.1.1.0",))
+    assert assert_supported(cr) == "18"
+
+
 def test_unknown_version_raises():
-    cr = StubCursor(("18.0.0.0",))
+    cr = StubCursor(("17.0.0.0",))
     with pytest.raises(UnsupportedOdooVersionError) as exc:
         assert_supported(cr)
     message = str(exc.value)
-    assert "Odoo 18" in message
+    assert "Odoo 17" in message
+    assert "'18'" in message
     assert "'19'" in message
 
 
@@ -53,10 +59,11 @@ def test_empty_version_string_raises():
         assert_supported(cr)
 
 
-def test_registry_bootstrap_has_v19():
-    """Sanity check: the bootstrap registry accepts '19' from day one."""
-    assert "19" in REGISTRY
-    assert isinstance(REGISTRY["19"], VersionBundle)
+def test_registry_bootstrap_has_supported_versions():
+    """Sanity check: the bootstrap registry has entries for every supported major."""
+    for version in ("18", "19"):
+        assert version in REGISTRY, f"missing bootstrap entry for Odoo {version}"
+        assert isinstance(REGISTRY[version], VersionBundle)
 
 
 def test_v19_bundle_is_populated_after_collector_import():
