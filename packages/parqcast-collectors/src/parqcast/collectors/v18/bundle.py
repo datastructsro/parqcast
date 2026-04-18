@@ -21,8 +21,11 @@ from ..currency import CurrencyCollector
 from ..partner import PartnerCollector
 from ..product_category import ProductCategoryCollector
 from .orderpoint import OrderpointCollectorV18
+from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
 from .product_removal import ProductRemovalCollectorV18
+from .sale_order import SaleOrderCollectorV18
+from .sale_order_line import SaleOrderLineCollectorV18
 from .stock_location import StockLocationCollectorV18
 from .stock_lot import StockLotCollectorV18
 from .stock_move import StockMoveCollectorV18
@@ -83,6 +86,16 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
                 "stock_replenishment_info",
                 "stock_replenishment_option",
             }
+        ),
+    ),
+    CollectorSuite(
+        "sale",
+        frozenset({"sale"}),
+        (
+            SaleOrderCollectorV18,
+            SaleOrderLineCollectorV18,
+            PricelistCollectorV18,
+            PricelistItemCollectorV18,
         ),
     ),
 )

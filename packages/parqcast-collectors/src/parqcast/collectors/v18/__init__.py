@@ -9,8 +9,11 @@ from __future__ import annotations
 
 from . import bundle as bundle  # noqa: F401 — side-effect: registers v18 bundle
 from .orderpoint import OrderpointCollectorV18
+from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
 from .product_removal import ProductRemovalCollectorV18
+from .sale_order import SaleOrderCollectorV18
+from .sale_order_line import SaleOrderLineCollectorV18
 from .stock_location import StockLocationCollectorV18
 from .stock_lot import StockLotCollectorV18
 from .stock_move import StockMoveCollectorV18
@@ -27,8 +30,12 @@ from .uom import UomCollectorV18
 
 __all__ = [
     "OrderpointCollectorV18",
+    "PricelistCollectorV18",
+    "PricelistItemCollectorV18",
     "ProductCollectorV18",
     "ProductRemovalCollectorV18",
+    "SaleOrderCollectorV18",
+    "SaleOrderLineCollectorV18",
     "StockLocationCollectorV18",
     "StockLotCollectorV18",
     "StockMoveCollectorV18",
