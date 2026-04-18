@@ -101,6 +101,52 @@ def test_v18_and_v19_bundles_have_same_shape():
     assert {s.name for s in b18.suites} == {s.name for s in b19.suites}
 
 
+def test_v18_and_v19_collectors_emit_identical_parquet_schemas():
+    """Every collector-name present in both bundles must declare the same
+    outbound Arrow schema. This is the static guarantee the Snowflake
+    contract depends on — v18 and v19 produce byte-identical Parquet
+    output, with columns in the same order and of the same type.
+
+    Validation is purely static (reads ``cls.schema`` class attribute), so
+    no database is needed. If a future collector redefines its own schema
+    on one major only, this test catches it before runtime.
+    """
+    import parqcast.collectors  # noqa: F401
+    import parqcast.ingesters  # noqa: F401
+
+    b18 = REGISTRY["18"]
+    b19 = REGISTRY["19"]
+
+    schemas_18: dict[str, object] = {cls.name: cls.schema for cls in b18.collectors}
+    schemas_19: dict[str, object] = {cls.name: cls.schema for cls in b19.collectors}
+
+    assert schemas_18.keys() == schemas_19.keys(), (
+        f"Collector-name mismatch — v18-only: {schemas_18.keys() - schemas_19.keys()}; "
+        f"v19-only: {schemas_19.keys() - schemas_18.keys()}"
+    )
+
+    mismatches: list[str] = []
+    for name in sorted(schemas_18):
+        if schemas_18[name] != schemas_19[name]:
+            mismatches.append(
+                f"{name}: v18 schema != v19 schema\n  v18: {schemas_18[name]}\n  v19: {schemas_19[name]}"
+            )
+    assert not mismatches, "Collector schemas diverge between majors:\n" + "\n".join(mismatches)
+
+
+def test_v18_and_v19_ingesters_have_same_decision_types():
+    """Ingesters are keyed by ``decision_type`` string — the receiver dispatches
+    on it. v18 and v19 must register actors for exactly the same set of
+    decision types.
+    """
+    import parqcast.collectors  # noqa: F401
+    import parqcast.ingesters  # noqa: F401
+
+    dt_18 = {cls.decision_type for cls in REGISTRY["18"].ingesters}
+    dt_19 = {cls.decision_type for cls in REGISTRY["19"].ingesters}
+    assert dt_18 == dt_19, f"v18 ingester decision_types {dt_18} != v19 {dt_19}"
+
+
 def test_unsupported_version_list_in_error_message():
     """The error message advertises which versions ARE supported."""
     cr = StubCursor(("20.0.0.0",))
