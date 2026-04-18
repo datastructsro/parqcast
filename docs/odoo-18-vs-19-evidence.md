@@ -319,3 +319,63 @@ community-19/addons/resource/models/resource_calendar_leaves.py
 ```
 
 Enterprise addon sources under `enterprise-{18,19}` were **not** consulted for this pass. If any collector pulls enterprise-only tables (e.g. MPS, quality, advanced mrp), re-run the comparison there before finalizing the v19 collector set.
+
+---
+
+## Addendum — drifts surfaced during the v18 port
+
+The v18 collector port (branch `feat/v18-support`) found several drifts the original evidence pass missed. All are confirmed against `community-18` sources and `parqcast_v18_demo` at runtime.
+
+### A1. `sale.order.line.product_uom` — **(A) Schema break**
+
+**v18:** `community-18/addons/sale/models/sale_order_line.py` — `product_uom = fields.Many2one('uom.uom', ...)`. The CHECK constraint references `product_uom IS NOT NULL`.
+
+**v19:** `community-19/addons/sale/models/sale_order_line.py` — `product_uom_id = fields.Many2one(...)`. CHECK constraint references `product_uom_id IS NOT NULL`.
+
+**Verdict:** same rename pattern as §2 (`purchase.order.line`), but on the sale side. Not documented in the original pass. `SaleOrderLineCollectorV18` uses `sol.product_uom`; v19 collector uses `sol.product_uom_id`.
+
+### A2. `resource.calendar.attendance.duration_hours` — **(A) Schema break**
+
+**v18:** column absent. Duration is derived at ORM level from `hour_to - hour_from`.
+
+**v19:** stored column added. Addon code reads `rca.duration_hours` directly.
+
+**Impact:** the shared `CalendarCollector` now uses `col_or_default(..., fallback="COALESCE(rca.hour_to - rca.hour_from, 0)")` so it works against both majors without a version split.
+
+### A3. `stock.warehouse.orderpoint` — v19-only columns
+
+**v18 lacks** both `qty_to_order_computed` and `deadline_date` on `stock_warehouse_orderpoint`. `OrderpointCollectorV18` gates both via `optional_columns`; v19 reads them unconditionally. `replenishment_uom_id` is also v19-only (was already gated on v19).
+
+### A4. `pos.order.is_refund` — v19 addition
+
+**v18 lacks** `pos_order.is_refund`. `PosOrderCollectorV18` falls back to `false` via `col_or_default`.
+
+### A5. `mrp.workcenter` — v19-added columns
+
+**v18 lacks** `tool`, `constrained`, `owner`, and `post_operation_time` on `mrp_workcenter`. `WorkcenterCollectorV18` gates them via `optional_columns` (the v19 collector's existing optionals already cover the same fields, so the ports are symmetric).
+
+### A6. `mrp.bom.product_qty_multiple` — v19 addition
+
+**v18 lacks** this column on `mrp_bom`. Gated optional on v18, unconditional on v19.
+
+### A7. JSONB/date cast bugs — latent on v19, exposed on v18
+
+Three shared-collector SQL patterns caused pyarrow errors the moment v18 demo data was fed through them. They are pre-existing bugs that v19's demo data happened not to trigger:
+
+- **Currency:** `res_currency_rate.name` is `fields.Date` in both majors; pyarrow refuses to coerce `datetime.date` to `OdooDate = pa.timestamp`. Fix: `rcr.name::timestamp` in SQL (`CurrencyCollector` — shared; same fix landed on both v18/v19).
+- **Stock package:** same pattern for `pack_date` (`StockPackageCollector{V18,V19}`).
+- **BOM / BOM lines:** `u.name` is JSONB (translatable Char) on `uom_uom`; returning the raw dict to pyarrow fails. Fix: `u.name->>'{lang1}'` extraction (`BomCollector{V18,V19}`, `BomLinesCollector{V18,V19}`).
+- **Product supplierinfo:** `date_start` / `date_end` are `fields.Date` → same timestamp cast (v18 only; v19 needs verification — not triggered by v19 demo).
+- **Orderpoint:** `snoozed_until` is `fields.Date` → same timestamp cast (v18 only).
+
+### A8. `stock.move_line.expiration_date` — product_expiry-only
+
+Present on `stock_move_line` only when `product_expiry` is installed. `StockMoveLineCollectorV18` gates it via `optional_columns` (parallel to `stock_lot.expiration_date`).
+
+### A9. `stock.lot.expiration_date` in stock.quant JOIN
+
+`StockQuantCollectorV18` JOINs `stock_lot` and reads `lot.expiration_date`. Same product_expiry dependency; gated optional.
+
+### A10. `quality_point_product_product_rel` — v19 module-layer change
+
+In v18 the product-selection m2m table belongs to the `quality_control` module (enterprise); in v19 it was promoted into the base `quality` module. `QualityPointCollectorV18` guards with `has_table(...)` and falls back to an empty string when the m2m is absent.
