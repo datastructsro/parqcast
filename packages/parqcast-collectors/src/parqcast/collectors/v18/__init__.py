@@ -17,6 +17,8 @@ from .mrp_bom import (
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
+from .pos_order import PosOrderCollectorV18, PosOrderLineCollectorV18
+from .pos_session import PosSessionCollectorV18
 from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
 from .product_removal import ProductRemovalCollectorV18
@@ -49,6 +51,9 @@ __all__ = [
     "MrpProductionCollectorV18",
     "MrpWorkorderCollectorV18",
     "OrderpointCollectorV18",
+    "PosOrderCollectorV18",
+    "PosOrderLineCollectorV18",
+    "PosSessionCollectorV18",
     "PricelistCollectorV18",
     "PricelistItemCollectorV18",
     "ProductCollectorV18",

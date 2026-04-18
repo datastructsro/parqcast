@@ -29,6 +29,8 @@ from .mrp_bom import (
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
+from .pos_order import PosOrderCollectorV18, PosOrderLineCollectorV18
+from .pos_session import PosSessionCollectorV18
 from .pricelist import PricelistCollectorV18, PricelistItemCollectorV18
 from .product import ProductCollectorV18
 from .product_removal import ProductRemovalCollectorV18
@@ -119,6 +121,15 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
             PurchaseOrderLineCollectorV18,
             ProductSupplierinfoCollectorV18,
             PurchaseRequisitionCollectorV18,
+        ),
+    ),
+    CollectorSuite(
+        "pos",
+        frozenset({"point_of_sale"}),
+        (
+            PosSessionCollectorV18,
+            PosOrderCollectorV18,
+            PosOrderLineCollectorV18,
         ),
     ),
     CollectorSuite(
