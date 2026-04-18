@@ -348,6 +348,46 @@ def test_probe_tables_derived_covers_defaults():
         assert table in derived, f"Default probe table '{table}' not covered by any suite"
 
 
+def test_probe_v18_and_v19_share_implementation():
+    """``probe_v18`` and ``probe_v19`` wrap the same shared probe; the only
+    difference is the phantom-tag in the return annotation.
+
+    This smoke test feeds a stub cursor that returns empty results to both
+    functions and confirms the shape of the returned capabilities dataclass
+    is identical. The phantom tag is erased at runtime so the two instances
+    are equal by ``==``.
+    """
+    from parqcast.core.capabilities import probe_v18, probe_v19
+
+    class _StubCursor:
+        """Returns empty results for every query, enough for the probe to
+        complete without any real data. ``SELECT current_database()`` is the
+        one query that needs a non-empty row — fake it with a placeholder."""
+
+        def __init__(self) -> None:
+            self._next: list[tuple[object, ...]] = []
+
+        def execute(self, sql: str, params: object = None) -> None:
+            if "current_database" in sql:
+                self._next = [("stub_db",)]
+            elif "count(*)" in sql:
+                self._next = [(0,)]
+            else:
+                self._next = []
+
+        def fetchone(self) -> tuple[object, ...] | None:
+            return self._next[0] if self._next else None
+
+        def fetchall(self) -> list[tuple[object, ...]]:
+            return list(self._next)
+
+    caps_v18 = probe_v18(_StubCursor())
+    caps_v19 = probe_v19(_StubCursor())
+    assert caps_v18 == caps_v19
+    assert caps_v18.database_name == "stub_db"
+    assert caps_v18.active_languages == ("en_US",)
+
+
 def test_suite_covers_all_collectors():
     """Every collector in the flat list must appear in exactly one suite."""
     from_suites = [cls for suite in ALL_SUITES for cls in suite.collector_classes]
