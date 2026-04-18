@@ -11,8 +11,11 @@ from __future__ import annotations
 from parqcast.core.registry import append_to_bundle
 
 from .orderpoint import OrderpointCollectorV19
+from .pricelist import PricelistCollectorV19, PricelistItemCollectorV19
 from .product import ProductCollectorV19
 from .product_removal import ProductRemovalCollectorV19
+from .sale_order import SaleOrderCollectorV19
+from .sale_order_line import SaleOrderLineCollectorV19
 from .stock_location import StockLocationCollectorV19
 from .stock_lot import StockLotCollectorV19
 from .stock_move import StockMoveCollectorV19
@@ -47,13 +50,21 @@ append_to_bundle(
         StockPutawayRuleCollectorV19,
         ProductRemovalCollectorV19,
         OrderpointCollectorV19,
+        SaleOrderCollectorV19,
+        SaleOrderLineCollectorV19,
+        PricelistCollectorV19,
+        PricelistItemCollectorV19,
     ),
 )
 
 __all__ = [
     "OrderpointCollectorV19",
+    "PricelistCollectorV19",
+    "PricelistItemCollectorV19",
     "ProductCollectorV19",
     "ProductRemovalCollectorV19",
+    "SaleOrderCollectorV19",
+    "SaleOrderLineCollectorV19",
     "StockLocationCollectorV19",
     "StockLotCollectorV19",
     "StockMoveCollectorV19",

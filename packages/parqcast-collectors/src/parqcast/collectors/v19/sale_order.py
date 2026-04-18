@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import SALE_ORDER_SCHEMA
 
-from .base import SaleCollector
+from ..base import SaleCollector
 
 
-class SaleOrderCollector(SaleCollector):
+class SaleOrderCollectorV19(SaleCollector[V19]):
     name = "sale_order"
     schema = SALE_ORDER_SCHEMA
     depends_on = ["partner", "stock_location"]

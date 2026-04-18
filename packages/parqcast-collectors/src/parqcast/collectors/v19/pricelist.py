@@ -1,9 +1,10 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import PRICELIST_ITEM_SCHEMA, PRICELIST_SCHEMA
 
-from .base import SaleCollector
+from ..base import SaleCollector
 
 
-class PricelistCollector(SaleCollector):
+class PricelistCollectorV19(SaleCollector[V19]):
     name = "pricelist"
     schema = PRICELIST_SCHEMA
     required_tables = {"product_pricelist"}
@@ -24,7 +25,7 @@ class PricelistCollector(SaleCollector):
         )
 
 
-class PricelistItemCollector(SaleCollector):
+class PricelistItemCollectorV19(SaleCollector[V19]):
     name = "pricelist_item"
     schema = PRICELIST_ITEM_SCHEMA
     depends_on = ["pricelist", "product"]

@@ -1,10 +1,18 @@
+from parqcast.core.version import V19
 from parqcast.schemas.outbound import SALE_ORDER_LINE_SCHEMA
 
-from .base import SaleCollector
+from ..base import SaleCollector
 
 
-class SaleOrderLineCollector(SaleCollector):
-    """Odoo 19: product_uom -> product_uom_id, uom.name is JSONB."""
+class SaleOrderLineCollectorV19(SaleCollector[V19]):
+    """Sale order lines on Odoo 19.
+
+    ``sale.order.line.product_uom_id`` is the canonical field (it has been
+    named ``product_uom_id`` on this model for several releases — the
+    rename in the ``product_uom → product_uom_id`` story applies to
+    ``purchase.order.line``, not this model). ``uom.name`` is a translatable
+    ``Char`` stored as JSONB Odoo-wide since 16/17.
+    """
 
     name = "sale_order_line"
     schema = SALE_ORDER_LINE_SCHEMA

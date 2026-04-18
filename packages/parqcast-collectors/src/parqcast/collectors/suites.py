@@ -30,19 +30,20 @@ from .mrp_workorder import MrpWorkorderCollector
 from .partner import PartnerCollector
 from .pos_order import PosOrderCollector, PosOrderLineCollector
 from .pos_session import PosSessionCollector
-from .pricelist import PricelistCollector, PricelistItemCollector
 from .product_category import ProductCategoryCollector
 from .product_supplierinfo import ProductSupplierinfoCollector
 from .purchase_order import PurchaseOrderCollector
 from .purchase_order_line import PurchaseOrderLineCollector
 from .purchase_requisition import PurchaseRequisitionCollector
 from .quality import QualityCheckCollector, QualityPointCollector
-from .sale_order import SaleOrderCollector
-from .sale_order_line import SaleOrderLineCollector
 from .v19 import (
     OrderpointCollectorV19,
+    PricelistCollectorV19,
+    PricelistItemCollectorV19,
     ProductCollectorV19,
     ProductRemovalCollectorV19,
+    SaleOrderCollectorV19,
+    SaleOrderLineCollectorV19,
     StockLocationCollectorV19,
     StockLotCollectorV19,
     StockMoveCollectorV19,
@@ -153,10 +154,10 @@ ALL_SUITES: tuple[CollectorSuite, ...] = (
         "sale",
         frozenset({"sale"}),
         (
-            SaleOrderCollector,
-            SaleOrderLineCollector,
-            PricelistCollector,
-            PricelistItemCollector,
+            SaleOrderCollectorV19,
+            SaleOrderLineCollectorV19,
+            PricelistCollectorV19,
+            PricelistItemCollectorV19,
         ),
     ),
     CollectorSuite(
