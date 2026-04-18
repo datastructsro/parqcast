@@ -3,15 +3,24 @@ Probe an Odoo database and build a capability profile.
 
 The capability profile drives the factory pattern: collectors are only
 instantiated if the database has the modules, tables, and columns they need.
+
+The ``OdooCapabilities[V]`` class is generic in a phantom version tag ``V``
+(see :mod:`parqcast.core.version`). The tag is pure type-checker information
+— at runtime, every instance is an ordinary frozen dataclass. Use
+:func:`probe_v19` to obtain a ``OdooCapabilities[V19]`` in version-aware
+code paths; :func:`probe` is a legacy shim retained until the registry
+cutover lands.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from parqcast.core.version import V19
+
 
 @dataclass(frozen=True)
-class OdooCapabilities:
+class OdooCapabilities[V]:
     # Module presence
     installed_modules: frozenset[str] = field(default_factory=frozenset)
     existing_tables: frozenset[str] = field(default_factory=frozenset)
@@ -160,8 +169,8 @@ _DEFAULT_PROBE_TABLES = frozenset(
 )
 
 
-def probe(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities:
-    """Probe a database cursor and return its capability profile.
+def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
+    """Probe a database cursor and return its Odoo-19 capability profile.
 
     Args:
         cr: Database cursor (Odoo-style or psycopg2).
@@ -259,3 +268,13 @@ def probe(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities
         warehouse_count=wh_count,
         active_languages=langs,
     )
+
+
+def probe(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
+    """Legacy shim around :func:`probe_v19`.
+
+    Retained so existing callers (CollectorFactory, tests) keep working
+    while the per-version migration is in progress. Removed once the
+    registry cutover commit rewires all call sites.
+    """
+    return probe_v19(cr, probe_tables=probe_tables)
