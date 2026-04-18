@@ -34,7 +34,7 @@ import pyarrow.parquet as pq
 
 from parqcast.core import __version__
 from parqcast.core.capabilities import OdooCapabilities
-from parqcast.core.protocols import ChunkMetadata, DatabaseEnv, OdooRow, SqlWithParams
+from parqcast.core.protocols import ChunkMetadata, DatabaseEnv, OdooRow, SqlParams, SqlWithParams
 
 
 class BaseCollector[V](ABC):
@@ -144,7 +144,7 @@ class BaseCollector[V](ABC):
             return f"{table}.{column}" if "." not in column else column
         return default
 
-    def _execute(self, sql: str, params=None) -> list[OdooRow]:
+    def _execute(self, sql: str, params: SqlParams = None) -> list[OdooRow]:
         self.env.cr.execute(sql, params)
         return self.env.cr.fetchall()
 

@@ -15,7 +15,8 @@ import uuid as _uuid
 from datetime import UTC, datetime
 from hashlib import sha256
 
-from parqcast.core.protocols import ChunkMetadata, JsonDict
+from parqcast.core.protocols import ChunkMetadata, JsonDict, ReadCursor
+from parqcast.core.sql import fetch_all, fetch_one, fetch_one_or_none
 
 
 class ExportRun:
@@ -30,7 +31,7 @@ class ExportRun:
         self.company_id = company_id
 
     @classmethod
-    def ensure_table(cls, cr):
+    def ensure_table(cls, cr: ReadCursor):
         cr.execute("""
             CREATE TABLE IF NOT EXISTS parqcast_export_run (
                 id SERIAL PRIMARY KEY,
@@ -51,7 +52,9 @@ class ExportRun:
         """)
 
     @classmethod
-    def create(cls, cr, company_id: int | None = None, company_name: str = "", **kwargs) -> ExportRun:
+    def create(
+        cls, cr: ReadCursor, company_id: int | None = None, company_name: str = ""
+    ) -> ExportRun:
         run_uuid = str(_uuid.uuid4())
         cr.execute(
             """
@@ -61,27 +64,27 @@ class ExportRun:
             """,
             (run_uuid, company_id, company_name, datetime.now(UTC)),
         )
-        run_id = cr.fetchone()[0]
+        run_id = fetch_one(cr)[0]
         return cls(id=run_id, run_uuid=run_uuid, state="pending", company_id=company_id)
 
     @classmethod
-    def find_active(cls, cr) -> ExportRun | None:
+    def find_active(cls, cr: ReadCursor) -> ExportRun | None:
         cr.execute("""
             SELECT id, run_uuid, state, company_id
             FROM parqcast_export_run
             WHERE state NOT IN ('done', 'error')
             ORDER BY id DESC LIMIT 1
         """)
-        row = cr.fetchone()
+        row = fetch_one_or_none(cr)
         if row:
             return cls(id=row[0], run_uuid=row[1], state=row[2], company_id=row[3])
         return None
 
-    def set_state(self, cr, state: str):
+    def set_state(self, cr: ReadCursor, state: str):
         self.state = state
         cr.execute("UPDATE parqcast_export_run SET state = %s WHERE id = %s", (state, self.id))
 
-    def set_capabilities(self, cr, caps_summary: JsonDict, collector_count: int):
+    def set_capabilities(self, cr: ReadCursor, caps_summary: JsonDict, collector_count: int):
         cr.execute(
             """
             UPDATE parqcast_export_run
@@ -97,7 +100,7 @@ class ExportRun:
             ),
         )
 
-    def set_manifest(self, cr, manifest: JsonDict):
+    def set_manifest(self, cr: ReadCursor, manifest: JsonDict):
         cr.execute(
             """
             UPDATE parqcast_export_run
@@ -112,7 +115,7 @@ class ExportRun:
             ),
         )
 
-    def set_error(self, cr, message: str):
+    def set_error(self, cr: ReadCursor, message: str):
         self.state = "error"
         cr.execute(
             "UPDATE parqcast_export_run SET state = 'error', error_message = %s WHERE id = %s",
@@ -120,7 +123,7 @@ class ExportRun:
         )
 
     @classmethod
-    def cleanup_old(cls, cr, keep_last: int = 3):
+    def cleanup_old(cls, cr: ReadCursor, keep_last: int = 3):
         """Delete completed runs older than the most recent `keep_last`."""
         cr.execute(
             """
@@ -162,7 +165,7 @@ class ExportChunk:
         self.estimated_seconds = estimated_seconds
 
     @classmethod
-    def ensure_table(cls, cr):
+    def ensure_table(cls, cr: ReadCursor):
         cr.execute("""
             CREATE TABLE IF NOT EXISTS parqcast_export_chunk (
                 id SERIAL PRIMARY KEY,
@@ -185,7 +188,7 @@ class ExportChunk:
     @classmethod
     def create(
         cls,
-        cr,
+        cr: ReadCursor,
         run_id: int,
         collector: str,
         sequence: int,
@@ -202,7 +205,7 @@ class ExportChunk:
             """,
             (run_id, collector, sequence, key_from, key_to, estimated_seconds),
         )
-        chunk_id = cr.fetchone()[0]
+        chunk_id = fetch_one(cr)[0]
         return cls(
             id=chunk_id,
             run_id=run_id,
@@ -214,7 +217,7 @@ class ExportChunk:
         )
 
     @classmethod
-    def find_by_state(cls, cr, run_id: int, state: str) -> list[ExportChunk]:
+    def find_by_state(cls, cr: ReadCursor, run_id: int, state: str) -> list[ExportChunk]:
         cr.execute(
             """
             SELECT id, run_id, collector, sequence, state, key_from, key_to, estimated_seconds
@@ -235,18 +238,18 @@ class ExportChunk:
                 key_to=r[6],
                 estimated_seconds=r[7],
             )
-            for r in cr.fetchall()
+            for r in fetch_all(cr)
         ]
 
     @classmethod
-    def count_by_state(cls, cr, run_id: int, state: str) -> int:
+    def count_by_state(cls, cr: ReadCursor, run_id: int, state: str) -> int:
         cr.execute(
             "SELECT COUNT(*) FROM parqcast_export_chunk WHERE run_id = %s AND state = %s",
             (run_id, state),
         )
-        return cr.fetchone()[0]
+        return fetch_one(cr)[0]
 
-    def store_blob(self, cr, data: bytes, row_count: int, duration: float):
+    def store_blob(self, cr: ReadCursor, data: bytes, row_count: int, duration: float):
         checksum = f"sha256:{sha256(data).hexdigest()}"
         self.state = "created"
         cr.execute(
@@ -259,29 +262,29 @@ class ExportChunk:
             (data, row_count, len(data), checksum, duration, self.id),
         )
 
-    def get_blob(self, cr) -> bytes:
+    def get_blob(self, cr: ReadCursor) -> bytes:
         cr.execute("SELECT data FROM parqcast_export_chunk WHERE id = %s", (self.id,))
-        row = cr.fetchone()
+        row = fetch_one_or_none(cr)
         if row and row[0]:
             data = row[0]
             return bytes(data) if isinstance(data, memoryview) else data
         return b""
 
-    def set_uploaded(self, cr):
+    def set_uploaded(self, cr: ReadCursor):
         self.state = "uploaded"
         cr.execute(
             "UPDATE parqcast_export_chunk SET state = 'uploaded', data = NULL WHERE id = %s",
             (self.id,),
         )
 
-    def set_error(self, cr, message: str):
+    def set_error(self, cr: ReadCursor, message: str):
         self.state = "error"
         cr.execute(
             "UPDATE parqcast_export_chunk SET state = 'error', error_message = %s WHERE id = %s",
             (message, self.id),
         )
 
-    def get_metadata(self, cr) -> ChunkMetadata:
+    def get_metadata(self, cr: ReadCursor) -> ChunkMetadata:
         cr.execute(
             """
             SELECT collector, row_count, byte_count, checksum, duration_seconds, key_from
@@ -289,7 +292,7 @@ class ExportChunk:
             """,
             (self.id,),
         )
-        r = cr.fetchone()
+        r = fetch_one(cr)
         suffix = f"_{r[5]}" if r[5] > 0 else ""
         return {
             "file": f"{r[0]}{suffix}.parquet",
@@ -301,19 +304,19 @@ class ExportChunk:
         }
 
 
-def estimate_row_count(cr, table_name: str) -> int:
+def estimate_row_count(cr: ReadCursor, table_name: str) -> int:
     """Fast approximate row count using pg_class statistics."""
     cr.execute("SELECT reltuples::bigint FROM pg_class WHERE relname = %s", (table_name,))
-    row = cr.fetchone()
+    row = fetch_one_or_none(cr)
     if row and row[0] and row[0] > 0:
         return row[0]
     return 0
 
 
-def get_id_range(cr, table_name: str) -> tuple[int, int]:
+def get_id_range(cr: ReadCursor, table_name: str) -> tuple[int, int]:
     """Get MIN(id) and MAX(id) for a table. Returns (0, 0) if empty."""
     cr.execute(f"SELECT COALESCE(MIN(id), 0), COALESCE(MAX(id), 0) FROM {table_name}")
-    row = cr.fetchone()
+    row = fetch_one_or_none(cr)
     return (row[0], row[1]) if row else (0, 0)
 
 

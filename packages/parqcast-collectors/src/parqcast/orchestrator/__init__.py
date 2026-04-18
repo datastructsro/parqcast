@@ -110,28 +110,28 @@ DEFAULT_TIME_BUDGET = 270
 class Orchestrator:
     def __init__(
         self,
-        env,
+        env: DatabaseEnv,
         transport: BaseTransport,
         company: str,
         company_id: int,
         time_budget: int = DEFAULT_TIME_BUDGET,
-        run_cls: type | None = None,
-        chunk_cls: type | None = None,
-    ):
-        self.env = env
+        run_cls: type[ExportRun] | None = None,
+        chunk_cls: type[ExportChunk] | None = None,
+    ) -> None:
+        self.env: DatabaseEnv = env
         self.transport = transport
         self.company = company
         self.company_id = company_id
         self.time_budget = time_budget
-        self.run_cls = run_cls or ExportRun
-        self.chunk_cls = chunk_cls or ExportChunk
+        self.run_cls: type[ExportRun] = run_cls or ExportRun
+        self.chunk_cls: type[ExportChunk] = chunk_cls or ExportChunk
 
-    def _commit(self):
+    def _commit(self) -> None:
         """Commit the current transaction via the Connection protocol."""
         if not self.env.conn.autocommit:
             self.env.conn.commit()
 
-    def _rollback(self):
+    def _rollback(self) -> None:
         """Rollback the current transaction — call before error handling."""
         self.env.conn.rollback()
 
@@ -170,7 +170,7 @@ class Orchestrator:
     # Phase 1: Plan — probe database, create chunk records
     # ------------------------------------------------------------------
 
-    def _phase_plan(self, cr, run, t0) -> JsonDict:
+    def _phase_plan(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
         bundle, probe = _resolve_bundle(cr)
         caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
@@ -224,7 +224,7 @@ class Orchestrator:
     # Phase 2: Collect — execute SQL, store parquet blobs in tracking DB
     # ------------------------------------------------------------------
 
-    def _phase_collect(self, cr, run, t0) -> JsonDict:
+    def _phase_collect(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
         bundle, probe = _resolve_bundle(cr)
         caps = probe(cr, probe_tables=collect_probe_tables(bundle.suites))
         collectors = _build_collectors(self.env, bundle, caps)
@@ -298,7 +298,7 @@ class Orchestrator:
     # Phase 3: Upload — stream blobs from tracking DB to transport
     # ------------------------------------------------------------------
 
-    def _phase_upload(self, cr, run, t0) -> JsonDict:
+    def _phase_upload(self, cr: ReadCursor, run: ExportRun, t0: float) -> JsonDict:
         created = self.chunk_cls.find_by_state(cr, run.id, "created")
         logger.info("Run %s: %d chunks to upload", run.run_uuid[:8], len(created))
 
@@ -335,7 +335,7 @@ class Orchestrator:
     # Finalize — build manifest, mark done
     # ------------------------------------------------------------------
 
-    def _finalize(self, cr, run, prefix, t0) -> JsonDict:
+    def _finalize(self, cr: ReadCursor, run: ExportRun, prefix: str, t0: float) -> JsonDict:
         from parqcast.core.manifest import build_manifest
 
         # Gather metadata from all uploaded chunks

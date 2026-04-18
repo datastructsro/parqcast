@@ -1,3 +1,4 @@
+from parqcast.core.capabilities import OdooCapabilities
 from parqcast.core.version import V19
 from parqcast.schemas.outbound import STOCK_PACKAGE_SCHEMA, STOCK_PACKAGE_TYPE_SCHEMA
 
@@ -37,7 +38,7 @@ class StockPackageCollectorV19(StockCollector[V19]):
     depends_on = ["stock_package_type"]
 
     @classmethod
-    def is_compatible(cls, caps):
+    def is_compatible(cls, caps: OdooCapabilities[V19]) -> bool:
         if not caps.has_module("stock"):
             return False
         return caps.has_table("stock_package") or caps.has_table("stock_quant_package")

@@ -16,7 +16,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from parqcast.core.protocols import JsonDict
+from parqcast.core.protocols import JsonDict, ReadCursor
+from parqcast.core.sql import fetch_all, fetch_one
 from parqcast.core.version import V19
 
 
@@ -170,7 +171,7 @@ _DEFAULT_PROBE_TABLES = frozenset(
 )
 
 
-def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
+def probe_v19(cr: ReadCursor, *, probe_tables: frozenset[str] | None = None) -> OdooCapabilities[V19]:
     """Probe a database cursor and return its Odoo-19 capability profile.
 
     Args:
@@ -182,21 +183,21 @@ def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabili
 
     # 1. Installed modules
     cr.execute("SELECT name FROM ir_module_module WHERE state = 'installed'")
-    installed = frozenset(r[0] for r in cr.fetchall())
+    installed: frozenset[str] = frozenset(r[0] for r in fetch_all(cr))
 
     # 2. Existing tables
     cr.execute(
         "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE'"
     )
-    tables = frozenset(r[0] for r in cr.fetchall())
+    tables: frozenset[str] = frozenset(r[0] for r in fetch_all(cr))
 
     # 3. Columns for tables we care about
     effective_probe_tables = probe_tables if probe_tables is not None else _DEFAULT_PROBE_TABLES
-    columns_by_table = {}
+    columns_by_table: dict[str, frozenset[str]] = {}
     for t in effective_probe_tables:
         if t in tables:
             cr.execute("SELECT column_name FROM information_schema.columns WHERE table_name = %s", (t,))
-            columns_by_table[t] = frozenset(r[0] for r in cr.fetchall())
+            columns_by_table[t] = frozenset(r[0] for r in fetch_all(cr))
 
     # 4. Data state (existence checks, not full counts)
     def _has_rows(table: str, where: str = "") -> bool:
@@ -207,7 +208,7 @@ def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabili
             sql += f" WHERE {where}"
         sql += ")"
         cr.execute(sql)
-        return cr.fetchone()[0]
+        return bool(fetch_one(cr)[0])
 
     has_inventory = _has_rows("stock_quant", "quantity != 0 OR reserved_quantity != 0")
     has_open_moves = _has_rows("stock_move", "state NOT IN ('done', 'cancel')")
@@ -219,26 +220,26 @@ def probe_v19(cr, *, probe_tables: frozenset[str] | None = None) -> OdooCapabili
 
     # 5. Database identity
     cr.execute("SELECT current_database()")
-    db_name = cr.fetchone()[0]
+    db_name: str = fetch_one(cr)[0]
 
     odoo_version = ""
     if "ir_module_module" in tables:
         cr.execute("SELECT latest_version FROM ir_module_module WHERE name = 'base' AND state = 'installed' LIMIT 1")
         row = cr.fetchone()
         if row and row[0]:
-            odoo_version = row[0]
+            odoo_version = str(row[0])
 
     cr.execute("SELECT count(*) FROM res_company")
-    company_count = cr.fetchone()[0]
+    company_count: int = fetch_one(cr)[0]
 
     wh_count = 0
     if "stock_warehouse" in tables:
         cr.execute("SELECT count(*) FROM stock_warehouse")
-        wh_count = cr.fetchone()[0]
+        wh_count = fetch_one(cr)[0]
 
     # 6. Active languages
     cr.execute("SELECT code FROM res_lang WHERE active = true ORDER BY code")
-    langs = tuple(r[0] for r in cr.fetchall())
+    langs: tuple[str, ...] = tuple(r[0] for r in fetch_all(cr))
     if not langs:
         langs = ("en_US",)
 

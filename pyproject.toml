@@ -67,11 +67,9 @@ extraPaths = [
 # assignments.
 reportMissingImports = "none"
 reportUnknownMemberType = "none"
-reportUnknownParameterType = "none"
 reportUnknownArgumentType = "none"
 reportUnknownVariableType = "none"
 reportUnknownLambdaType = "none"
-reportMissingParameterType = "none"
 
 # --- Ruff configuration ---
 
