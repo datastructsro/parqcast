@@ -11,9 +11,9 @@ class TestParqcastSettings(TransactionCase):
         cls.ICP = cls.env["ir.config_parameter"].sudo()
 
     def test_default_transport_type(self):
-        """Default transport should be 'local'."""
-        value = self.ICP.get_param("parqcast.transport_type", "local")
-        self.assertEqual(value, "local")
+        """Default transport is 'attachment' (set by data/defaults.xml)."""
+        value = self.ICP.get_param("parqcast.transport_type")
+        self.assertEqual(value, "attachment")
 
     def test_default_time_budget(self):
         """Default time budget should be 270 seconds."""
