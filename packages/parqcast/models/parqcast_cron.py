@@ -96,6 +96,11 @@ class ParqcastCron(models.AbstractModel):
             )
 
             result = orch.run()
+            
+            # Phase separation ensures cleanup only happens in its own transaction
+            # after the orchestrator successfully returns without throwing.
+            self.env["parqcast.run"].action_cleanup_old()
+            
             _logger.info("Parqcast export tick: %s", result.get("state", "done"))
             return result
 

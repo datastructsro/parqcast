@@ -82,7 +82,7 @@ class ResConfigSettings(models.TransientModel):
         string="Enable Scheduled Export",
     )
     parqcast_schedule_mode = fields.Selection(
-        [("daily", "Once daily (midnight UTC)"), ("continuous", "Continuous (every 5 minutes)")],
+        [("daily", "Every day"), ("continuous", "Continuous (every 5 minutes)")],
         string="Schedule",
         default="daily",
         config_parameter="parqcast.schedule_mode",

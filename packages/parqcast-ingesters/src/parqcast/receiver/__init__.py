@@ -6,7 +6,8 @@ import pyarrow.parquet as pq
 
 from parqcast.core.manifest import validate_manifest
 from parqcast.core.protocols import JsonDict, OdooEnvironment
-from parqcast.ingesters import ALL_INGESTERS
+from parqcast.core.registry import REGISTRY
+from parqcast.core.version_gate import assert_supported
 from parqcast.ingesters.base import IngestResult
 from parqcast.transport.base import BaseTransport
 
@@ -52,8 +53,12 @@ class Receiver:
             type_col = table.column("decision_type").to_pylist()
             unique_types: set[str] = {t for t in type_col if isinstance(t, str)}
 
+            version = assert_supported(self.env.cr)
+            bundle = REGISTRY[version]
+            ingester_map = {cls.decision_type: cls for cls in bundle.ingesters}
+
             for dtype in unique_types:
-                ingester_cls = ALL_INGESTERS.get(dtype)
+                ingester_cls = ingester_map.get(dtype)
                 if not ingester_cls:
                     results[dtype] = IngestResult(errors=1, messages=[f"Unknown decision type: {dtype}"])
                     continue

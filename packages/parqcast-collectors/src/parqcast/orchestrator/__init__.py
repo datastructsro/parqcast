@@ -349,7 +349,7 @@ class Orchestrator:
         uploaded = self.chunk_cls.find_by_state(cr, run.id, "uploaded")
         file_metas = [chunk_rec.get_metadata(cr) for chunk_rec in uploaded]
 
-        errors = [f"{c.collector}: {c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
+        errors = [f"{c.collector}: {c.error_message or c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
 
         # Re-probe for capabilities (needed for manifest)
         bundle, probe = _resolve_bundle(cr)
@@ -359,6 +359,7 @@ class Orchestrator:
             files=file_metas,
             company=self.company,
             company_id=self.company_id,
+            odoo_version=caps.odoo_version,
             total_duration=round(time.monotonic() - t0, 3),
             errors=errors,
             warnings=[],
@@ -371,9 +372,6 @@ class Orchestrator:
 
         run.set_manifest(cr, manifest)
         run.set_state(cr, "done")
-        self._commit()
-
-        self.run_cls.cleanup_old(cr)
         self._commit()
 
         logger.info(

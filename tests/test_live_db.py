@@ -25,7 +25,6 @@ import pyarrow.parquet as pq
 import pytest
 
 import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
-from parqcast.core.capabilities import probe_v19
 from parqcast.core.registry import REGISTRY
 from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import ExportChunk, ExportRun, get_id_range
@@ -113,7 +112,8 @@ def _clean_tracking(env):
 
 
 def test_probe_capabilities(env):
-    caps = probe_v19(env.cr)
+    bundle = REGISTRY[TEST_ODOO_VERSION]
+    caps = bundle.probe_capabilities(env.cr)
     print(f"\n  Mode: {caps.mode}")
     print(f"  Odoo version: {caps.odoo_version}")
     print(f"  Warehouses: {caps.warehouse_count}")

@@ -50,6 +50,23 @@ class ParqcastRun(models.Model):
         ExportRun.ensure_table(self.env.cr)
         ExportChunk.ensure_table(self.env.cr)
 
+    def unlink(self):
+        """Delete tracking tables and associated attachments."""
+        # Find all associated attachments and delete them first
+        attachments = self.env["ir.attachment"].sudo().search([
+            ("res_model", "=", "parqcast.run"),
+            ("res_id", "in", self.ids),
+        ])
+        if attachments:
+            attachments.unlink()
+
+        # Delete the core PostgreSQL tracking rows
+        if self.ids:
+            self.env.cr.execute("DELETE FROM parqcast_export_chunk WHERE run_id IN %s", (tuple(self.ids),))
+            self.env.cr.execute("DELETE FROM parqcast_export_run WHERE id IN %s", (tuple(self.ids),))
+        
+        return True
+
     def action_cancel(self):
         """Cancel a stuck run — delete pending/created chunks, mark as error."""
         for run in self:
@@ -78,11 +95,14 @@ class ParqcastRun(models.Model):
         ICP = self.env["ir.config_parameter"].sudo()
         days = int(ICP.get_param("parqcast.cleanup_days", "30"))
         cutoff = fields.Datetime.now() - timedelta(days=days)
-        self.env.cr.execute(
-            "DELETE FROM parqcast_export_run WHERE state = 'done' AND finished_at < %s",
-            (cutoff,),
-        )
-        _logger.info("Cleaned up parqcast runs older than %d days", days)
+        
+        old_runs = self.search([
+            ("state", "=", "done"),
+            ("finished_at", "<", cutoff)
+        ])
+        if old_runs:
+            old_runs.unlink()
+        _logger.info("Cleaned up %d parqcast runs older than %d days", len(old_runs), days)
 
     def _compute_attachment_count(self):
         for run in self:
