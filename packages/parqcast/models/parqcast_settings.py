@@ -3,7 +3,7 @@
 
 from typing import Any
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -113,7 +113,7 @@ class ResConfigSettings(models.TransientModel):
     def _check_time_budget(self):
         for rec in self:
             if rec.parqcast_time_budget < 30:
-                raise ValidationError("Time budget must be at least 30 seconds to allow progress.")
+                raise ValidationError(self.env._("Time budget must be at least 30 seconds to allow progress."))
 
     def set_values(self) -> Any:
         res = super().set_values()
@@ -168,13 +168,21 @@ class ResConfigSettings(models.TransientModel):
 
         for rec in self:
             if not rec.parqcast_server_url:
-                raise ValidationError("Server URL is required.")
+                raise ValidationError(self.env._("Server URL is required."))
             try:
-                req = urllib_request.Request(f"{rec.parqcast_server_url.rstrip('/')}/health")
-                with urllib_request.urlopen(req, timeout=5):
-                    pass
+                url = rec.parqcast_server_url.strip().rstrip("/")
+                if not url.startswith("http"):
+                    url = f"http://{url}"
+
+                req = urllib_request.Request(f"{url}/health")
+                if rec.parqcast_api_key:
+                    req.add_header("Authorization", f"Bearer {rec.parqcast_api_key}")
+
+                with urllib_request.urlopen(req, timeout=5) as response:
+                    if response.status not in (200, 204):
+                        raise Exception(f"Unexpected status code {response.status}")
             except Exception as e:
-                raise ValidationError(_("Connection failed: %s") % e) from e
+                raise ValidationError(self.env._("Connection failed: ") + str(e)) from e
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -192,24 +200,25 @@ class ResConfigSettings(models.TransientModel):
             import boto3
             from botocore.exceptions import ClientError
         except ImportError as e:
-            raise ValidationError(_("boto3 is not installed. S3 transport requires it.")) from e
+            raise ValidationError(self.env._("boto3 is not installed. S3 transport requires it.")) from e
 
         for rec in self:
             if not rec.parqcast_s3_bucket:
-                raise ValidationError("S3 Bucket is required.")
+                raise ValidationError(self.env._("S3 Bucket is required."))
             try:
+                endpoint = rec.parqcast_s3_endpoint_url.strip() if rec.parqcast_s3_endpoint_url else None
                 client = boto3.client(
                     "s3",
-                    endpoint_url=rec.parqcast_s3_endpoint_url or None,
+                    endpoint_url=endpoint,
                     aws_access_key_id=rec.parqcast_s3_access_key_id or None,
                     aws_secret_access_key=rec.parqcast_s3_secret_access_key or None,
                     region_name=rec.parqcast_s3_region or None,
                 )
                 client.head_bucket(Bucket=rec.parqcast_s3_bucket)
             except ClientError as e:
-                raise ValidationError(_("S3 Connection failed: %s") % e) from e
+                raise ValidationError(self.env._("S3 Connection failed: ") + str(e)) from e
             except Exception as e:
-                raise ValidationError(_("S3 Error: %s") % e) from e
+                raise ValidationError(self.env._("S3 Error: ") + str(e)) from e
 
         return {
             "type": "ir.actions.client",
