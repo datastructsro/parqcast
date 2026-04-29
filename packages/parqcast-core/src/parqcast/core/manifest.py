@@ -15,7 +15,7 @@ def build_manifest(
     files: list[ChunkMetadata],
     company: str,
     company_id: int,
-    odoo_version: str = "17.0",
+    odoo_version: str,
     parqcast_version: str = "0.1.0",
     errors: list[str] | None = None,
     warnings: list[str] | None = None,

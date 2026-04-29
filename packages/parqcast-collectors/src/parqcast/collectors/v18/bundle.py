@@ -20,13 +20,13 @@ from ..country import CountryCollector
 from ..currency import CurrencyCollector
 from ..partner import PartnerCollector
 from ..product_category import ProductCategoryCollector
+from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_bom import (
     BomByproductCollectorV18,
     BomCollectorV18,
     BomLinesCollectorV18,
     BomOperationsCollectorV18,
 )
-from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18
@@ -168,9 +168,7 @@ V18_SUITES: tuple[CollectorSuite, ...] = (
 )
 
 
-V18_COLLECTORS: tuple[type, ...] = tuple(
-    cls for suite in V18_SUITES for cls in suite.collector_classes
-)
+V18_COLLECTORS: tuple[type, ...] = tuple(cls for suite in V18_SUITES for cls in suite.collector_classes)
 
 
 append_to_bundle(

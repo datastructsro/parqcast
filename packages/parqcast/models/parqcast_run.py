@@ -50,27 +50,68 @@ class ParqcastRun(models.Model):
         ExportRun.ensure_table(self.env.cr)
         ExportChunk.ensure_table(self.env.cr)
 
+    def _delete_chunks(self, states: tuple[str, ...] | None = None) -> None:
+        """Delete tracking chunks associated with these runs, optionally filtered by state."""
+        if not self.ids:
+            return
+        query = "DELETE FROM parqcast_export_chunk WHERE run_id IN %s"
+        params = [tuple(self.ids)]
+        if states:
+            query += " AND state IN %s"
+            params.append(states)
+        self.env.cr.execute(query, tuple(params))
+
+    def _set_state(self, state: str, error_message: str | None = None) -> None:
+        """Update the run state using raw SQL to bypass ORM caches."""
+        if not self.ids:
+            return
+        self.env.cr.execute(
+            "UPDATE parqcast_export_run SET state = %s, error_message = %s WHERE id IN %s",
+            (state, error_message, tuple(self.ids)),
+        )
+
+    def _purge_chunk_blobs(self) -> None:
+        """Clear blob data from uploaded chunks to free database space."""
+        if not self.ids:
+            return
+        self.env.cr.execute(
+            "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id IN %s AND state = 'uploaded'",
+            (tuple(self.ids),),
+        )
+
+    def unlink(self):
+        """Delete tracking tables and associated attachments."""
+        # Find all associated attachments and delete them first
+        attachments = (
+            self.env["ir.attachment"]
+            .sudo()
+            .search(
+                [
+                    ("res_model", "=", "parqcast.run"),
+                    ("res_id", "in", self.ids),
+                ]
+            )
+        )
+        if attachments:
+            attachments.unlink()
+
+        # Delete the associated chunk rows first
+        self._delete_chunks()
+
+        return super().unlink()
+
     def action_cancel(self):
         """Cancel a stuck run — delete pending/created chunks, mark as error."""
         for run in self:
             if run.state in ("pending", "collecting", "uploading"):
-                self.env.cr.execute(
-                    "DELETE FROM parqcast_export_chunk WHERE run_id = %s AND state IN ('pending', 'created')",
-                    (run.id,),
-                )
-                self.env.cr.execute(
-                    "UPDATE parqcast_export_run SET state = 'error', error_message = 'Cancelled by user' WHERE id = %s",
-                    (run.id,),
-                )
+                run._delete_chunks(("pending", "created"))
+                run._set_state("error", "Cancelled by user")
                 _logger.info("Cancelled parqcast run %s", run.run_uuid)
 
     def action_purge_blobs(self):
         """Clear blob data from uploaded chunks to free database space."""
+        self._purge_chunk_blobs()
         for run in self:
-            self.env.cr.execute(
-                "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id = %s AND state = 'uploaded'",
-                (run.id,),
-            )
             _logger.info("Purged blob data for run %s", run.run_uuid)
 
     def action_cleanup_old(self):
@@ -78,26 +119,38 @@ class ParqcastRun(models.Model):
         ICP = self.env["ir.config_parameter"].sudo()
         days = int(ICP.get_param("parqcast.cleanup_days", "30"))
         cutoff = fields.Datetime.now() - timedelta(days=days)
-        self.env.cr.execute(
-            "DELETE FROM parqcast_export_run WHERE state = 'done' AND finished_at < %s",
-            (cutoff,),
-        )
-        _logger.info("Cleaned up parqcast runs older than %d days", days)
+
+        old_runs = self.search([("state", "=", "done"), ("finished_at", "<", cutoff)])
+        if old_runs:
+            old_runs.unlink()
+        _logger.info("Cleaned up %d parqcast runs older than %d days", len(old_runs), days)
 
     def _compute_attachment_count(self):
         for run in self:
-            run.attachment_count = self.env["ir.attachment"].sudo().search_count([
-                ("res_model", "=", "parqcast.run"),
-                ("res_id", "=", run.id),
-            ])
+            run.attachment_count = (
+                self.env["ir.attachment"]
+                .sudo()
+                .search_count(
+                    [
+                        ("res_model", "=", "parqcast.run"),
+                        ("res_id", "=", run.id),
+                    ]
+                )
+            )
 
     def action_download_zip(self):
         """Download all parquet attachments for this run as a ZIP file."""
         self.ensure_one()
-        attachments = self.env["ir.attachment"].sudo().search([
-            ("res_model", "=", "parqcast.run"),
-            ("res_id", "=", self.id),
-        ])
+        attachments = (
+            self.env["ir.attachment"]
+            .sudo()
+            .search(
+                [
+                    ("res_model", "=", "parqcast.run"),
+                    ("res_id", "=", self.id),
+                ]
+            )
+        )
         if not attachments:
             return {
                 "type": "ir.actions.client",
@@ -116,11 +169,17 @@ class ParqcastRun(models.Model):
                 zf.writestr(att.name, base64.b64decode(att.datas))
         buf.seek(0)
 
-        zip_att = self.env["ir.attachment"].sudo().create({
-            "name": f"parqcast_export_{self.run_uuid[:8]}.zip",
-            "datas": base64.b64encode(buf.read()).decode(),
-            "mimetype": "application/zip",
-        })
+        zip_att = (
+            self.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": f"parqcast_export_{self.run_uuid[:8]}.zip",
+                    "datas": base64.b64encode(buf.read()).decode(),
+                    "mimetype": "application/zip",
+                }
+            )
+        )
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/{zip_att.id}?download=true",

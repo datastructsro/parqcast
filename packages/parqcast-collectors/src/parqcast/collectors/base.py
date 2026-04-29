@@ -100,6 +100,12 @@ class BaseCollector[V](ABC):
 
         # Apply keyset pagination bounds
         if key_from > 0 or key_to > 0:
+            import re
+
+            # Strip trailing ORDER BY if present to prevent syntax errors when we append our own.
+            # Only matches simple trailing ORDER BY clauses to avoid breaking subqueries.
+            sql = re.sub(r"(?i)\s+ORDER\s+BY\s+[\w\s,.]+$", "", sql)
+
             joiner = " AND" if self._sql_has_where(sql) else "\nWHERE"
             if key_from > 0:
                 sql += f"{joiner} {self.pk_column} >= {key_from}"
@@ -155,7 +161,8 @@ class BaseCollector[V](ABC):
         # resulting Field/Table values come back as unknown even though
         # their .name / schema usage is well-defined in practice.
         cols: dict[str, list[object]] = {
-            field.name: [] for field in self.schema  # pyright: ignore[reportUnknownVariableType]
+            field.name: []
+            for field in self.schema  # pyright: ignore[reportUnknownVariableType]
         }
         for row in rows:
             for i, field in enumerate(self.schema):  # pyright: ignore[reportUnknownVariableType]

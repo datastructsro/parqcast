@@ -9,6 +9,19 @@
             <xpath expr="//form" position="inside">
                 <app data-string="Parqcast" string="Parqcast" name="parqcast" groups="base.group_system">
 
+                    <block title="Status" name="status_settings">
+                        <setting id="parqcast_status_odoo_version" string="Odoo Version">
+                            <div class="text-muted">Detected capability bundle:</div>
+                            <field name="parqcast_odoo_version" class="fw-bold"/>
+                        </setting>
+                        <setting id="parqcast_status_last_run" string="Last Cron Run">
+                            <field name="parqcast_last_run_state" class="fw-bold"/>
+                            <div invisible="not parqcast_last_run_error" class="content-group mt8 text-danger">
+                                <field name="parqcast_last_run_error"/>
+                            </div>
+                        </setting>
+                    </block>
+
                     <block title="Export Schedule" name="schedule_settings">
                         <setting id="parqcast_cron_active"
                                  help="Run the export pipeline automatically on a schedule.">
@@ -96,6 +109,10 @@
                                     <label for="parqcast_namespace" class="col-lg-3 o_light_label"/>
                                     <field name="parqcast_namespace" placeholder="parqcast"/>
                                 </div>
+                                <div class="row mt16">
+                                    <div class="col-lg-3"/>
+                                    <button name="action_test_http_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
+                                </div>
                             </div>
                         </setting>
 
@@ -133,6 +150,10 @@
                                 </div>
                                 <div class="text-muted mt8">
                                     Leave Endpoint URL empty for real AWS S3.
+                                </div>
+                                <div class="row mt16">
+                                    <div class="col-lg-3"/>
+                                    <button name="action_test_s3_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
                                 </div>
                             </div>
                         </setting>

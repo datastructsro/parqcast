@@ -167,9 +167,7 @@ V19_SUITES: tuple[CollectorSuite, ...] = (
 )
 
 
-V19_COLLECTORS: tuple[type, ...] = tuple(
-    cls for suite in V19_SUITES for cls in suite.collector_classes
-)
+V19_COLLECTORS: tuple[type, ...] = tuple(cls for suite in V19_SUITES for cls in suite.collector_classes)
 
 
 append_to_bundle(

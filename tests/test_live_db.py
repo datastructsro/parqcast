@@ -25,7 +25,6 @@ import pyarrow.parquet as pq
 import pytest
 
 import parqcast.collectors  # noqa: F401 — populates REGISTRY['19']
-from parqcast.core.capabilities import probe_v19
 from parqcast.core.registry import REGISTRY
 from parqcast.core.suite import collect_probe_tables
 from parqcast.core.tracking import ExportChunk, ExportRun, get_id_range
@@ -39,6 +38,7 @@ def _probe_and_build(env):
     caps = bundle.probe_capabilities(env.cr, probe_tables=collect_probe_tables(bundle.suites))
     collectors = _build_collectors(env, bundle, caps)
     return bundle, caps, collectors
+
 
 TEST_ODOO_VERSION = os.environ.get("PARQCAST_TEST_ODOO_VERSION", "19")
 if TEST_ODOO_VERSION not in REGISTRY:
@@ -113,7 +113,8 @@ def _clean_tracking(env):
 
 
 def test_probe_capabilities(env):
-    caps = probe_v19(env.cr)
+    bundle = REGISTRY[TEST_ODOO_VERSION]
+    caps = bundle.probe_capabilities(env.cr)
     print(f"\n  Mode: {caps.mode}")
     print(f"  Odoo version: {caps.odoo_version}")
     print(f"  Warehouses: {caps.warehouse_count}")
@@ -179,7 +180,7 @@ def test_run_all_compatible_collectors(env):
        explicitly when running against the live production v19 database
        to guard against silent row-count regressions.
     """
-    _, caps, collectors = _probe_and_build(env)
+    _, _caps, collectors = _probe_and_build(env)
     ordered = _resolve_order(collectors)
 
     results = {}
@@ -206,7 +207,7 @@ def test_run_all_compatible_collectors(env):
 
 def test_keyset_collect(env):
     """Verify keyset pagination produces correct row counts when split."""
-    _, caps, collectors = _probe_and_build(env)
+    _, _caps, collectors = _probe_and_build(env)
 
     collector = next(c for c in collectors if c.name == "stock_picking")
     full_table = collector.collect()

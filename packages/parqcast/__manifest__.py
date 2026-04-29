@@ -9,16 +9,15 @@
     # major listed in `parqcast_supported_versions`. A pinned `19.0.x.y`
     # would be rejected by the v18 loader (which validates against
     # `18.0.x.y` or bare `x.y[.z]`).
-    "version": "3.0.0",
+    "version": "18.0.3.0.0",
     "category": "Supply Chain",
     "summary": "Zero-computation data pipe to cloud planning engines",
-    "author": "DataStruct s.r.o.",
+    "author": "DataStruct s.r.o., Odoo Community Association (OCA)",
     "website": "https://datastruct.tech",
     "support": "info@datastruct.tech",
     "development_status": "Beta",
     "maintainers": ["opopov-ai"],
     "license": "LGPL-3",
-    "installable": True,
     "application": True,
     "depends": ["base"],
     # Parqcast certifies per Odoo major. Installs refuse on any

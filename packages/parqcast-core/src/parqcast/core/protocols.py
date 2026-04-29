@@ -16,21 +16,21 @@ Three protocols, from narrowest to widest:
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, NotRequired, Protocol, TypeAlias, TypedDict, runtime_checkable
+from typing import Any, NotRequired, Protocol, TypedDict, runtime_checkable
 
 # ---------------------------------------------------------------------------
 # Named type aliases shared across the workspace.
 # ---------------------------------------------------------------------------
 
-SqlParams: TypeAlias = Sequence[object] | Mapping[str, object] | None
+type SqlParams = Sequence[object] | Mapping[str, object] | None
 """Positional or named parameters accepted by psycopg2's execute()."""
 
-SqlWithParams: TypeAlias = tuple[str, SqlParams]
+type SqlWithParams = tuple[str, SqlParams]
 """Return shape of ``BaseCollector.get_sql()``: a SQL string paired with
 bind-parameters (or None). Kept as a named alias so collector subclasses
 match the abstract signature verbatim."""
 
-JsonDict: TypeAlias = dict[str, object]
+type JsonDict = dict[str, object]
 """A JSON-serializable dict payload.
 
 Used for manifests, capability summaries, chunk metadata, and anywhere
@@ -39,7 +39,7 @@ eventually be serialised to JSON. Values are ``object`` rather than a
 nested JSON union because the consumers accept anything ``json.dumps``
 can handle (via ``default=str`` if needed)."""
 
-OdooRow: TypeAlias = tuple[object, ...]
+type OdooRow = tuple[object, ...]
 """One row returned by a psycopg2/Odoo cursor's ``fetchone``/``fetchall``.
 
 Columns are positional; the tuple's arity depends on the SELECT clause."""
@@ -159,9 +159,7 @@ class OdooRecord(Protocol):
 class OdooModel(Protocol):
     """An Odoo model accessor — what ``env["<model>"]`` returns."""
 
-    def create(
-        self, vals: Mapping[str, object] | list[Mapping[str, object]]
-    ) -> OdooRecord: ...
+    def create(self, vals: Mapping[str, object] | list[Mapping[str, object]]) -> OdooRecord: ...
     def search(
         self,
         domain: Sequence[object],
@@ -180,5 +178,6 @@ class OdooEnvironment(Protocol):
     """
 
     company: OdooRecord
+    cr: ReadCursor
 
     def __getitem__(self, model_name: str) -> OdooModel: ...
