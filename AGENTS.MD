@@ -13,7 +13,7 @@ Parqcast is strictly layered. Agents must NEVER introduce imports that violate t
 - **`packages/parqcast-collectors/`**: Executes fast raw SQL queries using `psycopg2` to build arrow arrays. **Constraint:** Must NEVER import `odoo` ORM models.
 - **`packages/parqcast-ingesters/`**: Pulls data via Odoo ORM to push planning decisions back. This is the ONLY python package (outside the addon itself) permitted to use dynamic Odoo typing.
 - **`packages/parqcast-transport-http/`**: Handles HTTP uploads of generated chunks.
-- **`packages/parqcast/`**: The Odoo addon. It bridges the environment with the workspace packages. **Constraint:** Must pass Odoo Community Association (OCA) linting via `bash scripts/oca_lint.sh`.
+- **`packages/parqcast/`**: The Odoo addon. It bridges the environment with the workspace packages. **Constraint:** Must pass Odoo Community Association (OCA) linting via `bash scripts/oca_lint.sh`. Must **NEVER** contain inline raw SQL queries (`cr.execute`); all tracking SQL is delegated to `packages/parqcast-core`. Transports must be decoupled and registered via `parqcast/utils/transport_registry.py`.
 
 ## 3. Odoo Versioning (PEP 695 Generics)
 Parqcast certifies per Odoo major. 
