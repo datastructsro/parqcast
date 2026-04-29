@@ -163,35 +163,20 @@ class ResConfigSettings(models.TransientModel):
 
         return self._display_notification("Parqcast", msg, "danger" if state == "error" else "success")
 
-    def action_test_http_connection(self):
-        """Test HTTP Server reachability."""
-        from ..utils.transports import test_http_reachability
+    def action_test_connection(self):
+        """Polymorphic connection test based on selected transport type."""
+        from ..utils.transport_registry import transport_registry
 
         for rec in self:
-            if not rec.parqcast_server_url:
-                raise ValidationError(self.env._("Server URL is required."))  # pyright: ignore[reportAttributeAccessIssue]
+            transport_type = rec.parqcast_transport_type
+            if not transport_type:
+                raise ValidationError(self.env._("Transport type is required."))  # pyright: ignore[reportAttributeAccessIssue]
+
             try:
-                test_http_reachability(rec.parqcast_server_url, rec.parqcast_api_key)
+                transport_registry.test_connection(transport_type, rec)
+            except ValidationError:
+                raise
             except Exception as e:
                 raise ValidationError(self.env._("Connection failed: ") + str(e)) from e  # pyright: ignore[reportAttributeAccessIssue]
-        return self._display_notification("Connection Test", "HTTP Server is reachable.")
 
-    def action_test_s3_connection(self):
-        """Test S3 Bucket accessibility."""
-        from ..utils.transports import test_s3_reachability
-
-        for rec in self:
-            if not rec.parqcast_s3_bucket:
-                raise ValidationError(self.env._("S3 Bucket is required."))  # pyright: ignore[reportAttributeAccessIssue]
-            try:
-                test_s3_reachability(
-                    rec.parqcast_s3_bucket,
-                    rec.parqcast_s3_endpoint_url,
-                    rec.parqcast_s3_access_key_id,
-                    rec.parqcast_s3_secret_access_key,
-                    rec.parqcast_s3_region,
-                )
-            except Exception as e:
-                raise ValidationError(self.env._("S3 Connection failed: ") + str(e)) from e  # pyright: ignore[reportAttributeAccessIssue]
-
-        return self._display_notification("Connection Test", "S3 Bucket is accessible.")
+        return self._display_notification("Connection Test", "Connection is accessible and verified.")

@@ -111,7 +111,7 @@
                                 </div>
                                 <div class="row mt16">
                                     <div class="col-lg-3"/>
-                                    <button name="action_test_http_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
+                                    <button name="action_test_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
                                 </div>
                             </div>
                         </setting>
@@ -153,7 +153,7 @@
                                 </div>
                                 <div class="row mt16">
                                     <div class="col-lg-3"/>
-                                    <button name="action_test_s3_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
+                                    <button name="action_test_connection" type="object" string="Test Connection" icon="fa-plug" class="btn-secondary"/>
                                 </div>
                             </div>
                         </setting>

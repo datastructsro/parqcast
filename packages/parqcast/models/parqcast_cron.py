@@ -18,46 +18,12 @@ class ParqcastCron(models.AbstractModel):
     @api.model
     def _create_transport(self) -> BaseTransport:
         """Create the configured transport instance."""
+        from ..utils.transport_registry import transport_registry
+
         ICP = self.env["ir.config_parameter"].sudo()
         transport_type = ICP.get_param("parqcast.transport_type", "local")
 
-        if transport_type == "local":
-            from pathlib import Path
-
-            from parqcast.transport.local_fs import LocalFSTransport
-
-            path = ICP.get_param("parqcast.local_path", "/tmp/parqcast_export")
-            return LocalFSTransport(Path(path))
-
-        if transport_type == "http":
-            from parqcast.transport_http import HttpTransport
-
-            return HttpTransport(
-                server_url=ICP.get_param("parqcast.server_url", ""),
-                api_key=ICP.get_param("parqcast.api_key", ""),
-                namespace=ICP.get_param("parqcast.namespace", "parqcast"),
-            )
-
-        if transport_type == "s3":
-            # Optional sibling package; not in the workspace, installed via pip
-            # at the deployment level. Pyright cannot resolve it from source.
-            from parqcast.transport_s3 import S3Transport  # pyright: ignore[reportMissingImports]
-
-            return S3Transport(
-                bucket=ICP.get_param("parqcast.s3_bucket", ""),
-                prefix=ICP.get_param("parqcast.s3_prefix", "parqcast"),
-                endpoint_url=ICP.get_param("parqcast.s3_endpoint_url") or None,
-                aws_access_key_id=ICP.get_param("parqcast.s3_access_key_id") or None,
-                aws_secret_access_key=ICP.get_param("parqcast.s3_secret_access_key") or None,
-                region_name=ICP.get_param("parqcast.s3_region") or None,
-            )
-
-        if transport_type == "attachment":
-            from .transport_attachment import AttachmentTransport
-
-            return AttachmentTransport(self.env)
-
-        raise ValueError(f"Unknown transport type: {transport_type}")
+        return transport_registry.build_for_cron(transport_type, self.env)
 
     @api.model
     def _get_company(self):
