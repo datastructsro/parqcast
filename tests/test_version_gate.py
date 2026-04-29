@@ -123,10 +123,11 @@ def test_v18_and_v19_collectors_emit_identical_parquet_schemas():
         f"v19-only: {schemas_19.keys() - schemas_18.keys()}"
     )
 
-    mismatches: list[str] = []
-    for name in sorted(schemas_18):
-        if schemas_18[name] != schemas_19[name]:
-            mismatches.append(f"{name}: v18 schema != v19 schema\n  v18: {schemas_18[name]}\n  v19: {schemas_19[name]}")
+    mismatches = [
+        f"{name}: v18 schema != v19 schema\n  v18: {schemas_18[name]}\n  v19: {schemas_19[name]}"
+        for name in sorted(schemas_18)
+        if schemas_18[name] != schemas_19[name]
+    ]
     assert not mismatches, "Collector schemas diverge between majors:\n" + "\n".join(mismatches)
 
 

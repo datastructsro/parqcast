@@ -55,10 +55,10 @@ class Receiver:
 
             version = assert_supported(self.env.cr)
             bundle = REGISTRY[version]
-            ingester_map = {cls.decision_type: cls for cls in bundle.ingesters}
+            ingester_map = {cls.decision_type: cls for cls in bundle.ingesters}  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
             for dtype in unique_types:
-                ingester_cls = ingester_map.get(dtype)
+                ingester_cls = ingester_map.get(dtype)  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
                 if not ingester_cls:
                     results[dtype] = IngestResult(errors=1, messages=[f"Unknown decision type: {dtype}"])
                     continue

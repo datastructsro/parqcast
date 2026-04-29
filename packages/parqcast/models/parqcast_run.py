@@ -50,6 +50,35 @@ class ParqcastRun(models.Model):
         ExportRun.ensure_table(self.env.cr)
         ExportChunk.ensure_table(self.env.cr)
 
+    def _delete_chunks(self, states: tuple[str, ...] | None = None) -> None:
+        """Delete tracking chunks associated with these runs, optionally filtered by state."""
+        if not self.ids:
+            return
+        query = "DELETE FROM parqcast_export_chunk WHERE run_id IN %s"
+        params = [tuple(self.ids)]
+        if states:
+            query += " AND state IN %s"
+            params.append(states)
+        self.env.cr.execute(query, tuple(params))
+
+    def _set_state(self, state: str, error_message: str | None = None) -> None:
+        """Update the run state using raw SQL to bypass ORM caches."""
+        if not self.ids:
+            return
+        self.env.cr.execute(
+            "UPDATE parqcast_export_run SET state = %s, error_message = %s WHERE id IN %s",
+            (state, error_message, tuple(self.ids)),
+        )
+
+    def _purge_chunk_blobs(self) -> None:
+        """Clear blob data from uploaded chunks to free database space."""
+        if not self.ids:
+            return
+        self.env.cr.execute(
+            "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id IN %s AND state = 'uploaded'",
+            (tuple(self.ids),),
+        )
+
     def unlink(self):
         """Delete tracking tables and associated attachments."""
         # Find all associated attachments and delete them first
@@ -67,8 +96,7 @@ class ParqcastRun(models.Model):
             attachments.unlink()
 
         # Delete the associated chunk rows first
-        if self.ids:
-            self.env.cr.execute("DELETE FROM parqcast_export_chunk WHERE run_id IN %s", (tuple(self.ids),))
+        self._delete_chunks()
 
         return super().unlink()
 
@@ -76,23 +104,14 @@ class ParqcastRun(models.Model):
         """Cancel a stuck run — delete pending/created chunks, mark as error."""
         for run in self:
             if run.state in ("pending", "collecting", "uploading"):
-                self.env.cr.execute(
-                    "DELETE FROM parqcast_export_chunk WHERE run_id = %s AND state IN ('pending', 'created')",
-                    (run.id,),
-                )
-                self.env.cr.execute(
-                    "UPDATE parqcast_export_run SET state = 'error', error_message = 'Cancelled by user' WHERE id = %s",
-                    (run.id,),
-                )
+                run._delete_chunks(("pending", "created"))
+                run._set_state("error", "Cancelled by user")
                 _logger.info("Cancelled parqcast run %s", run.run_uuid)
 
     def action_purge_blobs(self):
         """Clear blob data from uploaded chunks to free database space."""
+        self._purge_chunk_blobs()
         for run in self:
-            self.env.cr.execute(
-                "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id = %s AND state = 'uploaded'",
-                (run.id,),
-            )
             _logger.info("Purged blob data for run %s", run.run_uuid)
 
     def action_cleanup_old(self):

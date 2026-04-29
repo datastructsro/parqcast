@@ -4,7 +4,7 @@
 from typing import Any
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError  # pyright: ignore[reportMissingImports]
 
 
 class ResConfigSettings(models.TransientModel):
@@ -78,6 +78,7 @@ class ResConfigSettings(models.TransientModel):
     parqcast_company_id = fields.Many2one(
         "res.company",
         string="Export Company",
+        config_parameter="parqcast.company_id",
     )
     parqcast_cron_active = fields.Boolean(
         string="Enable Scheduled Export",
@@ -96,9 +97,9 @@ class ResConfigSettings(models.TransientModel):
 
     def _compute_parqcast_status(self):
         for rec in self:
-            from parqcast.core.version_gate import _read_odoo_major
+            from parqcast.core.version_gate import _read_odoo_major  # pyright: ignore[reportPrivateUsage]
 
-            rec.parqcast_odoo_version = _read_odoo_major(self.env.cr) or "Unknown"
+            rec.parqcast_odoo_version = _read_odoo_major(self.env.cr) or "Unknown"  # pyright: ignore[reportPrivateUsage]
 
             last_run = self.env["parqcast.run"].search([], limit=1, order="id desc")
             if last_run:
@@ -113,11 +114,22 @@ class ResConfigSettings(models.TransientModel):
     def _check_time_budget(self):
         for rec in self:
             if rec.parqcast_time_budget < 30:
-                raise ValidationError(self.env._("Time budget must be at least 30 seconds to allow progress."))
+                raise ValidationError(self.env._("Time budget must be at least 30 seconds to allow progress."))  # pyright: ignore[reportAttributeAccessIssue]
+
+    def _display_notification(self, title: str, message: str, msg_type: str = "success") -> dict[str, Any]:
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": title,
+                "message": message,
+                "type": msg_type,
+                "sticky": False,
+            },
+        }
 
     def set_values(self) -> Any:
         res = super().set_values()
-        self.env["ir.config_parameter"].sudo().set_param("parqcast.company_id", str(self.parqcast_company_id.id or 0))
         cron = self.env.ref("parqcast.ir_cron_parqcast_export", raise_if_not_found=False)
         if cron:
             cron_sudo = cron.sudo()
@@ -133,8 +145,6 @@ class ResConfigSettings(models.TransientModel):
     @api.model
     def get_values(self) -> dict[str, Any]:
         res = super().get_values()
-        cid = int(self.env["ir.config_parameter"].sudo().get_param("parqcast.company_id", "0"))
-        res["parqcast_company_id"] = cid or False
         cron = self.env.ref("parqcast.ir_cron_parqcast_export", raise_if_not_found=False)
         res["parqcast_cron_active"] = cron.active if cron else False
         return res
@@ -151,82 +161,37 @@ class ResConfigSettings(models.TransientModel):
         elif chunks:
             msg = f"Export tick complete. {len(chunks)} files prepared/uploaded."
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": "Parqcast",
-                "message": msg,
-                "type": "danger" if state == "error" else "success",
-                "sticky": False,
-            },
-        }
+        return self._display_notification("Parqcast", msg, "danger" if state == "error" else "success")
 
     def action_test_http_connection(self):
         """Test HTTP Server reachability."""
-        from urllib import request as urllib_request
+        from ..utils.transports import test_http_reachability
 
         for rec in self:
             if not rec.parqcast_server_url:
-                raise ValidationError(self.env._("Server URL is required."))
+                raise ValidationError(self.env._("Server URL is required."))  # pyright: ignore[reportAttributeAccessIssue]
             try:
-                url = rec.parqcast_server_url.strip().rstrip("/")
-                if not url.startswith("http"):
-                    url = f"http://{url}"
-
-                req = urllib_request.Request(f"{url}/health")
-                if rec.parqcast_api_key:
-                    req.add_header("Authorization", f"Bearer {rec.parqcast_api_key}")
-
-                with urllib_request.urlopen(req, timeout=5) as response:
-                    if response.status not in (200, 204):
-                        raise Exception(f"Unexpected status code {response.status}")
+                test_http_reachability(rec.parqcast_server_url, rec.parqcast_api_key)
             except Exception as e:
-                raise ValidationError(self.env._("Connection failed: ") + str(e)) from e
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": "Connection Test",
-                "message": "HTTP Server is reachable.",
-                "type": "success",
-                "sticky": False,
-            },
-        }
+                raise ValidationError(self.env._("Connection failed: ") + str(e)) from e  # pyright: ignore[reportAttributeAccessIssue]
+        return self._display_notification("Connection Test", "HTTP Server is reachable.")
 
     def action_test_s3_connection(self):
         """Test S3 Bucket accessibility."""
-        try:
-            import boto3
-            from botocore.exceptions import ClientError
-        except ImportError as e:
-            raise ValidationError(self.env._("boto3 is not installed. S3 transport requires it.")) from e
+        from ..utils.transports import test_s3_reachability
 
         for rec in self:
             if not rec.parqcast_s3_bucket:
-                raise ValidationError(self.env._("S3 Bucket is required."))
+                raise ValidationError(self.env._("S3 Bucket is required."))  # pyright: ignore[reportAttributeAccessIssue]
             try:
-                endpoint = rec.parqcast_s3_endpoint_url.strip() if rec.parqcast_s3_endpoint_url else None
-                client = boto3.client(
-                    "s3",
-                    endpoint_url=endpoint,
-                    aws_access_key_id=rec.parqcast_s3_access_key_id or None,
-                    aws_secret_access_key=rec.parqcast_s3_secret_access_key or None,
-                    region_name=rec.parqcast_s3_region or None,
+                test_s3_reachability(
+                    rec.parqcast_s3_bucket,
+                    rec.parqcast_s3_endpoint_url,
+                    rec.parqcast_s3_access_key_id,
+                    rec.parqcast_s3_secret_access_key,
+                    rec.parqcast_s3_region,
                 )
-                client.head_bucket(Bucket=rec.parqcast_s3_bucket)
-            except ClientError as e:
-                raise ValidationError(self.env._("S3 Connection failed: ") + str(e)) from e
             except Exception as e:
-                raise ValidationError(self.env._("S3 Error: ") + str(e)) from e
+                raise ValidationError(self.env._("S3 Connection failed: ") + str(e)) from e  # pyright: ignore[reportAttributeAccessIssue]
 
-        return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {
-                "title": "Connection Test",
-                "message": "S3 Bucket is accessible.",
-                "type": "success",
-                "sticky": False,
-            },
-        }
+        return self._display_notification("Connection Test", "S3 Bucket is accessible.")

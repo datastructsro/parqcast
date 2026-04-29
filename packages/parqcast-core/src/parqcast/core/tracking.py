@@ -152,6 +152,7 @@ class ExportChunk:
         key_from: int = 0,
         key_to: int = 0,
         estimated_seconds: float = 0,
+        error_message: str | None = None,
     ):
         self.id = id
         self.run_id = run_id
@@ -161,6 +162,7 @@ class ExportChunk:
         self.key_from = key_from
         self.key_to = key_to
         self.estimated_seconds = estimated_seconds
+        self.error_message = error_message
 
     @classmethod
     def ensure_table(cls, cr: ReadCursor):
@@ -218,7 +220,7 @@ class ExportChunk:
     def find_by_state(cls, cr: ReadCursor, run_id: int, state: str) -> list[ExportChunk]:
         cr.execute(
             """
-            SELECT id, run_id, collector, sequence, state, key_from, key_to, estimated_seconds
+            SELECT id, run_id, collector, sequence, state, key_from, key_to, estimated_seconds, error_message
             FROM parqcast_export_chunk
             WHERE run_id = %s AND state = %s
             ORDER BY sequence
@@ -235,6 +237,7 @@ class ExportChunk:
                 key_from=r[5],
                 key_to=r[6],
                 estimated_seconds=r[7],
+                error_message=r[8],
             )
             for r in fetch_all(cr)
         ]

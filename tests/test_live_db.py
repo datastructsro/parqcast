@@ -180,7 +180,7 @@ def test_run_all_compatible_collectors(env):
        explicitly when running against the live production v19 database
        to guard against silent row-count regressions.
     """
-    _, caps, collectors = _probe_and_build(env)
+    _, _caps, collectors = _probe_and_build(env)
     ordered = _resolve_order(collectors)
 
     results = {}
@@ -207,7 +207,7 @@ def test_run_all_compatible_collectors(env):
 
 def test_keyset_collect(env):
     """Verify keyset pagination produces correct row counts when split."""
-    _, caps, collectors = _probe_and_build(env)
+    _, _caps, collectors = _probe_and_build(env)
 
     collector = next(c for c in collectors if c.name == "stock_picking")
     full_table = collector.collect()
