@@ -100,6 +100,11 @@ class BaseCollector[V](ABC):
 
         # Apply keyset pagination bounds
         if key_from > 0 or key_to > 0:
+            import re
+            # Strip trailing ORDER BY if present to prevent syntax errors when we append our own.
+            # Only matches simple trailing ORDER BY clauses to avoid breaking subqueries.
+            sql = re.sub(r'(?i)\s+ORDER\s+BY\s+[\w\s,.]+$', '', sql)
+
             joiner = " AND" if self._sql_has_where(sql) else "\nWHERE"
             if key_from > 0:
                 sql += f"{joiner} {self.pk_column} >= {key_from}"

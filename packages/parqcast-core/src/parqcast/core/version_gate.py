@@ -9,6 +9,8 @@ that is not registered.
 
 from __future__ import annotations
 
+import importlib
+
 from parqcast.core.protocols import ReadCursor
 from parqcast.core.registry import REGISTRY
 from parqcast.core.version import SupportedVersionStr, UnsupportedOdooVersionError
@@ -40,6 +42,21 @@ def assert_supported(cr: ReadCursor) -> SupportedVersionStr:
     """
     major = _read_odoo_major(cr)
     if major and major in REGISTRY:
+        bundle = REGISTRY[major]
+        if bundle.probe_capabilities is None:
+            # The bundle is registered but hasn't been imported yet.
+            # Force import now to ensure the version is genuinely supported and not
+            # just an empty bootstrap placeholder.
+            try:
+                importlib.import_module(f"parqcast.collectors.v{major}.bundle")
+                if REGISTRY[major].probe_capabilities is None:
+                    raise RuntimeError("Import succeeded but probe_capabilities is still None")
+            except Exception as e:
+                raise UnsupportedOdooVersionError(
+                    f"Odoo {major} is registered, but the corresponding subpackage "
+                    f"failed to load. This parqcast installation might be corrupt "
+                    f"or incomplete. Error: {e}"
+                ) from e
         return major
     supported = sorted(REGISTRY.keys()) or ["<none>"]
     detected = major or "<unknown>"
