@@ -136,6 +136,27 @@ class ExportRun:
             (keep_last,),
         )
 
+    @classmethod
+    def set_states_bulk(
+        cls,
+        cr: ReadCursor,
+        run_ids: tuple[int, ...],
+        state: str,
+        error_message: str | None = None,
+    ) -> None:
+        if not run_ids:
+            return
+        cr.execute(
+            "UPDATE parqcast_export_run SET state = %s, error_message = %s WHERE id IN %s",
+            (state, error_message, run_ids),
+        )
+
+    @classmethod
+    def find_id_by_uuid(cls, cr: ReadCursor, run_uuid: str) -> int:
+        cr.execute("SELECT id FROM parqcast_export_run WHERE run_uuid = %s", (run_uuid,))
+        row = fetch_one_or_none(cr)
+        return int(row[0]) if row else 0
+
 
 class ExportChunk:
     """Tracks a single chunk of a collector's parquet output."""
@@ -306,6 +327,31 @@ class ExportChunk:
             "duration_seconds": r[4],
             "collector": r[0],
         }
+
+    @classmethod
+    def delete_bulk(
+        cls,
+        cr: ReadCursor,
+        run_ids: tuple[int, ...],
+        states: tuple[str, ...] | None = None,
+    ) -> None:
+        if not run_ids:
+            return
+        query = "DELETE FROM parqcast_export_chunk WHERE run_id IN %s"
+        params: list[tuple[str, ...] | tuple[int, ...]] = [run_ids]
+        if states:
+            query += " AND state IN %s"
+            params.append(states)
+        cr.execute(query, tuple(params))
+
+    @classmethod
+    def purge_blobs_bulk(cls, cr: ReadCursor, run_ids: tuple[int, ...]) -> None:
+        if not run_ids:
+            return
+        cr.execute(
+            "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id IN %s AND state = 'uploaded'",
+            (run_ids,),
+        )
 
 
 def estimate_row_count(cr: ReadCursor, table_name: str) -> int:

@@ -54,30 +54,25 @@ class ParqcastRun(models.Model):
         """Delete tracking chunks associated with these runs, optionally filtered by state."""
         if not self.ids:
             return
-        query = "DELETE FROM parqcast_export_chunk WHERE run_id IN %s"
-        params = [tuple(self.ids)]
-        if states:
-            query += " AND state IN %s"
-            params.append(states)
-        self.env.cr.execute(query, tuple(params))
+        from parqcast.core.tracking import ExportChunk
+
+        ExportChunk.delete_bulk(self.env.cr, tuple(self.ids), states)
 
     def _set_state(self, state: str, error_message: str | None = None) -> None:
         """Update the run state using raw SQL to bypass ORM caches."""
         if not self.ids:
             return
-        self.env.cr.execute(
-            "UPDATE parqcast_export_run SET state = %s, error_message = %s WHERE id IN %s",
-            (state, error_message, tuple(self.ids)),
-        )
+        from parqcast.core.tracking import ExportRun
+
+        ExportRun.set_states_bulk(self.env.cr, tuple(self.ids), state, error_message)
 
     def _purge_chunk_blobs(self) -> None:
         """Clear blob data from uploaded chunks to free database space."""
         if not self.ids:
             return
-        self.env.cr.execute(
-            "UPDATE parqcast_export_chunk SET data = NULL WHERE run_id IN %s AND state = 'uploaded'",
-            (tuple(self.ids),),
-        )
+        from parqcast.core.tracking import ExportChunk
+
+        ExportChunk.purge_blobs_bulk(self.env.cr, tuple(self.ids))
 
     def unlink(self):
         """Delete tracking tables and associated attachments."""

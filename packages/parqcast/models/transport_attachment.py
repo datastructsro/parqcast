@@ -25,13 +25,10 @@ class AttachmentTransport(BaseTransport):
         self._env: Any = env
 
     def _resolve_run_id(self, prefix: str) -> int:
+        from parqcast.core.tracking import ExportRun
+
         run_uuid = prefix.rsplit("/", 1)[-1]
-        self._env.cr.execute(
-            "SELECT id FROM parqcast_export_run WHERE run_uuid = %s",
-            (run_uuid,),
-        )
-        row = self._env.cr.fetchone()
-        return int(row[0]) if row else 0
+        return ExportRun.find_id_by_uuid(self._env.cr, run_uuid)
 
     def upload_file(self, prefix: str, filename: str, data: BinaryIO) -> None:
         run_id = self._resolve_run_id(prefix)
