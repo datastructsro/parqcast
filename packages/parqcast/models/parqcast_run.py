@@ -86,18 +86,30 @@ class ParqcastRun(models.Model):
 
     def _compute_attachment_count(self):
         for run in self:
-            run.attachment_count = self.env["ir.attachment"].sudo().search_count([
-                ("res_model", "=", "parqcast.run"),
-                ("res_id", "=", run.id),
-            ])
+            run.attachment_count = (
+                self.env["ir.attachment"]
+                .sudo()
+                .search_count(
+                    [
+                        ("res_model", "=", "parqcast.run"),
+                        ("res_id", "=", run.id),
+                    ]
+                )
+            )
 
     def action_download_zip(self):
         """Download all parquet attachments for this run as a ZIP file."""
         self.ensure_one()
-        attachments = self.env["ir.attachment"].sudo().search([
-            ("res_model", "=", "parqcast.run"),
-            ("res_id", "=", self.id),
-        ])
+        attachments = (
+            self.env["ir.attachment"]
+            .sudo()
+            .search(
+                [
+                    ("res_model", "=", "parqcast.run"),
+                    ("res_id", "=", self.id),
+                ]
+            )
+        )
         if not attachments:
             return {
                 "type": "ir.actions.client",
@@ -116,11 +128,17 @@ class ParqcastRun(models.Model):
                 zf.writestr(att.name, base64.b64decode(att.datas))
         buf.seek(0)
 
-        zip_att = self.env["ir.attachment"].sudo().create({
-            "name": f"parqcast_export_{self.run_uuid[:8]}.zip",
-            "datas": base64.b64encode(buf.read()).decode(),
-            "mimetype": "application/zip",
-        })
+        zip_att = (
+            self.env["ir.attachment"]
+            .sudo()
+            .create(
+                {
+                    "name": f"parqcast_export_{self.run_uuid[:8]}.zip",
+                    "datas": base64.b64encode(buf.read()).decode(),
+                    "mimetype": "application/zip",
+                }
+            )
+        )
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/{zip_att.id}?download=true",
