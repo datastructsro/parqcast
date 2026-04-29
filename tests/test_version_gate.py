@@ -69,7 +69,7 @@ def test_registry_bootstrap_has_supported_versions():
 def test_bundles_are_populated_after_collector_import():
     """After importing parqcast.collectors and parqcast.ingesters, every
     supported bundle is fully assembled."""
-    import parqcast.collectors  # noqa: F401 — side-effect: registers v18+v19 bundles
+    import parqcast.collectors
     import parqcast.ingesters  # noqa: F401 — side-effect: registers v18+v19 ingesters
 
     for version in ("18", "19"):
@@ -83,7 +83,7 @@ def test_bundles_are_populated_after_collector_import():
 def test_v18_and_v19_bundles_have_same_shape():
     """Both bundles should register the same number of collectors / suites /
     ingesters — v18 mirrors v19's surface by design (Snowflake contract)."""
-    import parqcast.collectors  # noqa: F401
+    import parqcast.collectors
     import parqcast.ingesters  # noqa: F401
 
     b18 = REGISTRY["18"]
@@ -91,9 +91,7 @@ def test_v18_and_v19_bundles_have_same_shape():
     assert len(b18.collectors) == len(b19.collectors), (
         f"v18 has {len(b18.collectors)} collectors, v19 has {len(b19.collectors)}"
     )
-    assert len(b18.suites) == len(b19.suites), (
-        f"v18 has {len(b18.suites)} suites, v19 has {len(b19.suites)}"
-    )
+    assert len(b18.suites) == len(b19.suites), f"v18 has {len(b18.suites)} suites, v19 has {len(b19.suites)}"
     assert len(b18.ingesters) == len(b19.ingesters), (
         f"v18 has {len(b18.ingesters)} ingesters, v19 has {len(b19.ingesters)}"
     )
@@ -111,7 +109,7 @@ def test_v18_and_v19_collectors_emit_identical_parquet_schemas():
     no database is needed. If a future collector redefines its own schema
     on one major only, this test catches it before runtime.
     """
-    import parqcast.collectors  # noqa: F401
+    import parqcast.collectors
     import parqcast.ingesters  # noqa: F401
 
     b18 = REGISTRY["18"]
@@ -128,9 +126,7 @@ def test_v18_and_v19_collectors_emit_identical_parquet_schemas():
     mismatches: list[str] = []
     for name in sorted(schemas_18):
         if schemas_18[name] != schemas_19[name]:
-            mismatches.append(
-                f"{name}: v18 schema != v19 schema\n  v18: {schemas_18[name]}\n  v19: {schemas_19[name]}"
-            )
+            mismatches.append(f"{name}: v18 schema != v19 schema\n  v18: {schemas_18[name]}\n  v19: {schemas_19[name]}")
     assert not mismatches, "Collector schemas diverge between majors:\n" + "\n".join(mismatches)
 
 
@@ -139,7 +135,7 @@ def test_v18_and_v19_ingesters_have_same_decision_types():
     on it. v18 and v19 must register actors for exactly the same set of
     decision types.
     """
-    import parqcast.collectors  # noqa: F401
+    import parqcast.collectors
     import parqcast.ingesters  # noqa: F401
 
     dt_18 = {cls.decision_type for cls in REGISTRY["18"].ingesters}

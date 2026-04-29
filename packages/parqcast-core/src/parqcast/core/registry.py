@@ -79,8 +79,7 @@ def append_to_bundle(
     current = REGISTRY.get(version)
     if current is None:
         raise RuntimeError(
-            f"append_to_bundle: no bundle registered for Odoo {version!r}; "
-            f"bootstrap should have installed one."
+            f"append_to_bundle: no bundle registered for Odoo {version!r}; bootstrap should have installed one."
         )
     REGISTRY[version] = replace(
         current,

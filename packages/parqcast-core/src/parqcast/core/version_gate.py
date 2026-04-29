@@ -23,10 +23,7 @@ def _read_odoo_major(cr: ReadCursor) -> str:
     same source of truth used by :func:`parqcast.core.capabilities.probe`.
     Returns an empty string if the row is missing.
     """
-    cr.execute(
-        "SELECT latest_version FROM ir_module_module "
-        "WHERE name = 'base' AND state = 'installed' LIMIT 1"
-    )
+    cr.execute("SELECT latest_version FROM ir_module_module WHERE name = 'base' AND state = 'installed' LIMIT 1")
     row = cr.fetchone()
     if not row or not row[0]:
         return ""

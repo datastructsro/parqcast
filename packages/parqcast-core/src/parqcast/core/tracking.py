@@ -52,9 +52,7 @@ class ExportRun:
         """)
 
     @classmethod
-    def create(
-        cls, cr: ReadCursor, company_id: int | None = None, company_name: str = ""
-    ) -> ExportRun:
+    def create(cls, cr: ReadCursor, company_id: int | None = None, company_name: str = "") -> ExportRun:
         run_uuid = str(_uuid.uuid4())
         cr.execute(
             """

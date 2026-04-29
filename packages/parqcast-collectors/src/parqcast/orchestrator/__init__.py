@@ -110,6 +110,7 @@ def _resolve_order(collectors: list[BaseCollector[Any]]) -> list[BaseCollector[A
         visit(c.name)
     return order
 
+
 # Default time budget: 4.5 minutes, leaving 30s buffer for cleanup
 DEFAULT_TIME_BUDGET = 270
 
@@ -349,7 +350,9 @@ class Orchestrator:
         uploaded = self.chunk_cls.find_by_state(cr, run.id, "uploaded")
         file_metas = [chunk_rec.get_metadata(cr) for chunk_rec in uploaded]
 
-        errors = [f"{c.collector}: {c.error_message or c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")]
+        errors = [
+            f"{c.collector}: {c.error_message or c.state}" for c in self.chunk_cls.find_by_state(cr, run.id, "error")
+        ]
 
         # Re-probe for capabilities (needed for manifest)
         bundle, probe = _resolve_bundle(cr)

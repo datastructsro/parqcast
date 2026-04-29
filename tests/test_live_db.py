@@ -39,6 +39,7 @@ def _probe_and_build(env):
     collectors = _build_collectors(env, bundle, caps)
     return bundle, caps, collectors
 
+
 TEST_ODOO_VERSION = os.environ.get("PARQCAST_TEST_ODOO_VERSION", "19")
 if TEST_ODOO_VERSION not in REGISTRY:
     pytest.skip(

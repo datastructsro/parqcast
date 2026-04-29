@@ -7,14 +7,14 @@ Importing this subpackage populates the v18 bundle in
 
 from __future__ import annotations
 
-from . import bundle as bundle  # noqa: F401 — side-effect: registers v18 bundle
+from . import bundle as bundle
+from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_bom import (
     BomByproductCollectorV18,
     BomCollectorV18,
     BomLinesCollectorV18,
     BomOperationsCollectorV18,
 )
-from .mps import MpsForecastCollectorV18, MpsScheduleCollectorV18
 from .mrp_production import MrpProductionCollectorV18
 from .mrp_workorder import MrpWorkorderCollectorV18
 from .orderpoint import OrderpointCollectorV18

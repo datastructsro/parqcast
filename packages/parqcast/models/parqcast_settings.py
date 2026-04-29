@@ -3,7 +3,7 @@
 
 from typing import Any
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -97,11 +97,12 @@ class ResConfigSettings(models.TransientModel):
     def _compute_parqcast_status(self):
         for rec in self:
             from parqcast.core.version_gate import _read_odoo_major
+
             rec.parqcast_odoo_version = _read_odoo_major(self.env.cr) or "Unknown"
-            
+
             last_run = self.env["parqcast.run"].search([], limit=1, order="id desc")
             if last_run:
-                state_dict = dict(last_run._fields['state'].selection)
+                state_dict = dict(last_run._fields["state"].selection)
                 rec.parqcast_last_run_state = state_dict.get(last_run.state, last_run.state)
                 rec.parqcast_last_run_error = last_run.error_message
             else:
@@ -143,13 +144,13 @@ class ResConfigSettings(models.TransientModel):
         result = self.env["parqcast.cron"].run_export()
         state = result.get("state", "done")
         chunks = result.get("files", [])
-        
+
         msg = f"Export tick completed. State: {state}."
         if state == "error":
             msg = "Export tick failed with an error. Check Export Runs for details."
         elif chunks:
             msg = f"Export tick complete. {len(chunks)} files prepared/uploaded."
-            
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -164,6 +165,7 @@ class ResConfigSettings(models.TransientModel):
     def action_test_http_connection(self):
         """Test HTTP Server reachability."""
         from urllib import request as urllib_request
+
         for rec in self:
             if not rec.parqcast_server_url:
                 raise ValidationError("Server URL is required.")
@@ -172,7 +174,7 @@ class ResConfigSettings(models.TransientModel):
                 with urllib_request.urlopen(req, timeout=5):
                     pass
             except Exception as e:
-                raise ValidationError(f"Connection failed: {e}")
+                raise ValidationError(_("Connection failed: %s") % e) from e
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -189,9 +191,9 @@ class ResConfigSettings(models.TransientModel):
         try:
             import boto3
             from botocore.exceptions import ClientError
-        except ImportError:
-            raise ValidationError("boto3 is not installed. S3 transport requires it.")
-            
+        except ImportError as e:
+            raise ValidationError(_("boto3 is not installed. S3 transport requires it.")) from e
+
         for rec in self:
             if not rec.parqcast_s3_bucket:
                 raise ValidationError("S3 Bucket is required.")
@@ -205,10 +207,10 @@ class ResConfigSettings(models.TransientModel):
                 )
                 client.head_bucket(Bucket=rec.parqcast_s3_bucket)
             except ClientError as e:
-                raise ValidationError(f"S3 Connection failed: {e}")
+                raise ValidationError(_("S3 Connection failed: %s") % e) from e
             except Exception as e:
-                raise ValidationError(f"S3 Error: {e}")
-                
+                raise ValidationError(_("S3 Error: %s") % e) from e
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

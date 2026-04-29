@@ -7,7 +7,7 @@ Importing this subpackage populates the v19 bundle in
 
 from __future__ import annotations
 
-from . import bundle as bundle  # noqa: F401 — side-effect: registers v19 bundle
+from . import bundle as bundle
 from .mps import MpsForecastCollectorV19, MpsScheduleCollectorV19
 from .mrp_bom import (
     BomByproductCollectorV19,

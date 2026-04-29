@@ -159,9 +159,7 @@ class OdooRecord(Protocol):
 class OdooModel(Protocol):
     """An Odoo model accessor — what ``env["<model>"]`` returns."""
 
-    def create(
-        self, vals: Mapping[str, object] | list[Mapping[str, object]]
-    ) -> OdooRecord: ...
+    def create(self, vals: Mapping[str, object] | list[Mapping[str, object]]) -> OdooRecord: ...
     def search(
         self,
         domain: Sequence[object],

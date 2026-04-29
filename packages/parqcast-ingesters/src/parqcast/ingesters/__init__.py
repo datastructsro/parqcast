@@ -1,9 +1,8 @@
-from .base import BaseIngester as BaseIngester
-
 # Importing v18 / v19 registers their ingesters into
 # parqcast.core.registry.REGISTRY[version].ingesters.
-from . import v18 as v18  # noqa: F401
-from . import v19 as v19  # noqa: F401
+from . import v18 as v18
+from . import v19 as v19
+from .base import BaseIngester as BaseIngester
 from .v19 import (
     DistributionActorV19,
     OrderpointActorV19,
