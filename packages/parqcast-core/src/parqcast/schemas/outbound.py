@@ -436,6 +436,7 @@ COMPANY_SCHEMA = pa.schema(
         ("_odoo_parent_id", OdooId),
         ("security_lead", OdooFloat),
         ("active", OdooBoolean),
+        ("_odoo_country_id", OdooId),
     ]
 )
 
