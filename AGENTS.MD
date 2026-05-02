@@ -24,3 +24,7 @@ Parqcast certifies per Odoo major.
 ## 4. Testing
 - Use `uv run pytest tests/ -x -q` to verify logic.
 - Do not run `tests/test_live_db.py` without the `PARQCAST_TEST_DB` environment variable set.
+
+## 5. Data Architecture & Schemas
+When answering questions about what data is available, writing SQL extractors, or modifying PyArrow schemas, you MUST first read `docs/DATA_DICTIONARY.md`. 
+* All outbound schemas are defined and strictly typed in `packages/parqcast-core/src/parqcast/schemas/outbound.py`.
