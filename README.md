@@ -12,7 +12,7 @@ This repo is a `uv` workspace with four Python packages plus the Odoo addon:
 |------|---------|
 | `packages/parqcast-core/` | Schemas, transport, tracking, capabilities, manifest, protocols (pyarrow only) |
 | `packages/parqcast-collectors/` | SQL-based data extractors + time-budgeted orchestrator |
-| `packages/parqcast-ingesters/` | ORM-based writers (push planning decisions back into Odoo) |
+| `packages/parqcast-ingesters/` | ORM-based writers (push prescriptive ML decisions like POs and dynamic lead times back into Odoo) |
 | `packages/parqcast-transport-http/` | HTTP upload transport |
 | `packages/parqcast/` | The Odoo 19 addon (settings UI, cron job, env adapter) — see [its README](packages/parqcast/README.rst) |
 

@@ -20,11 +20,15 @@ def build_manifest(
     errors: list[str] | None = None,
     warnings: list[str] | None = None,
     total_duration: float = 0.0,
+    started_at: datetime | None = None,
 ) -> JsonDict:
+    finished_at = datetime.now(UTC)
     return {
         "version": parqcast_version,
-        "schema_version": datetime.now(UTC).strftime("%Y-%m-%d"),
-        "timestamp": datetime.now(UTC).isoformat(),
+        "schema_version": finished_at.strftime("%Y-%m-%d"),
+        "timestamp": finished_at.isoformat(),
+        "started_at": started_at.isoformat() if started_at else None,
+        "finished_at": finished_at.isoformat(),
         "company": company,
         "company_id": company_id,
         "odoo_version": odoo_version,

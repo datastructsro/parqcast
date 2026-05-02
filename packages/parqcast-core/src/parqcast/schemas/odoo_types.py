@@ -19,6 +19,10 @@ import pyarrow as pa
 
 # --- Odoo Integer fields ---
 
+OdooInteger = pa.int64()
+"""Generic integer field (e.g. delay, sequence lengths).
+Maps to: fields.Integer"""
+
 OdooId = pa.int64()
 """Many2one FK, Integer PK, or any Odoo integer field.
 Maps to: fields.Many2one, fields.Integer, fields.Id"""

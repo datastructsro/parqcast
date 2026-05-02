@@ -14,7 +14,8 @@ class CompanyCollector[V](CoreCollector[V]):
                 rc.id, rc.name, rc.currency_id,
                 rc.parent_id,
                 COALESCE(rc.security_lead, 0),
-                rc.active
+                rc.active,
+                rc.country_id
             FROM res_company rc
         """,
             None,

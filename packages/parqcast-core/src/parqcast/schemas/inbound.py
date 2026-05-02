@@ -4,6 +4,7 @@ from .odoo_types import (
     OdooCode,
     OdooDatetime,
     OdooId,
+    OdooInteger,
     OdooName,
     OdooQuantity,
     OdooState,
@@ -13,6 +14,8 @@ from .odoo_types import (
 DECISIONS_SCHEMA = pa.schema(
     [
         ("decision_id", OdooCode),
+        ("run_uuid", OdooText),
+        ("decision_timestamp", OdooDatetime),
         ("decision_type", OdooState),
         ("status", OdooState),
         ("item_name", OdooName),
@@ -35,5 +38,6 @@ DECISIONS_SCHEMA = pa.schema(
         ("remark", OdooText),
         ("min_quantity", OdooQuantity),
         ("max_quantity", OdooQuantity),
+        ("delay", OdooInteger),
     ]
 )
