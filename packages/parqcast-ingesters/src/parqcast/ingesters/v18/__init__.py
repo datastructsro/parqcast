@@ -13,6 +13,7 @@ from .orderpoint_actor import OrderpointActorV18
 from .production_actor import ProductionActorV18
 from .purchase_actor import PurchaseActorV18
 from .reschedule_actor import RescheduleActorV18
+from .supplierinfo_actor import SupplierinfoActorV18
 
 append_to_bundle(
     "18",
@@ -22,6 +23,7 @@ append_to_bundle(
         DistributionActorV18,
         RescheduleActorV18,
         OrderpointActorV18,
+        SupplierinfoActorV18,
     ),
 )
 
@@ -31,4 +33,5 @@ __all__ = [
     "ProductionActorV18",
     "PurchaseActorV18",
     "RescheduleActorV18",
+    "SupplierinfoActorV18",
 ]

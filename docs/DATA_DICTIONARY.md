@@ -70,7 +70,7 @@ Below is a categorized list of the primary data entities currently extracted by 
 While the entities above describe the data being extracted *out* of Odoo via `parqcast-collectors` (using raw SQL), the external planner also pushes actionable decisions *back into* Odoo. This data is handled by `parqcast-ingesters`, which is the ONLY package explicitly permitted to use the standard Odoo ORM (e.g., `env['purchase.order'].create(...)`) to safely trigger Odoo's internal workflows.
 
 - **`DECISIONS`** (`inbound.py`): The prescriptive actions prescribed by the external AI/planner (e.g., creating a Purchase Order, updating an Orderpoint, scheduling Manufacturing).
-  - **Schema Fields:** `decision_id`, `decision_type`, `status`, `item_name`, `_odoo_product_id`, `_odoo_uom_id`, `location_name`, `_odoo_location_id`, `quantity`, `start_date`, `end_date`, `supplier_name`, `_odoo_supplier_id`, `_odoo_bom_id`, `origin_location`, `destination_location`, `parent_reference`, `workcenter_name`, `_odoo_workcenter_id`, `batch`, `remark`, `min_quantity`, `max_quantity`.
+  - **Schema Fields:** `decision_id`, `decision_type`, `status`, `item_name`, `_odoo_product_id`, `_odoo_uom_id`, `location_name`, `_odoo_location_id`, `quantity`, `start_date`, `end_date`, `supplier_name`, `_odoo_supplier_id`, `_odoo_bom_id`, `origin_location`, `destination_location`, `parent_reference`, `workcenter_name`, `_odoo_workcenter_id`, `batch`, `remark`, `min_quantity`, `max_quantity`, `delay`.
 
 ---
 

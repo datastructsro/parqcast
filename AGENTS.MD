@@ -11,7 +11,7 @@ This document defines the constraints, architecture boundaries, and tooling inst
 Parqcast is strictly layered. Agents must NEVER introduce imports that violate these boundaries:
 - **`packages/parqcast-core/`**: Defines data schemas, pyarrow constructs, and protocol interfaces. **Constraint:** Must NEVER import from `odoo`, `psycopg2`, or any other workspace package.
 - **`packages/parqcast-collectors/`**: Executes fast raw SQL queries using `psycopg2` to build arrow arrays. **Constraint:** Must NEVER import `odoo` ORM models.
-- **`packages/parqcast-ingesters/`**: Pulls data via Odoo ORM to push planning decisions back. This is the ONLY python package (outside the addon itself) permitted to use dynamic Odoo typing.
+- **`packages/parqcast-ingesters/`**: Receives decisions matching `inbound.py` schemas and pushes them into Odoo via the ORM (e.g., updating vendor lead times or creating POs). This is the ONLY python package (outside the addon itself) permitted to use dynamic Odoo typing.
 - **`packages/parqcast-transport-http/`**: Handles HTTP uploads of generated chunks.
 - **`packages/parqcast/`**: The Odoo addon. It bridges the environment with the workspace packages. **Constraint:** Must pass Odoo Community Association (OCA) linting via `bash scripts/oca_lint.sh`. Must **NEVER** contain inline raw SQL queries (`cr.execute`); all tracking SQL is delegated to `packages/parqcast-core`. Transports must be decoupled and registered via `parqcast/utils/transport_registry.py`.
 
