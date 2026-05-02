@@ -24,7 +24,7 @@ def test_each_schema_can_create_empty_table():
 
 def test_decisions_schema_is_valid():
     assert isinstance(DECISIONS_SCHEMA, pa.Schema)
-    assert len(DECISIONS_SCHEMA) == 23
+    assert len(DECISIONS_SCHEMA) == 26
     table = pa.table({f.name: [] for f in DECISIONS_SCHEMA}, schema=DECISIONS_SCHEMA)
     assert table.num_rows == 0
 
