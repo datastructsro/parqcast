@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-16 00:00+0000\n"
+"POT-Creation-Date: 2026-04-29 23:52+0200\n"
 "PO-Revision-Date: 2026-04-16 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
@@ -17,440 +17,364 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. module: parqcast
-#: model:ir.model,name:parqcast.model_parqcast_run
-msgid "Parqcast Export Run"
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "/tmp/parqcast_export"
 msgstr "Parqcast exportfuttatás"
 
-#. module: parqcast
-#: model:ir.model,name:parqcast.model_parqcast_chunk
-msgid "Parqcast Export Chunk"
-msgstr "Parqcast exportdarab"
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "AKIA..."
+msgstr "AKIA..."
 
-#. module: parqcast
-#: model:ir.model,name:parqcast.model_parqcast_cron
-msgid "Parqcast Export Runner"
-msgstr "Parqcast exportfuttató"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__run_uuid
-msgid "Run UUID"
-msgstr "Futtatás UUID"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_id
-msgid "Company ID"
-msgstr "Cég azonosító"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__company_name
-msgid "Company"
-msgstr "Cég"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__collector_count
-msgid "Collectors"
-msgstr "Gyűjtők"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__manifest_json
-msgid "Manifest"
-msgstr "Jegyzék"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__error_message
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__error_message
-msgid "Error"
-msgstr "Hiba"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__started_at
-msgid "Started"
-msgstr "Elindítva"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__finished_at
-msgid "Finished"
-msgstr "Befejezve"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__duration_seconds
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__duration_seconds
-msgid "Duration (s)"
-msgstr "Időtartam (mp)"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__chunk_ids
-msgid "Chunks"
-msgstr "Darabok"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_run__attachment_count
-msgid "Attachments"
-msgstr "Mellékletek"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
-#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
-msgid "Pending"
-msgstr "Függőben"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
-msgid "Collecting"
-msgstr "Gyűjtés"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
-msgid "Uploading"
-msgstr "Feltöltés"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
-msgid "Done"
-msgstr "Kész"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_run__state
-#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
-msgid "Error"
-msgstr "Hiba"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__row_count
-msgid "Rows"
-msgstr "Sorok"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_parqcast_chunk__byte_count
-msgid "Bytes"
-msgstr "Bájtok"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
-msgid "Created"
-msgstr "Létrehozva"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_parqcast_chunk__state
-msgid "Uploaded"
-msgstr "Feltöltve"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_transport_type
-msgid "Transport"
-msgstr "Szállítás"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_local_path
-msgid "Local Export Path"
-msgstr "Helyi export útvonal"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_server_url
-msgid "Server URL"
-msgstr "Szerver URL"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_api_key
-msgid "API Key"
-msgstr "API-kulcs"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_namespace
-msgid "Namespace"
-msgstr "Névtér"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_access_key_id
-msgid "AWS Access Key ID"
-msgstr "AWS hozzáférési kulcs azonosító"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_secret_access_key
-msgid "AWS Secret Access Key"
-msgstr "AWS titkos hozzáférési kulcs"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_region
-msgid "AWS Region"
-msgstr "AWS régió"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_bucket
-msgid "S3 Bucket"
-msgstr "S3 tároló"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_prefix
-msgid "S3 Prefix"
-msgstr "S3 előtag"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
-msgid "S3 Endpoint URL"
-msgstr "S3 végpont URL"
-
-#. module: parqcast
-#: model:ir.model.fields,help:parqcast.field_res_config_settings__parqcast_s3_endpoint_url
-msgid "For S3-compatible stores (MinIO, LocalStack). Leave empty for AWS."
-msgstr "S3-kompatibilis tárolókhoz (MinIO, LocalStack). Hagyja üresen AWS esetén."
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cleanup_days
-msgid "Cleanup After (days)"
-msgstr "Tisztítás után (nap)"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_time_budget
-msgid "Time Budget (seconds)"
-msgstr "Időkeret (másodperc)"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_company_id
-msgid "Export Company"
-msgstr "Export cég"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_cron_active
-msgid "Enable Scheduled Export"
-msgstr "Ütemezett export engedélyezése"
-
-#. module: parqcast
-#: model:ir.model.fields,field_description:parqcast.field_res_config_settings__parqcast_schedule_mode
-msgid "Schedule"
-msgstr "Ütemezés"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
-msgid "Odoo Attachments"
-msgstr "Odoo mellékletek"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
-msgid "Local Filesystem"
-msgstr "Helyi fájlrendszer"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
-msgid "HTTP Server"
-msgstr "HTTP szerver"
-
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_transport_type
+#: packages/parqcast/views/parqcast_settings_views.xml
 msgid "AWS S3"
 msgstr "AWS S3"
 
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
-msgid "Once daily (midnight UTC)"
-msgstr "Naponta egyszer (éjfél UTC)"
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "Automatically delete completed export runs older than this many days."
+msgstr "Automatikusan törli a befejezett exportálási futásokat, amelyek régebbiek ennél a napok számánál."
+"A megadott napnál régebbi befejezett exportfuttatások automatikus törlése."
 
-#. module: parqcast
-#: model:ir.model.fields,selection:parqcast.field_res_config_settings__parqcast_schedule_mode
-msgid "Continuous (every 5 minutes)"
-msgstr "Folyamatos (5 percenként)"
-
-#. module: parqcast
-#: code:addons/parqcast/models/parqcast_settings.py:0
-#: code:addons/parqcast/models/parqcast_run.py:0
-#, python-format
-msgid "Parqcast"
-msgstr "Parqcast"
-
-#. module: parqcast
-#: code:addons/parqcast/models/parqcast_settings.py:0
-#, python-format
-msgid "Export tick completed. Check Export Runs for results."
-msgstr "Exportkör befejezve. Ellenőrizze az eredményeket az Exportfuttatások nézetben."
-
-#. module: parqcast
-#: code:addons/parqcast/models/parqcast_run.py:0
-#, python-format
-msgid "No attachment files found for this export run."
-msgstr "Nem találhatók mellékletfájlok ehhez az exportfuttatáshoz."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+#: packages/parqcast/views/parqcast_run_views.xml
 msgid "Cancel Run"
 msgstr "Futtatás megszakítása"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
-msgid "Purge Blob Data"
-msgstr "Blob-adatok törlése"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
-msgid "Download ZIP"
-msgstr "ZIP letöltése"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
-msgid "This will cancel the export run and delete pending chunks. Continue?"
-msgstr "Ez megszakítja az exportfuttatást és törli a függőben lévő darabokat. Folytatja?"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
-msgid "This will delete chunk data from the database to free space. The exported files are unaffected. Continue?"
-msgstr "Ez törli a darabadatokat az adatbázisból a hely felszabadításához. Az exportált fájlok nem változnak. Folytatja?"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
+#: packages/parqcast/views/parqcast_run_views.xml
 msgid "Chunks"
 msgstr "Darabok"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_form
-msgid "Manifest"
-msgstr "Jegyzék"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Export Schedule"
-msgstr "Export ütemezés"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Enable Scheduled Export"
-msgstr "Ütemezett export engedélyezése"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Run the export pipeline automatically on a schedule."
-msgstr "Az export-folyamat automatikus futtatása ütemezés szerint."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Manual Export"
-msgstr "Kézi export"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Run one export tick immediately with the current settings."
-msgstr "Egy exportkör azonnali futtatása a jelenlegi beállításokkal."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Run Export Now"
-msgstr "Export futtatása most"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "General"
-msgstr "Általános"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Export Company"
-msgstr "Export cég"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Company whose data will be exported. Defaults to your current company."
-msgstr "A cég, amelynek adatai exportálásra kerülnek. Alapértelmezés: az Ön aktuális cége."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Time Budget"
-msgstr "Időkeret"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Maximum seconds per cron tick. The orchestrator pauses and resumes on the next tick."
-msgstr "Maximum másodpercek cron-körönként. Az orkesztrátor szünetel és a következő körben folytatja."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+#: packages/parqcast/views/parqcast_settings_views.xml
 msgid "Cleanup After"
 msgstr "Tisztítás után"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Automatically delete completed export runs older than this many days."
-msgstr "A megadott napnál régebbi befejezett exportfuttatások automatikus törlése."
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "Company whose data will be exported. Defaults to your current company."
+msgstr "Vállalat, amelynek az adatait exportálják. Alapértelmezés szerint az Ön jelenlegi vállalata."
+"A cég, amelynek adatai exportálásra kerülnek. Alapértelmezés: az Ön aktuális "
+"cége."
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Transport"
-msgstr "Szállítás"
+#: packages/parqcast/models/parqcast_settings.py:180
+#, fuzzy
+msgid "Connection failed: "
+msgstr "A csatlakozás sikertelen: "
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Transport Type"
-msgstr "Szállítási típus"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Where to send the exported Parquet files"
-msgstr "Hová küldje az exportált Parquet fájlokat"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Odoo Attachments"
-msgstr "Odoo mellékletek"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Exported files are stored as Odoo attachments on the export run record. Foreqcast reads them directly — no filesystem paths needed."
-msgstr "Az exportált fájlok Odoo mellékletekként tárolódnak az exportfuttatás rekordján. A Foreqcast közvetlenül olvassa őket — fájlrendszer útvonalak nem szükségesek."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Parquet files are stored in Odoo's attachment store. Download them from the Export Runs view, or let Foreqcast read them directly."
-msgstr "A Parquet fájlok az Odoo melléklettárolójában vannak. Töltse le az Exportfuttatások nézetből, vagy hagyja, hogy a Foreqcast közvetlenül olvassa őket."
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Local Path"
-msgstr "Helyi útvonal"
-
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+#: packages/parqcast/views/parqcast_settings_views.xml
 msgid "Directory on the server filesystem"
 msgstr "Könyvtár a szerver fájlrendszerén"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid "Download ZIP"
+msgstr "ZIP letöltése"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Export Company"
+msgstr "Export cég"
+
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid "Export Runs"
+msgstr "Exportfuttatások"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid ""
+"Exported files are stored as Odoo attachments on the export run record. "
+"Foreqcast reads them directly — no filesystem paths needed."
+msgstr ""
+"Az exportált fájlok Odoo mellékletekként tárolódnak az exportfuttatás "
+"rekordján. A Foreqcast közvetlenül olvassa őket — fájlrendszer útvonalak nem "
+"szükségesek."
+
+#: packages/parqcast/views/parqcast_settings_views.xml
 msgid "HTTP Server"
 msgstr "HTTP szerver"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Upload raw Parquet files to a parqcast-server instance"
-msgstr "Nyers Parquet fájlok feltöltése egy parqcast-server példányra"
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "Last Cron Run"
+msgstr "Utolsó Cron futás"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "AWS S3"
-msgstr "AWS S3"
+#: packages/parqcast/utils/transport_registry.py:74
+#, fuzzy
+msgid "Local Export Path is required."
+msgstr "Helyi export útvonal"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
-msgstr "Feltöltés S3 vagy S3-kompatibilis tárolóba (MinIO, LocalStack)"
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Local Path"
+msgstr "Helyi útvonal"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.res_config_settings_view_form
-msgid "Leave Endpoint URL empty for real AWS S3."
-msgstr "Hagyja üresen a végpont URL-t a valódi AWS S3-hoz."
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid "Manifest"
+msgstr "Jegyzék"
 
-#. module: parqcast
-#: model:ir.actions.act_window,name:parqcast.action_parqcast_run
-msgid "Export Runs"
-msgstr "Exportfuttatások"
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Manual Export"
+msgstr "Kézi export"
 
-#. module: parqcast
-#: model:ir.ui.view,arch_db:parqcast.parqcast_run_view_tree
-msgid "UUID"
-msgstr "UUID"
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid ""
+"Maximum seconds per cron tick. The orchestrator pauses and resumes on the "
+"next tick."
+msgstr ""
+"Maximum másodpercek cron-körönként. Az orkesztrátor szünetel és a következő "
+"körben folytatja."
 
-#. module: parqcast
-#: model:ir.ui.menu,name:parqcast.menu_parqcast_root
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Odoo Attachments"
+msgstr "Odoo mellékletek"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "Odoo Version"
+msgstr "Odoo verzió"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
 msgid "Parqcast"
 msgstr "Parqcast"
 
-#. module: parqcast
-#: model:ir.ui.menu,name:parqcast.menu_parqcast_runs
-msgid "Export Runs"
-msgstr "Exportfuttatások"
+#: packages/parqcast/data/ir_cron_data.xml
+#, fuzzy
+msgid "Parqcast: Export Data"
+msgstr "Parqcast exportfuttatás"
+
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid "Purge Blob Data"
+msgstr "Blob-adatok törlése"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Run Export Now"
+msgstr "Export futtatása most"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Run one export tick immediately with the current settings."
+msgstr "Egy exportkör azonnali futtatása a jelenlegi beállításokkal."
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Run the export pipeline automatically on a schedule."
+msgstr "Az export-folyamat automatikus futtatása ütemezés szerint."
+
+#: packages/parqcast/utils/transport_registry.py:114
+#, fuzzy
+msgid "S3 Bucket is required."
+msgstr "S3 Bucket kötelező."
+
+#: packages/parqcast/utils/transport_registry.py:92
+#, fuzzy
+msgid "Server URL is required."
+msgstr "Szerver URL"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "Test Connection"
+msgstr "Kapcsolat tesztelése"
+
+#: packages/parqcast/views/parqcast_run_views.xml
+#, fuzzy
+msgid "This will cancel the export run and delete pending chunks. Continue?"
+msgstr "Ez visszavonja az exportálás futtatását és törli a függőben lévő darabokat. Folytatja?"
+"Ez megszakítja az exportfuttatást és törli a függőben lévő darabokat. "
+"Folytatja?"
+
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid ""
+"This will delete chunk data from the database to free space. The exported "
+"files are unaffected. Continue?"
+msgstr ""
+"Ez törli a darabadatokat az adatbázisból a hely felszabadításához. Az "
+"exportált fájlok nem változnak. Folytatja?"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Time Budget"
+msgstr "Időkeret"
+
+#: packages/parqcast/models/parqcast_settings.py:117
+#, fuzzy
+msgid "Time budget must be at least 30 seconds to allow progress."
+msgstr "Az időkeretnek legalább 30 másodpercnek kell lennie a folyamathoz."
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Transport Type"
+msgstr "Szállítási típus"
+
+#: packages/parqcast/models/parqcast_settings.py:173
+#, fuzzy
+msgid "Transport type is required."
+msgstr "Szállítási típus"
+
+#: packages/parqcast/views/parqcast_run_views.xml
+msgid "UUID"
+msgstr "UUID"
+
+#: packages/parqcast/utils/transport_registry.py:51
+#, fuzzy
+msgid "Unknown transport type: "
+msgstr "Szállítási típus"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Upload raw Parquet files to a parqcast-server instance"
+msgstr "Nyers Parquet fájlok feltöltése egy parqcast-server példányra"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
+msgstr "Feltöltés S3 vagy S3-kompatibilis tárolóba (MinIO, LocalStack)"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "Where to send the exported Parquet files"
+msgstr "Hová küldje az exportált Parquet fájlokat"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "eu-west-1"
+msgstr "eu-west-1"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "http://localhost:8420"
+msgstr "http://localhost:8420"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "http://localhost:9000"
+msgstr "http://localhost:9000"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+msgid "my-parqcast-bucket"
+msgstr "my-parqcast-bucket"
+
+#: packages/parqcast/views/parqcast_settings_views.xml
+#, fuzzy
+msgid "parqcast"
+msgstr "Parqcast"
+
+#~ msgid "Parqcast Export Chunk"
+#~ msgstr "Parqcast exportdarab"
+
+#~ msgid "Parqcast Export Runner"
+#~ msgstr "Parqcast exportfuttató"
+
+#~ msgid "Run UUID"
+#~ msgstr "Futtatás UUID"
+
+#~ msgid "Company ID"
+#~ msgstr "Cég azonosító"
+
+#~ msgid "Company"
+#~ msgstr "Cég"
+
+#~ msgid "Collectors"
+#~ msgstr "Gyűjtők"
+
+#~ msgid "Error"
+#~ msgstr "Hiba"
+
+#~ msgid "Started"
+#~ msgstr "Elindítva"
+
+#~ msgid "Finished"
+#~ msgstr "Befejezve"
+
+#~ msgid "Duration (s)"
+#~ msgstr "Időtartam (mp)"
+
+#~ msgid "Attachments"
+#~ msgstr "Mellékletek"
+
+#~ msgid "Pending"
+#~ msgstr "Függőben"
+
+#~ msgid "Collecting"
+#~ msgstr "Gyűjtés"
+
+#~ msgid "Uploading"
+#~ msgstr "Feltöltés"
+
+#~ msgid "Done"
+#~ msgstr "Kész"
+
+#~ msgid "Rows"
+#~ msgstr "Sorok"
+
+#~ msgid "Bytes"
+#~ msgstr "Bájtok"
+
+#~ msgid "Created"
+#~ msgstr "Létrehozva"
+
+#~ msgid "Uploaded"
+#~ msgstr "Feltöltve"
+
+#~ msgid "Transport"
+#~ msgstr "Szállítás"
+
+#~ msgid "API Key"
+#~ msgstr "API-kulcs"
+
+#~ msgid "Namespace"
+#~ msgstr "Névtér"
+
+#~ msgid "AWS Access Key ID"
+#~ msgstr "AWS hozzáférési kulcs azonosító"
+
+#~ msgid "AWS Secret Access Key"
+#~ msgstr "AWS titkos hozzáférési kulcs"
+
+#~ msgid "AWS Region"
+#~ msgstr "AWS régió"
+
+#~ msgid "S3 Bucket"
+#~ msgstr "S3 tároló"
+
+#~ msgid "S3 Prefix"
+#~ msgstr "S3 előtag"
+
+#~ msgid "S3 Endpoint URL"
+#~ msgstr "S3 végpont URL"
+
+#~ msgid "For S3-compatible stores (MinIO, LocalStack). Leave empty for AWS."
+#~ msgstr ""
+#~ "S3-kompatibilis tárolókhoz (MinIO, LocalStack). Hagyja üresen AWS esetén."
+
+#~ msgid "Cleanup After (days)"
+#~ msgstr "Tisztítás után (nap)"
+
+#~ msgid "Time Budget (seconds)"
+#~ msgstr "Időkeret (másodperc)"
+
+#~ msgid "Enable Scheduled Export"
+#~ msgstr "Ütemezett export engedélyezése"
+
+#~ msgid "Schedule"
+#~ msgstr "Ütemezés"
+
+#~ msgid "Local Filesystem"
+#~ msgstr "Helyi fájlrendszer"
+
+#~ msgid "Once daily (midnight UTC)"
+#~ msgstr "Naponta egyszer (éjfél UTC)"
+
+#~ msgid "Continuous (every 5 minutes)"
+#~ msgstr "Folyamatos (5 percenként)"
+
+#, python-format
+#~ msgid "Export tick completed. Check Export Runs for results."
+#~ msgstr ""
+#~ "Exportkör befejezve. Ellenőrizze az eredményeket az Exportfuttatások "
+#~ "nézetben."
+
+#, python-format
+#~ msgid "No attachment files found for this export run."
+#~ msgstr "Nem találhatók mellékletfájlok ehhez az exportfuttatáshoz."
+
+#~ msgid "Export Schedule"
+#~ msgstr "Export ütemezés"
+
+#~ msgid "General"
+#~ msgstr "Általános"
+
+#~ msgid ""
+#~ "Parquet files are stored in Odoo's attachment store. Download them from "
+#~ "the Export Runs view, or let Foreqcast read them directly."
+#~ msgstr ""
+#~ "A Parquet fájlok az Odoo melléklettárolójában vannak. Töltse le az "
+#~ "Exportfuttatások nézetből, vagy hagyja, hogy a Foreqcast közvetlenül "
+#~ "olvassa őket."
+
+#~ msgid "Leave Endpoint URL empty for real AWS S3."
+#~ msgstr "Hagyja üresen a végpont URL-t a valódi AWS S3-hoz."
