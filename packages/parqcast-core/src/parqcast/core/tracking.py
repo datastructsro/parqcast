@@ -24,11 +24,19 @@ class ExportRun:
 
     STATES = ("pending", "collecting", "uploading", "done", "error")
 
-    def __init__(self, id: int, run_uuid: str, state: str, company_id: int | None = None):
+    def __init__(
+        self,
+        id: int,
+        run_uuid: str,
+        state: str,
+        company_id: int | None = None,
+        started_at: datetime | None = None,
+    ):
         self.id = id
         self.run_uuid = run_uuid
         self.state = state
         self.company_id = company_id
+        self.started_at = started_at
 
     @classmethod
     def ensure_table(cls, cr: ReadCursor):
@@ -54,28 +62,29 @@ class ExportRun:
     @classmethod
     def create(cls, cr: ReadCursor, company_id: int | None = None, company_name: str = "") -> ExportRun:
         run_uuid = str(_uuid.uuid4())
+        started_at = datetime.now(UTC)
         cr.execute(
             """
             INSERT INTO parqcast_export_run (run_uuid, state, company_id, company_name, started_at)
             VALUES (%s, 'pending', %s, %s, %s)
             RETURNING id
             """,
-            (run_uuid, company_id, company_name, datetime.now(UTC)),
+            (run_uuid, company_id, company_name, started_at),
         )
         run_id = fetch_one(cr)[0]
-        return cls(id=run_id, run_uuid=run_uuid, state="pending", company_id=company_id)
+        return cls(id=run_id, run_uuid=run_uuid, state="pending", company_id=company_id, started_at=started_at)
 
     @classmethod
     def find_active(cls, cr: ReadCursor) -> ExportRun | None:
         cr.execute("""
-            SELECT id, run_uuid, state, company_id
+            SELECT id, run_uuid, state, company_id, started_at
             FROM parqcast_export_run
             WHERE state NOT IN ('done', 'error')
             ORDER BY id DESC LIMIT 1
         """)
         row = fetch_one_or_none(cr)
         if row:
-            return cls(id=row[0], run_uuid=row[1], state=row[2], company_id=row[3])
+            return cls(id=row[0], run_uuid=row[1], state=row[2], company_id=row[3], started_at=row[4])
         return None
 
     def set_state(self, cr: ReadCursor, state: str):

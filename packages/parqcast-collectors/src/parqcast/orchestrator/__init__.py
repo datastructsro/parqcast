@@ -366,6 +366,7 @@ class Orchestrator:
             total_duration=round(time.monotonic() - t0, 3),
             errors=errors,
             warnings=[],
+            started_at=run.started_at,
         )
         manifest["capabilities"] = caps.summary()
         manifest["run_uuid"] = run.run_uuid
