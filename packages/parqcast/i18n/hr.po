@@ -18,63 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "/tmp/parqcast_export"
 msgstr "Parqcast izvozno pokretanje"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "AKIA..."
 msgstr "AKIA..."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "AWS S3"
 msgstr "AWS S3"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Automatically delete completed export runs older than this many days."
 msgstr "Automatski izbriši dovršena izvođenja izvoza starija od ovog broja dana."
 "Automatski obriši završena izvozna pokretanja starija od ovog broja dana."
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Cancel Run"
 msgstr "Otkaži pokretanje"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Chunks"
 msgstr "Dijelovi"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Cleanup After"
 msgstr "Čišćenje nakon"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Company whose data will be exported. Defaults to your current company."
 msgstr "Tvrtka čiji će se podaci izvesti. Zadana je vaša trenutna tvrtka."
 
-#: packages/parqcast/models/parqcast_settings.py:180
+#: parqcast/models/parqcast_settings.py:180
 #, fuzzy
 msgid "Connection failed: "
 msgstr "Veza nije uspjela: "
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Directory on the server filesystem"
 msgstr "Direktorij na datotečnom sustavu poslužitelja"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Download ZIP"
 msgstr "Preuzmi ZIP"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Export Company"
 msgstr "Tvrtka za izvoz"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Export Runs"
 msgstr "Izvozna pokretanja"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid ""
 "Exported files are stored as Odoo attachments on the export run record. "
 "Foreqcast reads them directly — no filesystem paths needed."
@@ -83,33 +83,33 @@ msgstr ""
 "pokretanja. Foreqcast ih čita izravno — putanje datotečnog sustava nisu "
 "potrebne."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "HTTP Server"
 msgstr "HTTP poslužitelj"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Last Cron Run"
 msgstr "Zadnje pokretanje Crona"
 
-#: packages/parqcast/utils/transport_registry.py:74
+#: parqcast/utils/transport_registry.py:74
 #, fuzzy
 msgid "Local Export Path is required."
 msgstr "Lokalna izvozna putanja"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Local Path"
 msgstr "Lokalna putanja"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Manifest"
 msgstr "Manifest"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Manual Export"
 msgstr "Ručni izvoz"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid ""
 "Maximum seconds per cron tick. The orchestrator pauses and resumes on the "
 "next tick."
@@ -117,62 +117,62 @@ msgstr ""
 "Maksimalan broj sekundi po cron ciklusu. Orkestrator pauzira i nastavlja na "
 "sljedećem ciklusu."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Odoo Attachments"
 msgstr "Odoo privici"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Odoo Version"
 msgstr "Odoo Verzija"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Parqcast"
 msgstr "Parqcast"
 
-#: packages/parqcast/data/ir_cron_data.xml
+#: parqcast/data/ir_cron_data.xml
 #, fuzzy
 msgid "Parqcast: Export Data"
 msgstr "Parqcast izvozno pokretanje"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Purge Blob Data"
 msgstr "Obriši blob podatke"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run Export Now"
 msgstr "Pokreni izvoz sada"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run one export tick immediately with the current settings."
 msgstr "Pokrenite jedan izvozni ciklus odmah s trenutnim postavkama."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run the export pipeline automatically on a schedule."
 msgstr "Automatski pokrenite izvozni cjevovod prema rasporedu."
 
-#: packages/parqcast/utils/transport_registry.py:114
+#: parqcast/utils/transport_registry.py:114
 #, fuzzy
 msgid "S3 Bucket is required."
 msgstr "S3 Bucket je obavezan."
 
-#: packages/parqcast/utils/transport_registry.py:92
+#: parqcast/utils/transport_registry.py:92
 #, fuzzy
 msgid "Server URL is required."
 msgstr "URL poslužitelja"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Test Connection"
 msgstr "Testiraj vezu"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 #, fuzzy
 msgid "This will cancel the export run and delete pending chunks. Continue?"
 msgstr "Ovo će otkazati izvođenje izvoza i izbrisati dijelove na čekanju. Nastaviti?"
 "Ovo će otkazati izvozno pokretanje i obrisati dijelove na čekanju. Nastaviti?"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid ""
 "This will delete chunk data from the database to free space. The exported "
 "files are unaffected. Continue?"
@@ -180,62 +180,62 @@ msgstr ""
 "Ovo će obrisati podatke dijelova iz baze podataka radi oslobađanja prostora. "
 "Izvezene datoteke nisu pogođene. Nastaviti?"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Time Budget"
 msgstr "Vremenski budžet"
 
-#: packages/parqcast/models/parqcast_settings.py:117
+#: parqcast/models/parqcast_settings.py:117
 #, fuzzy
 msgid "Time budget must be at least 30 seconds to allow progress."
 msgstr "Vremenski proračun mora biti najmanje 30 sekundi da bi se omogućio napredak."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Transport Type"
 msgstr "Vrsta transporta"
 
-#: packages/parqcast/models/parqcast_settings.py:173
+#: parqcast/models/parqcast_settings.py:173
 #, fuzzy
 msgid "Transport type is required."
 msgstr "Vrsta transporta"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "UUID"
 msgstr "UUID"
 
-#: packages/parqcast/utils/transport_registry.py:51
+#: parqcast/utils/transport_registry.py:51
 #, fuzzy
 msgid "Unknown transport type: "
 msgstr "Vrsta transporta"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Upload raw Parquet files to a parqcast-server instance"
 msgstr "Učitajte neobrađene Parquet datoteke na parqcast-server instancu"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
 msgstr "Učitavanje na S3 ili S3-kompatibilno spremište (MinIO, LocalStack)"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Where to send the exported Parquet files"
 msgstr "Kamo poslati izvezene Parquet datoteke"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "eu-west-1"
 msgstr "eu-west-1"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "http://localhost:8420"
 msgstr "http://localhost:8420"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "http://localhost:9000"
 msgstr "http://localhost:9000"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "my-parqcast-bucket"
 msgstr "my-parqcast-bucket"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "parqcast"
 msgstr "Parqcast"

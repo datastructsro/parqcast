@@ -17,66 +17,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "/tmp/parqcast_export"
 msgstr "Parqcast exportfuttatás"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "AKIA..."
 msgstr "AKIA..."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "AWS S3"
 msgstr "AWS S3"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Automatically delete completed export runs older than this many days."
 msgstr "Automatikusan törli a befejezett exportálási futásokat, amelyek régebbiek ennél a napok számánál."
 "A megadott napnál régebbi befejezett exportfuttatások automatikus törlése."
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Cancel Run"
 msgstr "Futtatás megszakítása"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Chunks"
 msgstr "Darabok"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Cleanup After"
 msgstr "Tisztítás után"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Company whose data will be exported. Defaults to your current company."
 msgstr "Vállalat, amelynek az adatait exportálják. Alapértelmezés szerint az Ön jelenlegi vállalata."
 "A cég, amelynek adatai exportálásra kerülnek. Alapértelmezés: az Ön aktuális "
 "cége."
 
-#: packages/parqcast/models/parqcast_settings.py:180
+#: parqcast/models/parqcast_settings.py:180
 #, fuzzy
 msgid "Connection failed: "
 msgstr "A csatlakozás sikertelen: "
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Directory on the server filesystem"
 msgstr "Könyvtár a szerver fájlrendszerén"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Download ZIP"
 msgstr "ZIP letöltése"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Export Company"
 msgstr "Export cég"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Export Runs"
 msgstr "Exportfuttatások"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid ""
 "Exported files are stored as Odoo attachments on the export run record. "
 "Foreqcast reads them directly — no filesystem paths needed."
@@ -85,33 +85,33 @@ msgstr ""
 "rekordján. A Foreqcast közvetlenül olvassa őket — fájlrendszer útvonalak nem "
 "szükségesek."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "HTTP Server"
 msgstr "HTTP szerver"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Last Cron Run"
 msgstr "Utolsó Cron futás"
 
-#: packages/parqcast/utils/transport_registry.py:74
+#: parqcast/utils/transport_registry.py:74
 #, fuzzy
 msgid "Local Export Path is required."
 msgstr "Helyi export útvonal"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Local Path"
 msgstr "Helyi útvonal"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Manifest"
 msgstr "Jegyzék"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Manual Export"
 msgstr "Kézi export"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid ""
 "Maximum seconds per cron tick. The orchestrator pauses and resumes on the "
 "next tick."
@@ -119,63 +119,63 @@ msgstr ""
 "Maximum másodpercek cron-körönként. Az orkesztrátor szünetel és a következő "
 "körben folytatja."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Odoo Attachments"
 msgstr "Odoo mellékletek"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Odoo Version"
 msgstr "Odoo verzió"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Parqcast"
 msgstr "Parqcast"
 
-#: packages/parqcast/data/ir_cron_data.xml
+#: parqcast/data/ir_cron_data.xml
 #, fuzzy
 msgid "Parqcast: Export Data"
 msgstr "Parqcast exportfuttatás"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "Purge Blob Data"
 msgstr "Blob-adatok törlése"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run Export Now"
 msgstr "Export futtatása most"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run one export tick immediately with the current settings."
 msgstr "Egy exportkör azonnali futtatása a jelenlegi beállításokkal."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Run the export pipeline automatically on a schedule."
 msgstr "Az export-folyamat automatikus futtatása ütemezés szerint."
 
-#: packages/parqcast/utils/transport_registry.py:114
+#: parqcast/utils/transport_registry.py:114
 #, fuzzy
 msgid "S3 Bucket is required."
 msgstr "S3 Bucket kötelező."
 
-#: packages/parqcast/utils/transport_registry.py:92
+#: parqcast/utils/transport_registry.py:92
 #, fuzzy
 msgid "Server URL is required."
 msgstr "Szerver URL"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "Test Connection"
 msgstr "Kapcsolat tesztelése"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 #, fuzzy
 msgid "This will cancel the export run and delete pending chunks. Continue?"
 msgstr "Ez visszavonja az exportálás futtatását és törli a függőben lévő darabokat. Folytatja?"
 "Ez megszakítja az exportfuttatást és törli a függőben lévő darabokat. "
 "Folytatja?"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid ""
 "This will delete chunk data from the database to free space. The exported "
 "files are unaffected. Continue?"
@@ -183,62 +183,62 @@ msgstr ""
 "Ez törli a darabadatokat az adatbázisból a hely felszabadításához. Az "
 "exportált fájlok nem változnak. Folytatja?"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Time Budget"
 msgstr "Időkeret"
 
-#: packages/parqcast/models/parqcast_settings.py:117
+#: parqcast/models/parqcast_settings.py:117
 #, fuzzy
 msgid "Time budget must be at least 30 seconds to allow progress."
 msgstr "Az időkeretnek legalább 30 másodpercnek kell lennie a folyamathoz."
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Transport Type"
 msgstr "Szállítási típus"
 
-#: packages/parqcast/models/parqcast_settings.py:173
+#: parqcast/models/parqcast_settings.py:173
 #, fuzzy
 msgid "Transport type is required."
 msgstr "Szállítási típus"
 
-#: packages/parqcast/views/parqcast_run_views.xml
+#: parqcast/views/parqcast_run_views.xml
 msgid "UUID"
 msgstr "UUID"
 
-#: packages/parqcast/utils/transport_registry.py:51
+#: parqcast/utils/transport_registry.py:51
 #, fuzzy
 msgid "Unknown transport type: "
 msgstr "Szállítási típus"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Upload raw Parquet files to a parqcast-server instance"
 msgstr "Nyers Parquet fájlok feltöltése egy parqcast-server példányra"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Upload to S3 or S3-compatible storage (MinIO, LocalStack)"
 msgstr "Feltöltés S3 vagy S3-kompatibilis tárolóba (MinIO, LocalStack)"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "Where to send the exported Parquet files"
 msgstr "Hová küldje az exportált Parquet fájlokat"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "eu-west-1"
 msgstr "eu-west-1"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "http://localhost:8420"
 msgstr "http://localhost:8420"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "http://localhost:9000"
 msgstr "http://localhost:9000"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 msgid "my-parqcast-bucket"
 msgstr "my-parqcast-bucket"
 
-#: packages/parqcast/views/parqcast_settings_views.xml
+#: parqcast/views/parqcast_settings_views.xml
 #, fuzzy
 msgid "parqcast"
 msgstr "Parqcast"
