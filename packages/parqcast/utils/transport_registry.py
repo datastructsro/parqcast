@@ -3,7 +3,7 @@
 
 """Transport Registry for decoupling transport initialization from the Odoo addon."""
 
-import importlib
+import importlib.util
 from typing import TYPE_CHECKING, Protocol
 
 from odoo.exceptions import ValidationError  # pyright: ignore[reportMissingImports]

@@ -30,7 +30,7 @@ def test_s3_reachability(
 ) -> None:
     """Test S3 reachability. Raises Exception on failure."""
     try:
-        import boto3  # pyright: ignore[reportMissingImports]
+        import boto3  # pyright: ignore[reportMissingImports,reportMissingTypeStubs]
     except ImportError:
         raise RuntimeError("boto3 is not installed. S3 transport requires it.") from None
 
