@@ -7,11 +7,25 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError  # pyright: ignore[reportMissingImports]
 
 
+def _transport_selection() -> list[tuple[str, str]]:
+    """Build transport choices dynamically — S3 only appears when installed."""
+    from ..utils.transport_registry import has_s3_transport
+
+    choices: list[tuple[str, str]] = [
+        ("attachment", "Odoo Attachments"),
+        ("local", "Local Filesystem"),
+        ("http", "HTTP Server"),
+    ]
+    if has_s3_transport():
+        choices.append(("s3", "AWS S3"))
+    return choices
+
+
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     parqcast_transport_type = fields.Selection(
-        [("attachment", "Odoo Attachments"), ("local", "Local Filesystem"), ("http", "HTTP Server"), ("s3", "AWS S3")],
+        selection=_transport_selection,
         string="Transport",
         default="attachment",
         config_parameter="parqcast.transport_type",

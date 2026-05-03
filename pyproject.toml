@@ -17,6 +17,7 @@ members = [
     "packages/parqcast-collectors",
     "packages/parqcast-ingesters",
     "packages/parqcast-transport-http",
+    "packages/parqcast-transport-s3",
 ]
 
 [tool.uv.sources]
@@ -24,6 +25,7 @@ parqcast-core = { workspace = true }
 parqcast-collectors = { workspace = true }
 parqcast-ingesters = { workspace = true }
 parqcast-transport-http = { workspace = true }
+parqcast-transport-s3 = { workspace = true }
 
 [dependency-groups]
 dev = [
@@ -31,6 +33,7 @@ dev = [
     "parqcast-collectors",
     "parqcast-ingesters",
     "parqcast-transport-http",
+    "parqcast-transport-s3",
     "psycopg2-binary>=2.9.11",
     "pyarrow-stubs>=20.0.0.20250716",
     "pyright>=1.1.408",
@@ -53,6 +56,7 @@ include = [
     "packages/parqcast-collectors/src",
     "packages/parqcast-ingesters/src",
     "packages/parqcast-transport-http/src",
+    "packages/parqcast-transport-s3/src",
     "packages/parqcast",
 ]
 # Resolve cross-package imports inside the parqcast namespace directly
@@ -63,6 +67,7 @@ extraPaths = [
     "packages/parqcast-collectors/src",
     "packages/parqcast-ingesters/src",
     "packages/parqcast-transport-http/src",
+    "packages/parqcast-transport-s3/src",
 ]
 # The `odoo` module's symbols are covered by the project-local stubs at
 # ``stubs/odoo-stubs/`` (see ``stubPath`` above). Odoo isn't pip-installable,
@@ -99,6 +104,16 @@ reportUnknownArgumentType = "none"
 # Unknown. Suppress the same three rules here.
 [[tool.pyright.executionEnvironments]]
 root = "packages/parqcast"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+
+# boto3 ships without type stubs or inline types. Every call through the
+# S3 client returns Unknown. Suppress the dynamic-access rules here
+# rather than scattering pyright: ignore comments throughout the file.
+[[tool.pyright.executionEnvironments]]
+root = "packages/parqcast-transport-s3/src"
+reportMissingTypeStubs = "none"
 reportUnknownMemberType = "none"
 reportUnknownVariableType = "none"
 reportUnknownArgumentType = "none"

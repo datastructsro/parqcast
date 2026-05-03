@@ -3,9 +3,12 @@
 
 """Transport Registry for decoupling transport initialization from the Odoo addon."""
 
+import importlib
 from typing import TYPE_CHECKING, Protocol
 
 from odoo.exceptions import ValidationError  # pyright: ignore[reportMissingImports]
+
+_HAS_S3_TRANSPORT = importlib.util.find_spec("parqcast.transport_s3") is not None
 
 if TYPE_CHECKING:
     from odoo.models import Environment
@@ -132,7 +135,13 @@ class AttachmentProvider:
         pass
 
 
+def has_s3_transport() -> bool:
+    """Check if parqcast-transport-s3 package is installed."""
+    return _HAS_S3_TRANSPORT
+
+
 transport_registry.register("local", LocalFSProvider())
 transport_registry.register("http", HttpProvider())
-transport_registry.register("s3", S3Provider())
+if _HAS_S3_TRANSPORT:
+    transport_registry.register("s3", S3Provider())
 transport_registry.register("attachment", AttachmentProvider())
