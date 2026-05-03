@@ -37,7 +37,7 @@ class ParqcastCron(models.AbstractModel):
         return self.env.company
 
     @api.model
-    def run_export(self):
+    def run_export(self, force_start: bool = False):
         """Called by ir.cron to run one tick of the export pipeline."""
         try:
             from parqcast.core.version_gate import assert_supported
@@ -49,6 +49,7 @@ class ParqcastCron(models.AbstractModel):
 
             ICP = self.env["ir.config_parameter"].sudo()
             time_budget = int(ICP.get_param("parqcast.time_budget", "270"))
+            export_interval_hours = float(ICP.get_param("parqcast.export_interval_hours", "24.0"))
             company = self._get_company()
 
             adapter = OdooAdapter(self.env)
@@ -59,9 +60,10 @@ class ParqcastCron(models.AbstractModel):
                 company=company.name,
                 company_id=company.id,
                 time_budget=time_budget,
+                export_interval_hours=export_interval_hours,
             )
 
-            result = orch.run()
+            result = orch.run(force_start=force_start)
 
             # Phase separation ensures cleanup only happens in its own transaction
             # after the orchestrator successfully returns without throwing.

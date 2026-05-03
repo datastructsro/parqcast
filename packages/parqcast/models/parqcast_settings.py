@@ -97,11 +97,11 @@ class ResConfigSettings(models.TransientModel):
     parqcast_cron_active = fields.Boolean(
         string="Enable Scheduled Export",
     )
-    parqcast_schedule_mode = fields.Selection(
-        [("daily", "Every day"), ("continuous", "Continuous (every 5 minutes)")],
-        string="Schedule",
-        default="daily",
-        config_parameter="parqcast.schedule_mode",
+    parqcast_export_interval_hours = fields.Float(
+        string="Export Interval (Hours)",
+        default=24.0,
+        config_parameter="parqcast.export_interval_hours",
+        help="How many hours to wait after an export before starting a new one.",
     )
 
     # Status Block
@@ -148,12 +148,9 @@ class ResConfigSettings(models.TransientModel):
         if cron:
             cron_sudo = cron.sudo()
             cron_sudo.active = self.parqcast_cron_active
-            if self.parqcast_schedule_mode == "continuous":
-                cron_sudo.interval_number = 5
-                cron_sudo.interval_type = "minutes"
-            else:
-                cron_sudo.interval_number = 1
-                cron_sudo.interval_type = "days"
+            # Force the cron to tick every 5 minutes to advance the state machine
+            cron_sudo.interval_number = 5
+            cron_sudo.interval_type = "minutes"
         return res
 
     @api.model
@@ -164,8 +161,8 @@ class ResConfigSettings(models.TransientModel):
         return res
 
     def action_run_export_now(self):
-        """Manually trigger one export tick."""
-        result = self.env["parqcast.cron"].run_export()
+        """Manually trigger one export tick, bypassing the interval check."""
+        result = self.env["parqcast.cron"].run_export(force_start=True)
         state = result.get("state", "done")
         chunks = result.get("files", [])
 

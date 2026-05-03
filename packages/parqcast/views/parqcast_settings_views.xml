@@ -27,7 +27,14 @@
                                  help="Run the export pipeline automatically on a schedule.">
                             <field name="parqcast_cron_active"/>
                             <div invisible="not parqcast_cron_active" class="content-group mt8">
-                                <field name="parqcast_schedule_mode" widget="radio"/>
+                                <div class="row">
+                                    <label for="parqcast_export_interval_hours" class="col-lg-3 o_light_label"/>
+                                    <field name="parqcast_export_interval_hours" class="oe_inline"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    The background orchestrator ticks every 5 minutes to process chunks.
+                                    A new export run will start only if the previous one is older than this interval.
+                                </div>
                             </div>
                         </setting>
                         <setting string="Manual Export"

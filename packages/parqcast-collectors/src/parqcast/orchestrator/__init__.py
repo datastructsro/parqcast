@@ -123,6 +123,7 @@ class Orchestrator:
         company: str,
         company_id: int,
         time_budget: int = DEFAULT_TIME_BUDGET,
+        export_interval_hours: float = 24.0,
         run_cls: type[ExportRun] | None = None,
         chunk_cls: type[ExportChunk] | None = None,
     ) -> None:
@@ -131,6 +132,7 @@ class Orchestrator:
         self.company = company
         self.company_id = company_id
         self.time_budget = time_budget
+        self.export_interval_hours = export_interval_hours
         self.run_cls: type[ExportRun] = run_cls or ExportRun
         self.chunk_cls: type[ExportChunk] = chunk_cls or ExportChunk
 
@@ -146,7 +148,7 @@ class Orchestrator:
     def _time_remaining(self, t0: float) -> float:
         return self.time_budget - (time.monotonic() - t0)
 
-    def run(self) -> JsonDict:
+    def run(self, force_start: bool = False) -> JsonDict:
         """Execute one phase of the export pipeline. Call repeatedly from cron."""
         t0 = time.monotonic()
         cr = self.env.cr
@@ -159,6 +161,14 @@ class Orchestrator:
         # Find or create a run
         run = self.run_cls.find_active(cr)
         if run is None:
+            if not force_start:
+                last_run = self.run_cls.find_last(cr)
+                if last_run and last_run.started_at:
+                    from datetime import UTC, datetime
+                    time_since = (datetime.now(UTC) - last_run.started_at).total_seconds() / 3600.0
+                    if time_since < self.export_interval_hours:
+                        logger.info("Skipping new run: only %.2fh since last run (interval is %.2fh)", time_since, self.export_interval_hours)
+                        return {"state": "waiting", "next_export_in_hours": round(self.export_interval_hours - time_since, 2)}
             run = self.run_cls.create(cr, company_id=self.company_id, company_name=self.company)
             self._commit()
 

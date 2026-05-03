@@ -87,6 +87,18 @@ class ExportRun:
             return cls(id=row[0], run_uuid=row[1], state=row[2], company_id=row[3], started_at=row[4])
         return None
 
+    @classmethod
+    def find_last(cls, cr: ReadCursor) -> ExportRun | None:
+        cr.execute("""
+            SELECT id, run_uuid, state, company_id, started_at
+            FROM parqcast_export_run
+            ORDER BY id DESC LIMIT 1
+        """)
+        row = fetch_one_or_none(cr)
+        if row:
+            return cls(id=row[0], run_uuid=row[1], state=row[2], company_id=row[3], started_at=row[4])
+        return None
+
     def set_state(self, cr: ReadCursor, state: str):
         self.state = state
         cr.execute("UPDATE parqcast_export_run SET state = %s WHERE id = %s", (state, self.id))
