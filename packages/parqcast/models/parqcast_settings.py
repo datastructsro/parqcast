@@ -7,7 +7,7 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError  # pyright: ignore[reportMissingImports]
 
 
-def _transport_selection() -> list[tuple[str, str]]:
+def _transport_selection(self: Any = None) -> list[tuple[str, str]]:
     """Build transport choices dynamically — S3 only appears when installed."""
     from ..utils.transport_registry import has_s3_transport
 
