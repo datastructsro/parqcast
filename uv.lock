@@ -87,7 +87,7 @@ wheels = [
 
 [[package]]
 name = "parqcast-collectors"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/parqcast-collectors" }
 dependencies = [
     { name = "parqcast-core" },
@@ -102,7 +102,7 @@ requires-dist = [
 
 [[package]]
 name = "parqcast-core"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/parqcast-core" }
 dependencies = [
     { name = "pyarrow" },
@@ -113,7 +113,7 @@ requires-dist = [{ name = "pyarrow", specifier = ">=23.0.1" }]
 
 [[package]]
 name = "parqcast-ingesters"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/parqcast-ingesters" }
 dependencies = [
     { name = "parqcast-core" },
@@ -128,7 +128,7 @@ requires-dist = [
 
 [[package]]
 name = "parqcast-transport-http"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/parqcast-transport-http" }
 dependencies = [
     { name = "parqcast-core" },
@@ -139,7 +139,7 @@ requires-dist = [{ name = "parqcast-core", editable = "packages/parqcast-core" }
 
 [[package]]
 name = "parqcast-transport-s3"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "packages/parqcast-transport-s3" }
 dependencies = [
     { name = "boto3" },

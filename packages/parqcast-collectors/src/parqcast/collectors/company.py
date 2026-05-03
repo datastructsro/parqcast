@@ -15,8 +15,9 @@ class CompanyCollector[V](CoreCollector[V]):
                 rc.parent_id,
                 COALESCE(rc.security_lead, 0),
                 rc.active,
-                rc.country_id
+                rp.country_id
             FROM res_company rc
+            LEFT JOIN res_partner rp ON rp.id = rc.partner_id
         """,
             None,
         )

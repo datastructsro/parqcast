@@ -1,6 +1,6 @@
 [project]
 name = "parqcast-collectors"
-version = "0.1.1"
+version = "0.1.2"
 description = "SQL-based collectors and orchestrator for the parqcast data pipe"
 requires-python = "==3.12.3"
 dependencies = [

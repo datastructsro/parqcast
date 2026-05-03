@@ -34,7 +34,7 @@ class HttpTransport(BaseTransport):
         if filename.endswith(".json"):
             self._request("POST", f"/upload/{self.namespace}/_manifest", raw, "application/json")
         else:
-            self._request("POST", f"/upload/{self.namespace}/{prefix}", raw, "application/octet-stream")
+            self._request("POST", f"/upload/{self.namespace}/{prefix}/{filename}", raw, "application/octet-stream")
 
     def download_file(self, prefix: str, filename: str) -> bytes:
         url = f"{self.server_url}/download/{self.namespace}/{prefix}/{filename}"

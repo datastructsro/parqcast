@@ -9,7 +9,7 @@
     # major listed in `parqcast_supported_versions`. A pinned `19.0.x.y`
     # would be rejected by the v18 loader (which validates against
     # `18.0.x.y` or bare `x.y[.z]`).
-    "version": "18.0.3.1.1",
+    "version": "18.0.3.1.2",
     "category": "Supply Chain",
     "summary": "Zero-computation data pipe to cloud planning engines",
     "author": "DataStruct s.r.o., Odoo Community Association (OCA)",
