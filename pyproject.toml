@@ -1,6 +1,6 @@
 [project]
 name = "parqcast-workspace"
-version = "0.1.0"
+version = "0.1.1"
 description = "Zero-computation data pipe between Odoo and cloud planning engines"
 readme = "README.md"
 authors = [

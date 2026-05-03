@@ -1,6 +1,6 @@
 [project]
 name = "parqcast-transport-s3"
-version = "0.1.0"
+version = "0.1.1"
 description = "S3 transport for parqcast — supports AWS S3 and S3-compatible stores (MinIO, LocalStack)"
 requires-python = "==3.12.3"
 license = "Apache-2.0"

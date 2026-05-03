@@ -1,6 +1,6 @@
 [project]
 name = "parqcast-transport-http"
-version = "0.1.0"
+version = "0.1.1"
 description = "HTTP transport for parqcast — uploads raw Parquet to parqcast-server"
 requires-python = "==3.12.3"
 dependencies = [

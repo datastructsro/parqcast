@@ -1,6 +1,6 @@
 [project]
 name = "parqcast-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "Schemas, transport, tracking, and protocols for the parqcast data pipe"
 requires-python = "==3.12.3"
 dependencies = [
