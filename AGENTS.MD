@@ -5,7 +5,7 @@ This document defines the constraints, architecture boundaries, and tooling inst
 ## 1. Toolchain & Workspace Constraints
 - **Workspace Tool**: The project uses `uv` as the workspace manager. All dependency management and command running must go through `uv` (e.g., `uv sync`, `uv run pytest`).
 - **Strict Type Checking**: We use `pyright` in strict mode. All new code must pass `uv run pyright` without generating `Unknown` or `Any` leakage. Avoid casting unless interfacing with dynamic ORM attributes, and even then, rely on `pyproject.toml` suppressions where configured.
-- **Linting & Formatting**: Code must pass `uv run ruff check .` and `uv run ruff format --check .`. The configured line length is 120.
+- **Linting & Formatting**: Code must pass `uv run ruff check .` and `uv run ruff format --check .`. The configured line length is 120. **Agents must ALWAYS run `uv run ruff check --fix .` and `uv run ruff format .` prior to making any commits to ensure the CI pipeline does not fail.**
 
 ## 2. Architecture Boundaries
 Parqcast is strictly layered. Agents must NEVER introduce imports that violate these boundaries:

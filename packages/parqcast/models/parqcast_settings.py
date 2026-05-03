@@ -158,6 +158,11 @@ class ResConfigSettings(models.TransientModel):
         res = super().get_values()
         cron = self.env.ref("parqcast.ir_cron_parqcast_export", raise_if_not_found=False)
         res["parqcast_cron_active"] = cron.active if cron else False
+
+        company_id = self.env["ir.config_parameter"].sudo().get_param("parqcast.company_id")
+        if company_id:
+            res["parqcast_company_id"] = int(company_id)
+
         return res
 
     def action_run_export_now(self):
