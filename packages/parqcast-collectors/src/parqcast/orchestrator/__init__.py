@@ -165,10 +165,18 @@ class Orchestrator:
                 last_run = self.run_cls.find_last(cr)
                 if last_run and last_run.started_at:
                     from datetime import UTC, datetime
+
                     time_since = (datetime.now(UTC) - last_run.started_at).total_seconds() / 3600.0
                     if time_since < self.export_interval_hours:
-                        logger.info("Skipping new run: only %.2fh since last run (interval is %.2fh)", time_since, self.export_interval_hours)
-                        return {"state": "waiting", "next_export_in_hours": round(self.export_interval_hours - time_since, 2)}
+                        logger.info(
+                            "Skipping new run: only %.2fh since last run (interval is %.2fh)",
+                            time_since,
+                            self.export_interval_hours,
+                        )
+                        return {
+                            "state": "waiting",
+                            "next_export_in_hours": round(self.export_interval_hours - time_since, 2),
+                        }
             run = self.run_cls.create(cr, company_id=self.company_id, company_name=self.company)
             self._commit()
 
