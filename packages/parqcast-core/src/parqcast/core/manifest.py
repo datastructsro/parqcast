@@ -16,7 +16,7 @@ def build_manifest(
     company: str,
     company_id: int,
     odoo_version: str = "17.0",
-    parqcast_version: str = "0.1.0",
+    parqcast_version: str = "1.0.0",
     errors: list[str] | None = None,
     warnings: list[str] | None = None,
     total_duration: float = 0.0,

@@ -13,6 +13,8 @@ from .odoo_types import (
 DECISIONS_SCHEMA = pa.schema(
     [
         ("decision_id", OdooCode),
+        ("run_uuid", OdooCode),
+        ("decision_timestamp", OdooDatetime),
         ("decision_type", OdooState),
         ("status", OdooState),
         ("item_name", OdooName),

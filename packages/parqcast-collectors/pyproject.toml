@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "SQL-based collectors and orchestrator for the parqcast data pipe"
 requires-python = "==3.12.3"
 dependencies = [
-    "parqcast-core>=0.1.0",
+    "parqcast-core>=1.0.0",
     "pyarrow>=23.0.1",
 ]
 
